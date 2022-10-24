@@ -18,7 +18,7 @@ If you do not have a working installation of Python 3.7 (or later), consider
 installing [Miniconda] (see [Installing Miniconda]). Then run:
 
 ```shell
-conda create --file environmen.yml
+conda create --file environment.yml
 conda activate orthomap
 ```
 
@@ -99,6 +99,17 @@ Install `orthomap` into your current python environment:
 ```shell
 pip install .
 ```
+
+## Installing Miniconda
+
+After downloading [Miniconda], in a unix shell (Linux, Mac), run
+
+```shell
+cd DOWNLOAD_DIR
+chmod +x Miniconda3-latest-VERSION.sh
+./Miniconda3-latest-VERSION.sh
+```
+
 ## Contributing Code
 
 If you would like to contribute to `orthomap`, please file an issue so that one can establish a statement of need, avoid redundant work, and track progress on your contribution.
