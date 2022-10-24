@@ -16,7 +16,7 @@ authors = [
 maintainers = [
     {name = "Kristian K Ullrich", email="ullrich@evolbio.mpg.de"},
 ]
-license = {file = "LICENSE"}
+license = {text = "GPLv3"}
 readme = "README.md"
 requires-python = ">=3.7"
 keywords = ["orthomap", "gene age", "orthologs", "phylostratigraphy"]
