@@ -6,13 +6,13 @@
 
 ## orthologous maps - evolutionary age index
 
-[orthomap](https://github.com/kullrich/orthomap) is a python package to extract orthologous maps (in other words the evolutionary age of a given orthologous group) from OrthoFinder results.
+[`orthomap`](https://github.com/kullrich/orthomap) is a python package to extract orthologous maps (in other words the evolutionary age of a given orthologous group) from OrthoFinder results.
 
 ## Installing `orthomap`
 
 ### Anaconda
 
-The environment is created with `conda create` in which orthomap is installed.
+The environment is created with `conda create` in which `orthomap` is installed.
 
 If you do not have a working installation of Python 3.7 (or later), consider
 installing [Miniconda] (see [Installing Miniconda]). Then run:
@@ -42,30 +42,30 @@ Online documentation can be found [here](https://orthomap.readthedocs.io/en/late
 
 ## Quick use
 
-Update/download local ncbi taxonomic database:
+### Update/download local ncbi taxonomic database:
 
-``` 
+```python
 from orthomap import ncbitax
 ncbitax.update_ncbi()
 ```
 
-Get query species lineage information:
+### Get query species lineage information:
 
 example: Danio rerio
 
-``` 
+```python
 from orthomap import qlin
 qlin.get_qlin(q = 'Danio rerio')
 qlin.get_qlin(qt = '7955')
 ```
 
-Extract orthomap from OrthoFinder result:
+### Extract orthomap from OrthoFinder result:
 
 example: ensembl release-105
 
 OrthoFinder results files can be found [here](https://doi.org/10.5281/zenodo.7242264)
 
-```
+```python
 from orthomap import orthomap
 omap = orthomap.get_orthomap(qname = 'Danio_rerio.GRCz11.cds.longest',
     qt = '7955',
@@ -74,14 +74,14 @@ omap = orthomap.get_orthomap(qname = 'Danio_rerio.GRCz11.cds.longest',
     og = 'ensembl_105_orthofinder_Orthogroups.tsv')
 ```
 
-Calculate transcriptome evolutionary index (TEI) for each cell of a scRNA data set:
+### Calculate transcriptome evolutionary index (TEI) for each cell of a scRNA data set:
 
 example: Danio rerio - [http://tome.gs.washington.edu](http://tome.gs.washington.edu)
 ([Qui et al. 2022](https://www.nature.com/articles/s41588-022-01018-x))
 
 `AnnData` file can be found [here](https://doi.org/10.5281/zenodo.7243602) 
 
-```
+```python
 from orthomap import orthomap2tei
 ```
 
