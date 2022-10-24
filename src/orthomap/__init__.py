@@ -1,0 +1,6 @@
+__title__ = "ortjomap"
+__version__ = "0.0.1"
+__author__ = "Kristian K Ullrich"
+__email__ = "ullrich@evolbio.mpg.de"
+__license__ = "GPL-3"
+__copyright__ = "Copyright 2022 Kristian K Ullrich"

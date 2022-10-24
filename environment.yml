@@ -1,0 +1,9 @@
+name: orthomap
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - pandas
+  - ete3
+  - scanpy
