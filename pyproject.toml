@@ -32,8 +32,9 @@ dependencies = [
 ]
 
 [project.urls]
-homepage = "https://github.com/kullrich/orthomap"
-documentation = "https://github.com/kullrich/orthomap"
+"Homepage" = "https://github.com/kullrich/orthomap"
+"Bug Tracker" = "https://github.com/kullrich/orthomap/issues"
+documentation = "https://orthomap.readthedocs.io/en/latest/"
 repository = "https://github.com/kullrich/orthomap"
 
 [project.scripts]

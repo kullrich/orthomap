@@ -8,8 +8,6 @@
 
 [orthomap](https://github.com/kullrich/orthomap) is a python package to extract orthologous maps (in other words the evolutionary age of a given orthologous group) from OrthoFinder results.
 
-
-
 ## Installing `orthomap`
 
 ### Anaconda
@@ -101,6 +99,30 @@ Install `orthomap` into your current python environment:
 ```shell
 pip install .
 ```
+## Contributing Code
+
+If you would like to contribute to `orthomap`, please file an issue so that one can establish a statement of need, avoid redundant work, and track progress on your contribution.
+
+Before you do a pull request, you should always file an issue and make sure that someone from the `orthomap` developer team agrees that it's a problem, and is happy with your basic proposal for fixing it.
+
+Once an issue has been filed and we've identified how to best orient your contribution with package development as a whole, [fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) the [main repo](https://github.com/kullrich/orthomap/orthomap.git), branch off a [feature branch](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-branches) from `master`, [commit](https://docs.github.com/en/desktop/contributing-and-collaborating-using-github-desktop/committing-and-reviewing-changes-to-your-project) and [push](https://docs.github.com/en/github/using-git/pushing-commits-to-a-remote-repository) your changes to your fork and submit a [pull request](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/proposing-changes-to-your-work-with-pull-requests) for `orthomap:master`.
+
+By contributing to this project, you agree to abide by the Code of Conduct terms.
+
+## Bug reports
+
+Please report any errors or requests regarding [`orthomap`](https://github.com/kullrich/orthomap) to Kristian Ullrich (ullrich@evolbio.mpg.de)
+
+or use the issue tracker at [https://github.com/kullrich/orthomap/issues](https://github.com/kullrich/orthomap/issues)
+
+## Code of Conduct - Participation guidelines
+
+This repository adhere to [Contributor Covenant](http://contributor-covenant.org) code of conduct for in any interactions you have within this project. (see [Code of Conduct](https://github.com/kullrich/orthomap/-/blob/master/CODE_OF_CONDUCT.md))
+
+See also the policy against sexualized discrimination, harassment and violence for the Max Planck Society [Code-of-Conduct](https://www.mpg.de/11961177/code-of-conduct-en.pdf).
+
+By contributing to this project, you agree to abide by its terms.
+
 
 ## References
 
