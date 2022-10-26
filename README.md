@@ -18,7 +18,7 @@ If you do not have a working installation of Python 3.7 (or later), consider
 installing [Miniconda] (see [Installing Miniconda]). Then run:
 
 ```shell
-conda create --file environment.yml
+conda env create --file environment.yml
 conda activate orthomap
 ```
 
