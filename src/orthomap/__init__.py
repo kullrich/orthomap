@@ -1,4 +1,4 @@
-__title__ = "ortjomap"
+__title__ = "orthomap"
 __version__ = "0.0.1"
 __author__ = "Kristian K Ullrich"
 __email__ = "ullrich@evolbio.mpg.de"
