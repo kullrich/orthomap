@@ -19,14 +19,14 @@ installing [Miniconda] (see [Installing Miniconda](#installing-miniconda)).
 Then run:
 
 ```shell
-conda env create --file environment.yml
-conda activate orthomap
+$ conda env create --file environment.yml
+$ conda activate orthomap
 ```
 
 Install `orthomap`:
 
 ```shell
-pip install orthomap
+$ pip install orthomap
 ```
 
 ### PyPI
@@ -34,7 +34,7 @@ pip install orthomap
 Install `orthomap` into your current python environment:
 
 ```shell
-pip install orthomap
+$ pip install orthomap
 ```
 
 ## Documentation
@@ -50,8 +50,8 @@ NCBI's taxonomy database (~300MB). The database is saved at
 `~/.etetoolkit/taxa.sqlite`.
 
 ```python
-from orthomap import ncbitax
-ncbitax.update_ncbi()
+>>> from orthomap import ncbitax
+>>> ncbitax.update_ncbi()
 ```
 
 ### Query species lineage information:
@@ -60,9 +60,9 @@ You can query a species lineage information based on its name or its
 taxid. For example `Danio rerio` with taxid `7955`:
 
 ```python
-from orthomap import qlin
-qlin.get_qlin(q = 'Danio rerio')
-qlin.get_qlin(qt = '7955')
+>>> from orthomap import qlin
+>>> qlin.get_qlin(q = 'Danio rerio')
+>>> qlin.get_qlin(qt = '7955')
 ```
 
 ### Extract orthomap from OrthoFinder result
@@ -71,12 +71,12 @@ The following code extracts the orthomap for `Danio rerio` based on the
 ensembl release-105:
 
 ```python
-from orthomap import orthomap
-omap = orthomap.get_orthomap(qname = 'Danio_rerio.GRCz11.cds.longest',
-    qt = '7955',
-    sl = 'ensembl_105_orthofinder_species_list.tsv',
-    oc = 'ensembl_105_orthofinder_Orthogroups.GeneCount.tsv',
-    og = 'ensembl_105_orthofinder_Orthogroups.tsv')
+>>> from orthomap import orthomap
+>>> omap = orthomap.get_orthomap(qname = 'Danio_rerio.GRCz11.cds.longest',
+...        qt = '7955',
+...        sl = 'ensembl_105_orthofinder_species_list.tsv',
+...        oc = 'ensembl_105_orthofinder_Orthogroups.GeneCount.tsv',
+...        og = 'ensembl_105_orthofinder_Orthogroups.tsv')
 ```
 
 OrthoFinder results files have been archived and can be found
@@ -90,7 +90,17 @@ example: Danio rerio - [http://tome.gs.washington.edu](http://tome.gs.washington
 `AnnData` file can be found [here](https://doi.org/10.5281/zenodo.7243602) 
 
 ```python
-from orthomap import orthomap2tei
+>>> from orthomap import orthomap2tei
+```
+
+## orthomap via Command Line
+
+`orthomap` can also be used via the command line. To retrieve
+the lineage information for `Danio rerio` run the following command in the
+command:
+
+```shell
+$ python src/orthomap/qlin.py -q "Danio rerio"
 ```
 
 ## Development Version
@@ -98,14 +108,14 @@ from orthomap import orthomap2tei
 To work with the latest version [on GitHub]: clone the repository and `cd` into its root directory.
 
 ```shell
-git clone kullrich/orthomap
-cd orthomap
+$ git clone kullrich/orthomap
+$ cd orthomap
 ```
 
 Install `orthomap` into your current python environment:
 
 ```shell
-pip install .
+$ pip install -e .
 ```
 
 ## Installing Miniconda
@@ -113,9 +123,9 @@ pip install .
 After downloading [Miniconda], in a unix shell (Linux, Mac), run
 
 ```shell
-cd DOWNLOAD_DIR
-chmod +x Miniconda3-latest-VERSION.sh
-./Miniconda3-latest-VERSION.sh
+$ cd DOWNLOAD_DIR
+$ chmod +x Miniconda3-latest-VERSION.sh
+$ ./Miniconda3-latest-VERSION.sh
 ```
 
 ## Contributing Code
@@ -124,7 +134,19 @@ If you would like to contribute to `orthomap`, please file an issue so that one 
 
 Before you do a pull request, you should always file an issue and make sure that someone from the `orthomap` developer team agrees that it's a problem, and is happy with your basic proposal for fixing it.
 
-Once an issue has been filed and we've identified how to best orient your contribution with package development as a whole, [fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) the [main repo](https://github.com/kullrich/orthomap/orthomap.git), branch off a [feature branch](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-branches) from `master`, [commit](https://docs.github.com/en/desktop/contributing-and-collaborating-using-github-desktop/committing-and-reviewing-changes-to-your-project) and [push](https://docs.github.com/en/github/using-git/pushing-commits-to-a-remote-repository) your changes to your fork and submit a [pull request](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/proposing-changes-to-your-work-with-pull-requests) for `orthomap:master`.
+Once an issue has been filed and we've identified how to best orient your
+contribution with package development as a whole,
+[fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo)
+the [main repo](https://github.com/kullrich/orthomap/orthomap.git), branch off a
+[feature
+branch](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-branches)
+from `master`,
+[commit](https://docs.github.com/en/desktop/contributing-and-collaborating-using-github-desktop/committing-and-reviewing-changes-to-your-project)
+and
+[push](https://docs.github.com/en/github/using-git/pushing-commits-to-a-remote-repository)
+your changes to your fork and submit a [pull
+request](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/proposing-changes-to-your-work-with-pull-requests)
+for `orthomap:master`.
 
 By contributing to this project, you agree to abide by the Code of Conduct terms.
 
