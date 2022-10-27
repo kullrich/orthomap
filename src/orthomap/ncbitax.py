@@ -17,8 +17,9 @@ from ete3 import NCBITaxa
 
 def define_parser():
     """
+    A helper function for using `ncbitax.py` via the terminal.
 
-    :return:
+    :return: argparse.ArgumentParser
     """
     ncbitax_example = '''ncbitax example:
 
@@ -34,17 +35,18 @@ def define_parser():
 
 def add_argparse_args(parser: argparse.ArgumentParser):
     """
+    This function attaches individual argument specifications to the parser.
 
-    :param parser:
-    :return:
+    :param parser: argparse.ArgumentParser
     """
     parser.add_argument('-u', help='update', action='store_true')
 
 
 def update_ncbi():
     """
-
-    :return:
+    This function updates or downloads the NCBI taxonomy database using
+    the package `ete3`. A parsed version of it will be stored at the home
+    directory: `~/.etetoolkit/taxa.sqlite`.
     """
     ncbi = NCBITaxa()
     ncbi.update_taxonomy_database()
@@ -52,9 +54,7 @@ def update_ncbi():
 
 def main():
     """
-    update local ncbi taxonomy database
-
-    :return:
+    The main function that is being called when `ncbitax.py` is used via the terminal.
     """
     parser = define_parser()
     args = parser.parse_args()
