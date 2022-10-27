@@ -15,7 +15,8 @@
 The environment is created with `conda create` in which `orthomap` is installed.
 
 If you do not have a working installation of Python 3.7 (or later), consider
-installing [Miniconda] (see [Installing Miniconda]). Then run:
+installing [Miniconda] (see [Installing Miniconda](#installing-miniconda)).
+Then run:
 
 ```shell
 conda env create --file environment.yml
@@ -44,14 +45,19 @@ Online documentation can be found [here](https://orthomap.readthedocs.io/en/late
 
 ### Update/download local ncbi taxonomic database:
 
+The following command downloads or updates your local copy of the
+NCBI's taxonomy database (~300MB). The database is saved at
+`~/.etetoolkit/taxa.sqlite`.
+
 ```python
 from orthomap import ncbitax
 ncbitax.update_ncbi()
 ```
 
-### Get query species lineage information:
+### Query species lineage information:
 
-example: Danio rerio
+You can query a species lineage information based on its name or its
+taxid. For example `Danio rerio` with taxid `7955`:
 
 ```python
 from orthomap import qlin
@@ -59,11 +65,10 @@ qlin.get_qlin(q = 'Danio rerio')
 qlin.get_qlin(qt = '7955')
 ```
 
-### Extract orthomap from OrthoFinder result:
+### Extract orthomap from OrthoFinder result
 
-example: ensembl release-105
-
-OrthoFinder results files can be found [here](https://doi.org/10.5281/zenodo.7242264)
+The following code extracts the orthomap for `Danio rerio` based on the
+ensembl release-105:
 
 ```python
 from orthomap import orthomap
@@ -73,6 +78,9 @@ omap = orthomap.get_orthomap(qname = 'Danio_rerio.GRCz11.cds.longest',
     oc = 'ensembl_105_orthofinder_Orthogroups.GeneCount.tsv',
     og = 'ensembl_105_orthofinder_Orthogroups.tsv')
 ```
+
+OrthoFinder results files have been archived and can be found
+[here](https://zenodo.org/record/7242264#.Y1p19i0Rowc).
 
 ### Calculate transcriptome evolutionary index (TEI) for each cell of a scRNA data set:
 
@@ -124,16 +132,15 @@ By contributing to this project, you agree to abide by the Code of Conduct terms
 
 Please report any errors or requests regarding [`orthomap`](https://github.com/kullrich/orthomap) to Kristian Ullrich (ullrich@evolbio.mpg.de)
 
-or use the issue tracker at [https://github.com/kullrich/orthomap/issues](https://github.com/kullrich/orthomap/issues)
+or use the [issue tracker](https://github.com/kullrich/orthomap/issues).
 
 ## Code of Conduct - Participation guidelines
 
-This repository adhere to [Contributor Covenant](http://contributor-covenant.org) code of conduct for in any interactions you have within this project. (see [Code of Conduct](https://github.com/kullrich/orthomap/-/blob/master/CODE_OF_CONDUCT.md))
+This repository adheres to the [Contributor Covenant](http://contributor-covenant.org) code of conduct for in any interactions you have within this project. (see [Code of Conduct](https://github.com/kullrich/orthomap/-/blob/master/CODE_OF_CONDUCT.md))
 
 See also the policy against sexualized discrimination, harassment and violence for the Max Planck Society [Code-of-Conduct](https://www.mpg.de/11961177/code-of-conduct-en.pdf).
 
 By contributing to this project, you agree to abide by its terms.
-
 
 ## References
 
