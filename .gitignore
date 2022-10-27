@@ -17,6 +17,7 @@ __pycache__/
 /scanpy.egg-info/
 /*-env/
 /env-*/
+src/orthomap.egg-info/
 
 # OS stuff
 .DS_Store
