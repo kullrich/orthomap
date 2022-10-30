@@ -1,0 +1,4 @@
+pandas
+ete3
+scanpy
+pytest
