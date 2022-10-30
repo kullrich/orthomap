@@ -13,7 +13,7 @@ License: GPL-3
 import sys
 import argparse
 import pandas as pd
-from ete3 import NCBITaxa
+from ete3 import NCBITaxa, Tree
 
 
 def define_parser():
@@ -48,6 +48,20 @@ def add_argparse_args(parser: argparse.ArgumentParser):
     parser.add_argument('-og', help='specify orthofinder <Orthogroups.tsv> (see Orthogroups directory)')
     parser.add_argument('-out', help='specify output file <orthomap.tsv> (default: orthomap.tsv)',
                         default='orthomap.tsv')
+
+
+def get_lineage_topo(qt):
+    ncbi = NCBITaxa()
+    query_lineage = ncbi.get_lineage(qt)
+    query_lineage_names_dict = ncbi.get_taxid_translator(query_lineage)
+    query_lineage_names = pd.DataFrame([(x, y, query_lineage_names_dict[y]) for x, y in enumerate(query_lineage)])
+    query_lineage_names.columns = ['PSnum', 'PStaxID', 'PSname']
+    query_lineage_names['PSnum'] = [str(x) for x in list(query_lineage_names['PSnum'])]
+    query_lineage_names['PStaxID'] = [str(x) for x in list(query_lineage_names['PStaxID'])]
+    query_lineage_names['PSname'] = [str(x) for x in list(query_lineage_names['PSname'])]
+    qln = list(query_lineage_names[['PSnum', 'PStaxID', 'PSname']].apply(lambda x: '/'.join(x), axis=1))
+    tree = Tree('(' * len(qln) + ''.join([str(x) + '),' for x in qln[1::][::-1]])+str(qln[0])+');')
+    return tree
 
 
 def get_youngest_common(ql, tl):
@@ -86,6 +100,7 @@ def get_orthomap(qname, qt, sl, oc, og, out=None):
     query_lineage_names_dict = ncbi.get_taxid_translator(query_lineage)
     query_lineage_names = pd.DataFrame([(x, y, query_lineage_names_dict[y]) for x, y in enumerate(query_lineage)])
     query_lineage_names.columns = ['PSnum', 'PStaxID', 'PSname']
+    query_lineage_topo = get_lineage_topo(qt)
     species_list = pd.read_csv(sl, sep='\t', header=None)
     species_list.columns = ['species', 'taxID']
     species_list['lineage'] = species_list.apply(lambda x: ncbi.get_lineage(x[1]), axis=1)
@@ -146,7 +161,7 @@ def get_orthomap(qname, qt, sl, oc, og, out=None):
         outhandle.close()
     omap_df = pd.DataFrame(omap)
     omap_df.columns = ['gene', 'Orthogroup', 'PSnum', 'PStaxID', 'PSname']
-    return omap_df
+    return [omap_df, species_list]
 
 
 def main():
