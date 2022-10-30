@@ -13,6 +13,7 @@ License: GPL-3
 import sys
 import argparse
 import gzip
+import pandas as pd
 
 
 def define_parser():
@@ -49,7 +50,7 @@ def add_argparse_args(parser: argparse.ArgumentParser):
     parser.add_argument('-s', help='specify if summary should be printed', action='store_true')
 
 
-def parse_gtf(gtf, output, g, b, p, v, s):
+def parse_gtf(gtf, g=False, b=False, p=False, v=False, s=False, output=None):
     t2g = {}
     t2p = {}
     tc = 0
@@ -61,6 +62,14 @@ def parse_gtf(gtf, output, g, b, p, v, s):
             continue
         line = lines.strip().split('\t')
         if line[2] == 'transcript':
+            gid_first = None
+            gid_first_version = None
+            tid_first = None
+            tid_first_version = None
+            gname_first = None
+            gtype_first = None
+            gv_first = None
+            tv_first = None
             infosplit = line[8].strip().split(';')
             gid = [x for x in infosplit if 'gene_id' in x]
             if len(gid) > 0:
@@ -71,6 +80,7 @@ def parse_gtf(gtf, output, g, b, p, v, s):
                     print('duplicated gene_id field:\t'+lines)
             else:
                 print('no gene_id field:\t'+lines)
+                # continue since no transcript to gene can be evaluated
                 continue
             tid = [x for x in infosplit if 'transcript_id' in x]
             if len(tid) > 0:
@@ -81,6 +91,7 @@ def parse_gtf(gtf, output, g, b, p, v, s):
                     print('duplicated transcript_id field:\t'+lines)
             else:
                 print('no transcript_id field:\t'+lines)
+                # continue since no transcript to gene can be evaluated
                 continue
             if g:
                 gname = [x for x in infosplit if 'gene_name' in x]
@@ -91,7 +102,8 @@ def parse_gtf(gtf, output, g, b, p, v, s):
                     else:
                         print('duplicated gene_name field:\t'+lines)
                 else:
-                    gname_first = ''
+                    print('no gene_name field:\t'+lines)
+                    # keep gname_first = None
             if b:
                 gtype = [x for x in infosplit if 'gene_biotype' in x]
                 if len(gtype) > 0:
@@ -101,7 +113,8 @@ def parse_gtf(gtf, output, g, b, p, v, s):
                     else:
                         print('duplicated gene_biotype field:\t'+lines)
                 else:
-                    gtype_first = ''
+                    print('no gene_biotype field:\t'+lines)
+                    # keep gname_gtype = None
             if v:
                 gv = [x for x in infosplit if 'gene_version' in x and 'havana_gene_version' not in x]
                 if len(gv) > 0:
@@ -112,8 +125,7 @@ def parse_gtf(gtf, output, g, b, p, v, s):
                         print('duplicated gene_version field:\t'+lines)
                 else:
                     print('no gene_version field:\t'+lines)
-                    continue
-                gid_first = gid_first+'.'+gv_first
+                    # keep gv_first = None
                 tv = [x for x in infosplit if 'transcript_version' in x and 'havana_transcript_version' not in x]
                 if len(tv) > 0:
                     if len(tv) == 1:
@@ -123,8 +135,11 @@ def parse_gtf(gtf, output, g, b, p, v, s):
                         print('duplicated transcript_version field:\t'+lines)
                 else:
                     print('no transcript_version field:\t'+lines)
-                    continue
-                tid_first = tid_first+'.'+tv_first
+                    # keep tv_first = None
+            if gv_first:
+                gid_first_version = gid_first + '.' + gv_first
+            if tv_first:
+                tid_first_version = tid_first + '.' + tv_first
             if gid_first in t2g:
                 if tid_first in t2g[gid_first]:
                     dc += 1
@@ -132,26 +147,20 @@ def parse_gtf(gtf, output, g, b, p, v, s):
                     continue
                 if tid_first not in t2g[gid_first]:
                     tc += 1
-                    if g and b:
-                        t2g[gid_first][tid_first] = [gid_first, tid_first, gname_first, gtype_first]
-                    if g and not b:
-                        t2g[gid_first][tid_first] = [gid_first, tid_first, gname_first]
-                    if not g and not b:
-                        t2g[gid_first][tid_first] = [gid_first, tid_first]
+                    t2g[gid_first][tid_first] = [gid_first, str(gid_first_version), tid_first,
+                                                 str(tid_first_version), str(gname_first), str(gtype_first)]
             if gid_first not in t2g:
                 gc += 1
                 tc += 1
                 t2g[gid_first] = {}
-                if g and b:
-                    t2g[gid_first][tid_first] = [gid_first, tid_first, gname_first, gtype_first]
-                if g and not b:
-                    t2g[gid_first][tid_first] = [gid_first, tid_first, gname_first]
-                if not g and b:
-                    t2g[gid_first][tid_first] = [gid_first, tid_first, gtype_first]
-                if not g and not b:
-                    t2g[gid_first][tid_first] = [gid_first, tid_first]
+                t2g[gid_first][tid_first] = [gid_first, str(gid_first_version), tid_first,
+                                             str(tid_first_version), str(gname_first), str(gtype_first)]
         if line[2] == 'CDS':
             if p:
+                pid_first = None
+                pid_first_version = None
+                tid_first = None
+                pv_first = None
                 infosplit = line[8].strip().split(';')
                 tid = [x for x in infosplit if 'transcript_id' in x]
                 if len(tid) > 0:
@@ -162,6 +171,7 @@ def parse_gtf(gtf, output, g, b, p, v, s):
                         print('duplicated transcript_id field:\t'+lines)
                 else:
                     print('no transcript_id field:\t'+lines)
+                    # continue since no transcript to protein can be evaluated
                     continue
                 pid = [x for x in infosplit if 'protein_id' in x]
                 if len(pid) > 0:
@@ -172,19 +182,9 @@ def parse_gtf(gtf, output, g, b, p, v, s):
                         print('duplicated protein_id field:\t'+lines)
                 else:
                     print('no protein_id field:\t'+lines)
+                    # continue since no transcript to protein can be evaluated
                     continue
                 if v:
-                    tv = [x for x in infosplit if 'transcript_version' in x and 'havana_transcript_version' not in x]
-                    if len(tv) > 0:
-                        if len(tv) == 1:
-                            tv_first = tv[0]
-                            tv_first = tv_first.replace('transcript_version', '').replace(' ', '').replace('"', '')
-                        else:
-                            print('duplicated transcript_version field:\t'+lines)
-                    else:
-                        print('no transcript_version field:\t'+lines)
-                        continue
-                    tid_first = tid_first+'.'+tv_first
                     pv = [x for x in infosplit if 'protein_version' in x]
                     if len(pv) > 0:
                         if len(pv) == 1:
@@ -194,29 +194,36 @@ def parse_gtf(gtf, output, g, b, p, v, s):
                             print('duplicated protein_version field:\t'+lines)
                     else:
                         print('no protein_version field:\t'+lines)
-                        continue
-                    pid_first = pid_first+'.'+pv_first
+                        # keep pv_first = np.nan
+                if pv_first:
+                    pid_first_version = pid_first + '.' + pv_first
                 if tid_first in t2p:
                     continue
                 if tid_first not in t2p:
                     pc += 1
-                    t2p[tid_first] = pid_first
-    if p:
-        for gidk in sorted(t2g.keys()):
-            for tidk in sorted(t2g[gidk].keys()):
-                pidk = ''
-                if tidk in t2p:
-                    pidk = t2p[tidk]
-                output.write('\t'.join(t2g[gidk][tidk])+'\t'+pidk+'\n')
-    else:
-        for gidk in sorted(t2g.keys()):
-            for tidk in sorted(t2g[gidk].keys()):
-                output.write('\t'.join(t2g[gidk][tidk])+'\n')
+                    t2p[tid_first] = [pid_first, str(pid_first_version)]
+    for gidk in sorted(t2g.keys()):
+        for tidk in sorted(t2g[gidk].keys()):
+            pidk = None
+            pidk_v = None
+            if tidk in t2p:
+                pidk = t2p[tidk][0]
+                pidk_v = t2p[tidk][1]
+            t2g[gidk][tidk] = t2g[gidk][tidk] + [pidk, pidk_v]
+            if output:
+                output.write('\t'.join([str(x) for x in [gidk] + [tidk] + t2g[gidk][tidk]])+'\n')
     if s:
         print(str(gc)+' gene_id found')
         print(str(tc)+' transcript_id found')
         print(str(tc)+' protein_id found')
         print(str(dc)+' duplicated')
+    t2g_df = pd.DataFrame.from_dict({(i, j): t2g[i][j] for i in t2g.keys() for j in t2g[i].keys()},
+                                    orient='index', columns=['gene_id', 'gene_id_version',
+                                                             'transcript_id', 'transcript_id_version',
+                                                             'gene_name', 'gene_type',
+                                                             'protein_id', 'protein_id_version'])
+    t2g_df.reset_index(drop=True, inplace=True)
+    return t2g_df
 
 
 def main():
@@ -239,7 +246,7 @@ def main():
         output = open(args.o, 'w')
     else:
         output = sys.stdout
-    parse_gtf(gtf, output, args.g, args.b, args.p, args.v, args.s)
+    parse_gtf(gtf, args.g, args.b, args.p, args.v, args.s, output)
     gtf.close()
     output.close()
 
