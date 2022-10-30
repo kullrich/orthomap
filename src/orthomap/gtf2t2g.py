@@ -211,7 +211,7 @@ def parse_gtf(gtf, g=False, b=False, p=False, v=False, s=False, output=None):
                 pidk_v = t2p[tidk][1]
             t2g[gidk][tidk] = t2g[gidk][tidk] + [pidk, pidk_v]
             if output:
-                output.write('\t'.join([str(x) for x in [gidk] + [tidk] + t2g[gidk][tidk]])+'\n')
+                output.write('\t'.join([str(x) for x in t2g[gidk][tidk]])+'\n')
     if s:
         print(str(gc)+' gene_id found')
         print(str(tc)+' transcript_id found')
