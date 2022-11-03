@@ -51,13 +51,17 @@ def add_argparse_args(parser: argparse.ArgumentParser):
 
 
 def parse_gtf(gtf, g=False, b=False, p=False, v=False, s=False, output=None):
+    if gtf.endswith('gz'):
+        gtf_handle = gzip.open(gtf, 'rt')
+    else:
+        gtf_handle = open(gtf, 'rt')
     t2g = {}
     t2p = {}
     tc = 0
     gc = 0
     pc = 0
     dc = 0
-    for lines in gtf:
+    for lines in gtf_handle:
         if len(lines) == 0 or lines[0] == '#':
             continue
         line = lines.strip().split('\t')
@@ -223,6 +227,7 @@ def parse_gtf(gtf, g=False, b=False, p=False, v=False, s=False, output=None):
                                                              'gene_name', 'gene_type',
                                                              'protein_id', 'protein_id_version'])
     t2g_df.reset_index(drop=True, inplace=True)
+    gtf_handle.close()
     return t2g_df
 
 
@@ -238,16 +243,11 @@ def main():
         parser.print_help()
         print('\nError <-i>: Please specify GTF input file')
         sys.exit()
-    if args.i.endswith('gz'):
-        gtf = gzip.open(args.i, 'rt')
-    else:
-        gtf = open(args.i, 'rt')
     if args.o:
         output = open(args.o, 'w')
     else:
         output = sys.stdout
-    parse_gtf(gtf, args.g, args.b, args.p, args.v, args.s, output)
-    gtf.close()
+    parse_gtf(args.i, args.g, args.b, args.p, args.v, args.s, output)
     output.close()
 
 

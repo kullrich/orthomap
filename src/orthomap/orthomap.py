@@ -13,7 +13,8 @@ License: GPL-3
 import sys
 import argparse
 import pandas as pd
-from ete3 import NCBITaxa, Tree
+from .qlin import get_qlin, get_qtid, get_lineage_topo, get_youngest_common, get_oldest_common
+from ete3 import NCBITaxa
 
 
 def define_parser():
@@ -40,7 +41,8 @@ def add_argparse_args(parser: argparse.ArgumentParser):
     :param parser:
     :return:
     """
-    parser.add_argument('-qname', help='query species name in orthofinder (see column names of  <Orthogroups.tsv>)')
+    parser.add_argument('-seqname', help='sequence name of the query species in orthofinder'
+                                         '(see column names of  <Orthogroups.tsv>)')
     parser.add_argument('-qt', help='query species taxid (e.g. use <orthomap qlin -h> to get taxid)')
     parser.add_argument('-sl', help='species list as <orthofinder name><tab><species taxid> '
                                     '(only samples in this list will be processed)')
@@ -50,70 +52,42 @@ def add_argparse_args(parser: argparse.ArgumentParser):
                         default='orthomap.tsv')
 
 
-def get_lineage_topo(qt):
-    ncbi = NCBITaxa()
-    query_lineage = ncbi.get_lineage(qt)
-    query_lineage_names_dict = ncbi.get_taxid_translator(query_lineage)
-    query_lineage_names = pd.DataFrame([(x, y, query_lineage_names_dict[y]) for x, y in enumerate(query_lineage)])
-    query_lineage_names.columns = ['PSnum', 'PStaxID', 'PSname']
-    query_lineage_names['PSnum'] = [str(x) for x in list(query_lineage_names['PSnum'])]
-    query_lineage_names['PStaxID'] = [str(x) for x in list(query_lineage_names['PStaxID'])]
-    query_lineage_names['PSname'] = [str(x) for x in list(query_lineage_names['PSname'])]
-    qln = list(query_lineage_names[['PSnum', 'PStaxID', 'PSname']].apply(lambda x: '/'.join(x), axis=1))
-    tree = Tree('(' * len(qln) + ''.join([str(x) + '),' for x in qln[1::][::-1]])+str(qln[0])+');')
-    return tree
-
-
-def get_youngest_common(ql, tl):
+def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False):
     """
 
-    :param ql:
-    :param tl:
-    :return:
-    """
-    return [x for x in tl if x in ql][-1]
-
-
-def get_oldest_common(ql, tl):
-    """
-
-    :param ql:
-    :param tl:
-    :return:
-    """
-    return ql[min([x for x, y in enumerate(ql) if y in tl])]
-
-
-def get_orthomap(qname, qt, sl, oc, og, out=None):
-    """
-
-    :param qname:
+    :param seqname:
     :param qt:
     :param sl:
     :param oc:
     :param og:
     :param out:
+    :param quite:
     :return:
     """
     ncbi = NCBITaxa()
-    query_lineage = ncbi.get_lineage(qt)
-    query_lineage_names_dict = ncbi.get_taxid_translator(query_lineage)
-    query_lineage_names = pd.DataFrame([(x, y, query_lineage_names_dict[y]) for x, y in enumerate(query_lineage)])
-    query_lineage_names.columns = ['PSnum', 'PStaxID', 'PSname']
+    #query_lineage = ncbi.get_lineage(qt)
+    #query_lineage_names_dict = ncbi.get_taxid_translator(query_lineage)
+    #query_lineage_names = pd.DataFrame([(x, y, query_lineage_names_dict[y]) for x, y in enumerate(query_lineage)])
+    #query_lineage_names.columns = ['PSnum', 'PStaxID', 'PSname']
+    qname, qtid, qlineage, qlineagenames_dict, qlineagezip, qlineagenames, qlineagerev, qk = get_qlin(qt=qt, quite=True)
     query_lineage_topo = get_lineage_topo(qt)
     species_list = pd.read_csv(sl, sep='\t', header=None)
     species_list.columns = ['species', 'taxID']
     species_list['lineage'] = species_list.apply(lambda x: ncbi.get_lineage(x[1]), axis=1)
-    species_list['youngest_common'] = [get_youngest_common(query_lineage, x) for x in species_list.lineage]
+    #species_list['youngest_common'] = [get_youngest_common(query_lineage, x) for x in species_list.lineage]
+    species_list['youngest_common'] = [get_youngest_common(qlineage, x) for x in species_list.lineage]
     species_list['youngest_name'] = [list(x.values())[0] for x in [ncbi.get_taxid_translator([x])
                                                                    for x in list(species_list.youngest_common)]]
-    print(qname)
-    print(qt)
-    print(species_list)
+    if not quite:
+        print(seqname)
+        print(qname)
+        print(qt)
+        print(species_list)
     oc_og_dict = {}
     with open(oc, 'r') as oc_lines:
         oc_species = next(oc_lines).strip().split('\t')
-        oc_qidx = [x for x, y in enumerate(oc_species) if y == qname]
+        #oc_qidx = [x for x, y in enumerate(oc_species) if y == qname]
+        oc_qidx = [x for x, y in enumerate(oc_species) if y == seqname]
         if len(oc_qidx) == 0:
             print('\nError <-qname>: query species name not in orthofinder results, please check spelling\n'
                   'e.g. <head -1 Orthogroups.GeneCounts.tsv>')
@@ -131,15 +105,17 @@ def get_orthomap(qname, qt, sl, oc, og, out=None):
                 # evaluate all youngest common nodes to retain the oldest of them and assign as the orthogroup
                 # ancestral state (gene age)
                 if len(oc_og_hits_youngest_common) > 0:
-                    oc_og_oldest_common = get_oldest_common(query_lineage, oc_og_hits_youngest_common)
+                    #oc_og_oldest_common = get_oldest_common(query_lineage, oc_og_hits_youngest_common)
+                    oc_og_oldest_common = get_oldest_common(qlineage, oc_og_hits_youngest_common)
                     oc_og_dict[oc_og[0]] = oc_og_oldest_common
     omap = []
     if out:
         outhandle = open(out, 'w')
-        outhandle.write('gene\tOrthogroup\tPSnum\tPStaxID\tPSname\n')
+        outhandle.write('seqID\tOrthogroup\tPSnum\tPStaxID\tPSname\n')
     with open(og, 'r') as og_lines:
         og_species = next(og_lines).strip().split('\t')
-        og_qidx = [x for x, y in enumerate(og_species) if y == qname]
+        #og_qidx = [x for x, y in enumerate(og_species) if y == qname]
+        og_qidx = [x for x, y in enumerate(og_species) if y == seqname]
         if len(oc_qidx) == 0:
             print('\nError <-qname>: query species name not in orthofinder results, please check spelling\n'
                   'e.g. <head -1 Orthogroups.tsv>')
@@ -149,9 +125,12 @@ def get_orthomap(qname, qt, sl, oc, og, out=None):
             if og_og[0] not in oc_og_dict:
                 continue
             else:
-                og_ps = query_lineage_names[query_lineage_names['PStaxID'] ==
-                                            oc_og_dict[og_og[0]]].values.tolist()[0]
-                og_ps_join = '\t'.join([str(x) for x in og_ps])
+                #og_ps = query_lineage_names[query_lineage_names['PStaxID'] ==
+                og_ps = qlineagenames[qlineagenames['PStaxID'] ==
+                                      #oc_og_dict[og_og[0]]].values.tolist()[0]
+                                      str(oc_og_dict[og_og[0]])].values.tolist()[0]
+                #og_ps_join = '\t'.join([str(x) for x in og_ps])
+                og_ps_join = '\t'.join(og_ps)
                 if out:
                     [outhandle.write(x.replace(' ', '') + '\t' + og_og[0] + '\t' + og_ps_join + '\n')
                      for x in og_og[og_qidx[0]].split(',')]
@@ -160,7 +139,7 @@ def get_orthomap(qname, qt, sl, oc, og, out=None):
     if out:
         outhandle.close()
     omap_df = pd.DataFrame(omap)
-    omap_df.columns = ['gene', 'Orthogroup', 'PSnum', 'PStaxID', 'PSname']
+    omap_df.columns = ['seqID', 'Orthogroup', 'PSnum', 'PStaxID', 'PSname']
     return [omap_df, species_list]
 
 

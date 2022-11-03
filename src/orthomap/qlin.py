@@ -12,7 +12,8 @@ License: GPL-3
 
 import sys
 import argparse
-from ete3 import NCBITaxa
+import pandas as pd
+from ete3 import NCBITaxa, Tree
 
 
 def define_parser():
@@ -75,8 +76,13 @@ def get_qtid(ncbi, q=None, qt=None):
         qname, qtid = list(name2taxid.items())[0]
         qtid = qtid[0]
     qlineage = ncbi.get_lineage(qtid)
-    qlineagenames = ncbi.get_taxid_translator(qlineage)
-    qlineagezip = [(a, qlineagenames[a]) for a in qlineage]  # ToDo verify that this is correct.
+    qlineagenames_dict = ncbi.get_taxid_translator(qlineage)
+    qlineagezip = [(a, qlineagenames_dict[a]) for a in qlineage]  # ToDo verify that this is correct.
+    qlineagenames = pd.DataFrame([(x, y, qlineagenames_dict[y]) for x, y in enumerate(qlineage)])
+    qlineagenames.columns = ['PSnum', 'PStaxID', 'PSname']
+    qlineagenames['PSnum'] = [str(x) for x in list(qlineagenames['PSnum'])]
+    qlineagenames['PStaxID'] = [str(x) for x in list(qlineagenames['PStaxID'])]
+    qlineagenames['PSname'] = [str(x) for x in list(qlineagenames['PSname'])]
     qlineagerev = qlineage[::-1]
     if qlineage[2] == 2:
         qk = "Bacteria"
@@ -84,10 +90,10 @@ def get_qtid(ncbi, q=None, qt=None):
         qk = "Archea"
     if qlineage[2] == 2759:
         qk = "Eukaryota"
-    return [qname, qtid, qlineage, qlineagenames, qlineagezip, qlineagerev, qk]
+    return [qname, qtid, qlineage, qlineagenames_dict, qlineagezip, qlineagenames, qlineagerev, qk]
 
 
-def get_qlin(q=None, qt=None):
+def get_qlin(q=None, qt=None, quite=False):
     """
     A function to retrieve a species' lineage information from the NCBI
     taxonomy database.
@@ -96,20 +102,54 @@ def get_qlin(q=None, qt=None):
         The name of the queried species.
     :param qt: string
         The taxid of the queried species.
+    :param quite: boolean
+        Print taxonomic summary.
     :return: list
         A list of information for the queried species such as the lineage,
         the lineage names and the kingdom.
     """
     ncbi = NCBITaxa()
-    qname, qtid, qlineage, qlineagenames, qlineagezip, qlineagerev, qk = get_qtid(ncbi, q, qt)
-    print("query name: %s" % qname)
-    print("query taxid: %s" % str(qtid))
-    print("query kingdom: %s" % qk)
-    print(
-        "query lineage names: \n%s" % str([qlineagenames[x] + "(" + str(x) + ")" for x in qlineage])
-    )
-    print("query lineage: \n%s" % str(qlineage))
-    return [qname, qtid, qlineage, qlineagenames, qlineagezip, qlineagerev, qk]
+    qname, qtid, qlineage, qlineagenames_dict, qlineagezip, qlineagenames, qlineagerev, qk = get_qtid(ncbi, q, qt)
+    if not quite:
+        print("query name: %s" % qname)
+        print("query taxid: %s" % str(qtid))
+        print("query kingdom: %s" % qk)
+        print(
+            "query lineage names: \n%s" % str([qlineagenames_dict[x] + "(" + str(x) + ")" for x in qlineage])
+        )
+        print("query lineage: \n%s" % str(qlineage))
+    return [qname, qtid, qlineage, qlineagenames_dict, qlineagezip, qlineagenames, qlineagerev, qk]
+
+
+def get_lineage_topo(qt):
+    """
+
+    :param qt:
+    :return:
+    """
+    qname, qtid, qlineage, qlineagenames_dict, qlineagezip, qlineagenames, qlineagerev, qk = get_qlin(qt=qt, quite=True)
+    qln = list(qlineagenames[['PSnum', 'PStaxID', 'PSname']].apply(lambda x: '/'.join(x), axis=1))
+    tree = Tree('(' * len(qln) + ''.join([str(x) + '),' for x in qln[1::][::-1]])+str(qln[0])+');')
+    return tree
+
+
+def get_youngest_common(ql, tl):
+    """
+
+    :param ql:
+    :param tl:
+    :return:
+    """
+    return [x for x in tl if x in ql][-1]
+
+def get_oldest_common(ql, tl):
+    """
+
+    :param ql:
+    :param tl:
+    :return:
+    """
+    return ql[min([x for x, y in enumerate(ql) if y in tl])]
 
 
 def main():
