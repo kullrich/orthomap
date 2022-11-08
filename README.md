@@ -72,7 +72,8 @@ ensembl release-105:
 
 ```python
 >>> from orthomap import orthomap
->>> omap = orthomap.get_orthomap(qname = 'Danio_rerio.GRCz11.cds.longest',
+>>> omap = orthomap.get_orthomap(
+...        seqname = 'Danio_rerio.GRCz11.cds.longest',
 ...        qt = '7955',
 ...        sl = 'ensembl_105_orthofinder_species_list.tsv',
 ...        oc = 'ensembl_105_orthofinder_Orthogroups.GeneCount.tsv',

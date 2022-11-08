@@ -13,7 +13,7 @@ License: GPL-3
 import sys
 import argparse
 import pandas as pd
-from .qlin import get_qlin, get_qtid, get_lineage_topo, get_youngest_common, get_oldest_common
+from orthomap import qlin
 from ete3 import NCBITaxa
 
 
@@ -22,14 +22,14 @@ def define_parser():
 
     :return:
     """
-    orthomap_example = '''example:
+    of2orthomap_example = '''example:
 
     #
-    orthomap -qname -qt 10090 -sl -oc -og
+    of2orthomap -seqname -qt 10090 -sl -oc -og
     '''
-    parser = argparse.ArgumentParser(prog='orthomap', usage='%(prog)s [options] [<arguments>...]',
+    parser = argparse.ArgumentParser(prog='of2orthomap', usage='%(prog)s [options] [<arguments>...]',
                                      description='extract orthomap from orthofinder output for query species',
-                                     epilog=orthomap_example,
+                                     epilog=of2orthomap_example,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     add_argparse_args(parser=parser)
     return parser
@@ -69,13 +69,13 @@ def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False):
     #query_lineage_names_dict = ncbi.get_taxid_translator(query_lineage)
     #query_lineage_names = pd.DataFrame([(x, y, query_lineage_names_dict[y]) for x, y in enumerate(query_lineage)])
     #query_lineage_names.columns = ['PSnum', 'PStaxID', 'PSname']
-    qname, qtid, qlineage, qlineagenames_dict, qlineagezip, qlineagenames, qlineagerev, qk = get_qlin(qt=qt, quite=True)
-    query_lineage_topo = get_lineage_topo(qt)
+    qname, qtid, qlineage, qlineagenames_dict, qlineagezip, qlineagenames, qlineagerev, qk = qlin.get_qlin(qt=qt, quite=True)
+    query_lineage_topo = qlin.get_lineage_topo(qt)
     species_list = pd.read_csv(sl, sep='\t', header=None)
     species_list.columns = ['species', 'taxID']
     species_list['lineage'] = species_list.apply(lambda x: ncbi.get_lineage(x[1]), axis=1)
     #species_list['youngest_common'] = [get_youngest_common(query_lineage, x) for x in species_list.lineage]
-    species_list['youngest_common'] = [get_youngest_common(qlineage, x) for x in species_list.lineage]
+    species_list['youngest_common'] = [qlin.get_youngest_common(qlineage, x) for x in species_list.lineage]
     species_list['youngest_name'] = [list(x.values())[0] for x in [ncbi.get_taxid_translator([x])
                                                                    for x in list(species_list.youngest_common)]]
     if not quite:
@@ -106,7 +106,7 @@ def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False):
                 # ancestral state (gene age)
                 if len(oc_og_hits_youngest_common) > 0:
                     #oc_og_oldest_common = get_oldest_common(query_lineage, oc_og_hits_youngest_common)
-                    oc_og_oldest_common = get_oldest_common(qlineage, oc_og_hits_youngest_common)
+                    oc_og_oldest_common = qlin.get_oldest_common(qlineage, oc_og_hits_youngest_common)
                     oc_og_dict[oc_og[0]] = oc_og_oldest_common
     omap = []
     if out:
@@ -140,7 +140,18 @@ def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False):
         outhandle.close()
     omap_df = pd.DataFrame(omap)
     omap_df.columns = ['seqID', 'Orthogroup', 'PSnum', 'PStaxID', 'PSname']
+    omap_df['PSnum'] = [int(x) for x in list(omap_df['PSnum'])]
     return [omap_df, species_list]
+
+
+def get_counts_per_ps(omap_df):
+    counts_df = pd.DataFrame(omap_df['PSnum'].value_counts())
+    counts_df.columns = ['counts']
+    counts_df['PSnum'] = list(list(omap_df['PSnum'].value_counts().index.values))
+    counts_df['PStaxID'] = list(list(omap_df['PStaxID'].value_counts().index.values))
+    counts_df['PSname'] = list(list(omap_df['PSname'].value_counts().index.values))
+    counts_df = counts_df.sort_index()
+    return counts_df
 
 
 def main():
@@ -151,9 +162,9 @@ def main():
     parser = define_parser()
     args = parser.parse_args()
     print(args)
-    if not args.qname:
+    if not args.seqname:
         parser.print_help()
-        print('\nError <-qname>: Please specify query species name in orthofinder and taxid')
+        print('\nError <-seqname>: Please specify query species name in orthofinder and taxid')
         sys.exit()
     if not args.qt:
         parser.print_help()
