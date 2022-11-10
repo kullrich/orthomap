@@ -1,5 +1,7 @@
 numpy
+scipy
 pandas
 ete3
 scanpy
+alive-progress
 pytest

@@ -78,8 +78,8 @@ def get_qtid(ncbi, q=None, qt=None):
     qlineage = ncbi.get_lineage(qtid)
     qlineagenames_dict = ncbi.get_taxid_translator(qlineage)
     qlineagezip = [(a, qlineagenames_dict[a]) for a in qlineage]  # ToDo verify that this is correct.
-    qlineagenames = pd.DataFrame([(x, y, qlineagenames_dict[y]) for x, y in enumerate(qlineage)])
-    qlineagenames.columns = ['PSnum', 'PStaxID', 'PSname']
+    qlineagenames = pd.DataFrame([(x, y, qlineagenames_dict[y]) for x, y in enumerate(qlineage)],
+                                 columns=['PSnum', 'PStaxID', 'PSname'])
     qlineagenames['PSnum'] = [str(x) for x in list(qlineagenames['PSnum'])]
     qlineagenames['PStaxID'] = [str(x) for x in list(qlineagenames['PStaxID'])]
     qlineagenames['PSname'] = [str(x) for x in list(qlineagenames['PSname'])]

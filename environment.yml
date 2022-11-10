@@ -4,7 +4,10 @@ channels:
   - bioconda
   - defaults
 dependencies:
+  - numpy
+  - scipy
   - pandas
   - ete3
   - scanpy
+  - alive-progress
   - pytest
