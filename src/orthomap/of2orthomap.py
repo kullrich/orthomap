@@ -133,12 +133,14 @@ def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False):
     return [omap_df, species_list]
 
 
-def get_counts_per_ps(omap_df):
-    counts_df = pd.DataFrame(omap_df['PSnum'].value_counts())
+def get_counts_per_ps(omap_df, psnum_col='PSnum', pstaxid_col='PStaxID', psname_col='PSname'):
+    counts_df = pd.DataFrame(omap_df[psnum_col].value_counts())
     counts_df.columns = ['counts']
-    counts_df['PSnum'] = list(list(omap_df['PSnum'].value_counts().index.values))
-    counts_df['PStaxID'] = list(list(omap_df['PStaxID'].value_counts().index.values))
-    counts_df['PSname'] = list(list(omap_df['PSname'].value_counts().index.values))
+    counts_df[psnum_col] = list(list(omap_df[psnum_col].value_counts().index.values))
+    if pstaxid_col:
+        counts_df[pstaxid_col] = list(list(omap_df[pstaxid_col].value_counts().index.values))
+    if psname_col:
+        counts_df[psname_col] = list(list(omap_df[psname_col].value_counts().index.values))
     counts_df = counts_df.sort_index()
     return counts_df
 
