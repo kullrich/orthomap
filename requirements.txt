@@ -2,6 +2,7 @@ numpy
 scipy
 pandas
 ete3
+anndata
 scanpy
 alive-progress
 pytest

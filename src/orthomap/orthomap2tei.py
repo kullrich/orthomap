@@ -9,6 +9,7 @@ License: GPL-3
 import scipy
 import numpy as np
 import pandas as pd
+import anndata as ad
 from alive_progress import alive_bar
 
 
@@ -19,7 +20,7 @@ def read_orthomap(orthomapfile):
     :return:
     """
     orthomap = pd.read_csv(orthomapfile, delimiter='\t')
-    return(orthomap)
+    return orthomap
 
 
 def geneset_overlap(geneset1, geneset2):
@@ -92,16 +93,16 @@ def get_tei(adata, gene_id, gene_age, keep='min', add=True, boot=False, bt=10):
     id_age_df_keep_subset = id_age_df_keep.loc[id_age_df_keep['GeneID'].isin(gene_intersection)]
     id_age_df_keep_subset = id_age_df_keep_subset.sort_values('GeneID')
     adata_counts = adata.X
-    adata_counts = adata_counts[:,adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
+    adata_counts = adata_counts[:, adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
     var_names_subset = adata.var_names[adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
     var_names_subset_idx = var_names_subset.sort_values(return_indexer=True)[1]
-    adata_counts = adata_counts[:,var_names_subset_idx]
+    adata_counts = adata_counts[:, var_names_subset_idx]
     sumx = adata_counts.sum(1)
     ps = np.array(id_age_df_keep_subset['Phylostrata'])
     psd = scipy.sparse.diags(ps)
     teisum = psd.dot(adata_counts.transpose()).transpose().sum(1)
     tei = teisum/sumx
-    tei_df = pd.DataFrame(tei, columns = ['tei'])
+    tei_df = pd.DataFrame(tei, columns=['tei'])
     tei_df.index=adata.obs_names
     if add:
         adata.obs['tei'] = tei_df
@@ -117,11 +118,45 @@ def get_tei(adata, gene_id, gene_age, keep='min', add=True, boot=False, bt=10):
     return tei_df
 
 
-def pmatrixtei():
+def get_pmatrix(adata, gene_id, gene_age, keep='min', add_obs=True, add_var=True):
+    """
+
+    :param adata:
+    :param gene_id:
+    :param gene_age:
+    :param keep:
+    :param add_obs:
+    :param add_var:
+    :return:
+    """
+    id_age_df = pd.DataFrame(data={'GeneID': gene_id, 'Phylostrata': gene_age})
+    # check and drop duplicated GeneID
+    id_age_df_keep = keep_min_max(id_age_df, keep=keep, dup_col=['GeneID'], sort_col=['Phylostrata'])
+    # get overlap
+    gene_intersection = pd.Index(id_age_df_keep['GeneID']).intersection(adata.var_names)
+    id_age_df_keep_subset = id_age_df_keep.loc[id_age_df_keep['GeneID'].isin(gene_intersection)]
+    id_age_df_keep_subset = id_age_df_keep_subset.sort_values('GeneID')
+    adata_counts = adata.X
+    adata_counts = adata_counts[:, adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
+    var_names_subset = adata.var_names[adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
+    var_names_subset_idx = var_names_subset.sort_values(return_indexer=True)[1]
+    adata_counts = adata_counts[:, var_names_subset_idx]
+    ps = np.array(id_age_df_keep_subset['Phylostrata'])
+    psd = scipy.sparse.diags(ps)
+    pmatrix = psd.dot(adata_counts.transpose()).transpose()
+    adata_pmatrix = ad.AnnData(pmatrix)
+    adata_pmatrix.obs_names = adata.obs_names
+    adata_pmatrix.var_names = var_names_subset
+    if add_var:
+        for kv in adata.var.keys():
+            adata_pmatrix.var[kv] = adata.var[kv][adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
+    if add_obs:
+        for ko in adata.obs.keys():
+            adata_pmatrix.obs[ko] = adata.obs[ko]
+    return adata_pmatrix
+
+def get_pstrata():
     return
 
-def pstratatei():
-    return
-
-def rematrix():
+def get_rematrix():
     return
