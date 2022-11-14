@@ -18,13 +18,17 @@ import pandas as pd
 
 def define_parser():
     """
+    A helper function for using `gtf2t2g.py` via the terminal.
 
-    :return:
+    :return: argparse.ArgumentParser
     """
     gtf2t2g_example = '''gtf2t2g example:
     
     # get GTF from Mus musculus
     wget https://ftp.ensembl.org/pub/release-108/gtf/mus_musculus/Mus_musculus.GRCm39.108.chr.gtf.gz
+
+    curl https://ftp.ensembl.org/pub/release-108/gtf/mus_musculus/Mus_musculus.GRCm39.108.chr.gtf.gz --remote-name
+    
     # create t2g from GTF
     gtf2t2g -i Mus_musculus.GRCm39.108.chr.gtf.gz -o Mus_musculus.GRCm39.108.chr.gtf.t2g.tsv -g -b -p -v -s
     '''
@@ -37,9 +41,9 @@ def define_parser():
 
 def add_argparse_args(parser: argparse.ArgumentParser):
     """
+    This function attaches individual argument specifications to the parser.
 
-    :param parser:
-    :return:
+    :param parser: argparse.ArgumentParser
     """
     parser.add_argument('-i', help='specify GTF input file')
     parser.add_argument('-o', help='specify output file [optional]')
@@ -283,8 +287,7 @@ def parse_gtf(gtf, g=False, b=False, p=False, v=False, s=False, output=None, q=F
 
 def main():
     """
-
-    :return:
+    The main function that is being called when `gt2t2g.py` is used via the terminal.
     """
     parser = define_parser()
     args = parser.parse_args()
