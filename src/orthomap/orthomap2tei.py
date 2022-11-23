@@ -109,7 +109,7 @@ def get_tei(adata, gene_id, gene_age, keep='min', add=True, boot=False, bt=10):
     teisum = psd.dot(adata_counts.transpose()).transpose().sum(1)
     tei = teisum/sumx
     tei_df = pd.DataFrame(tei, columns=['tei'])
-    tei_df.index=adata.obs_names
+    tei_df.index = adata.obs_names
     if add:
         adata.obs['tei'] = tei_df
     if boot:
@@ -231,7 +231,7 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', cumsum=False, group_by=Non
     if cumsum:
         pstrata_norm_by_sumx_df = pstrata_norm_by_sumx_df.cumsum(0)
         pstrata_norm_by_pmatrix_sum_df = pstrata_norm_by_pmatrix_sum_df.cumsum(0)
-    return [pstrata_norm_by_sumx, pstrata_norm_by_pmatrix_sum]
+    return [pstrata_norm_by_sumx_df, pstrata_norm_by_pmatrix_sum_df]
 
 def get_rematrix():
     return

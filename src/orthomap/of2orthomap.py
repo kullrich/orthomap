@@ -52,7 +52,7 @@ def add_argparse_args(parser: argparse.ArgumentParser):
                         default='orthomap.tsv')
 
 
-def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False):
+def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False, continuity=True):
     """
 
     :param seqname:
@@ -62,6 +62,7 @@ def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False):
     :param og:
     :param out:
     :param quite:
+    :param continuity:
     :return:
     """
     ncbi = NCBITaxa()
@@ -78,7 +79,15 @@ def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False):
         print(qname)
         print(qt)
         print(species_list)
+    youngest_common_counts_df = get_youngest_common_counts(qlineage, species_list)
+    for node in query_lineage_topo.traverse('postorder'):
+        nsplit = node.name.split('/')
+        if len(nsplit) == 3:
+            node.add_feature('species_count',
+                             list(youngest_common_counts_df[youngest_common_counts_df.PStaxID.isin(
+                                 [int(nsplit[1])])].counts)[0])
     oc_og_dict = {}
+    continuity_dict = {}
     with open(oc, 'r') as oc_lines:
         oc_species = next(oc_lines).strip().split('\t')
         oc_qidx = [x for x, y in enumerate(oc_species) if y == seqname]
@@ -101,10 +110,20 @@ def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False):
                 if len(oc_og_hits_youngest_common) > 0:
                     oc_og_oldest_common = qlin.get_oldest_common(qlineage, oc_og_hits_youngest_common)
                     oc_og_dict[oc_og[0]] = oc_og_oldest_common
+                    if continuity:
+                        continuity_dict[oc_og[0]] =\
+                            get_youngest_common_counts(qlineage,
+                                                       pd.DataFrame(oc_og_hits_youngest_common,
+                                                                    columns=['youngest_common'])).counts
+    if continuity:
+        youngest_common_counts_df = youngest_common_counts_df.join(pd.DataFrame.from_dict(continuity_dict))
     omap = []
     if out:
         outhandle = open(out, 'w')
-        outhandle.write('seqID\tOrthogroup\tPSnum\tPStaxID\tPSname\n')
+        if continuity:
+            outhandle.write('seqID\tOrthogroup\tPSnum\tPStaxID\tPSname\tPScontinuity\n')
+        else:
+            outhandle.write('seqID\tOrthogroup\tPSnum\tPStaxID\tPSname\n')
     with open(og, 'r') as og_lines:
         og_species = next(og_lines).strip().split('\t')
         og_qidx = [x for x, y in enumerate(og_species) if y == seqname]
@@ -120,20 +139,41 @@ def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False):
                 og_ps = qlineagenames[qlineagenames['PStaxID'] ==
                                       str(oc_og_dict[og_og[0]])].values.tolist()[0]
                 og_ps_join = '\t'.join(og_ps)
+                if continuity:
+                    og_continuity_score = get_continuity_score(og_og[0], youngest_common_counts_df)
                 if out:
-                    [outhandle.write(x.replace(' ', '') + '\t' + og_og[0] + '\t' + og_ps_join + '\n')
-                     for x in og_og[og_qidx[0]].split(',')]
-            omap += [[x.replace(' ', ''), og_og[0], og_ps[0], og_ps[1], og_ps[2]]
-                     for x in og_og[og_qidx[0]].split(',')]
+                    if continuity:
+                        [outhandle.write(x.replace(' ', '') + '\t' + og_og[0] + '\t' + og_ps_join + '\t' +
+                                         og_continuity_score + '\n') for x in og_og[og_qidx[0]].split(',')]
+                    else:
+                        [outhandle.write(x.replace(' ', '') + '\t' + og_og[0] + '\t' + og_ps_join + '\n')
+                         for x in og_og[og_qidx[0]].split(',')]
+            if continuity:
+                omap += [[x.replace(' ', ''), og_og[0], og_ps[0], og_ps[1], og_ps[2], og_continuity_score]
+                         for x in og_og[og_qidx[0]].split(',')]
+            else:
+                omap += [[x.replace(' ', ''), og_og[0], og_ps[0], og_ps[1], og_ps[2]]
+                         for x in og_og[og_qidx[0]].split(',')]
     if out:
         outhandle.close()
     omap_df = pd.DataFrame(omap)
-    omap_df.columns = ['seqID', 'Orthogroup', 'PSnum', 'PStaxID', 'PSname']
+    if continuity:
+        omap_df.columns = ['seqID', 'Orthogroup', 'PSnum', 'PStaxID', 'PSname', 'PScontinuity']
+    else:
+        omap_df.columns = ['seqID', 'Orthogroup', 'PSnum', 'PStaxID', 'PSname']
     omap_df['PSnum'] = [int(x) for x in list(omap_df['PSnum'])]
-    return [omap_df, species_list]
+    return [omap_df, species_list, youngest_common_counts_df]
 
 
 def get_counts_per_ps(omap_df, psnum_col='PSnum', pstaxid_col='PStaxID', psname_col='PSname'):
+    """
+
+    :param omap_df:
+    :param psnum_col:
+    :param pstaxid_col:
+    :param psname_col:
+    :return:
+    """
     counts_df = pd.DataFrame(omap_df[psnum_col].value_counts())
     counts_df.columns = ['counts']
     counts_df[psnum_col] = list(list(omap_df[psnum_col].value_counts().index.values))
@@ -144,6 +184,39 @@ def get_counts_per_ps(omap_df, psnum_col='PSnum', pstaxid_col='PStaxID', psname_
     counts_df = counts_df.sort_index()
     return counts_df
 
+
+def get_youngest_common_counts(qlineage, species_list):
+    """
+
+    :param qlineage:
+    :param species_list:
+    :return:
+    """
+    counts_df = pd.DataFrame(qlineage, columns=['lineage'])
+    counts_df.set_index('lineage', inplace=True)
+    counts_df = pd.concat([counts_df, species_list['youngest_common'].value_counts()], join='outer', axis=1)
+    counts_df.columns = ['counts']
+    counts_df['PStaxID'] = counts_df.index.values
+    counts_df['PSnum'] = list(range(len(counts_df['PStaxID'])))
+    return counts_df
+
+
+def get_continuity_score(og_name, youngest_common_counts_df):
+    """
+
+    :param og_name:
+    :param youngest_common_counts_df:
+    :return:
+    """
+    og_continuity_score = 0.0
+    og_df = youngest_common_counts_df[~youngest_common_counts_df['counts'].isna()][og_name]
+    og_lca = (~og_df.isna()).idxmax()
+    og_lca_pos = og_df.index.get_loc(og_lca)
+    og_lca_df = og_df.iloc[og_lca_pos:]
+    og_lca_df_counts = og_lca_df.isna().value_counts()
+    if False in og_lca_df_counts:
+        og_continuity_score = og_lca_df_counts[False] / len(og_lca_df)
+    return og_continuity_score
 
 def main():
     """
