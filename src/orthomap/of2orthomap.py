@@ -144,7 +144,7 @@ def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False, continuity=True
                 if out:
                     if continuity:
                         [outhandle.write(x.replace(' ', '') + '\t' + og_og[0] + '\t' + og_ps_join + '\t' +
-                                         og_continuity_score + '\n') for x in og_og[og_qidx[0]].split(',')]
+                                         str(og_continuity_score) + '\n') for x in og_og[og_qidx[0]].split(',')]
                     else:
                         [outhandle.write(x.replace(' ', '') + '\t' + og_og[0] + '\t' + og_ps_join + '\n')
                          for x in og_og[og_qidx[0]].split(',')]
@@ -246,7 +246,7 @@ def main():
         parser.print_help()
         print('\nError <-og>: Please specify orthofinder <Orthogroups.tsv> (see Orthogroups directory)')
         sys.exit()
-    get_orthomap(args.qname, args.qt, args.sl, args.oc, args.og, args.out)
+    get_orthomap(args.seqname, args.qt, args.sl, args.oc, args.og, args.out)
 
 
 if __name__ == '__main__':
