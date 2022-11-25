@@ -27,8 +27,14 @@ classifiers = [
     "Programming Language :: Python :: 3.7",
 ]
 dependencies = [
+    "numpy",
+    "scipy",
     "pandas",
     "ete3",
+    "scanpy",
+    "harmonypy",
+    "alive-progress",
+    "pytest",
 ]
 
 [project.urls]

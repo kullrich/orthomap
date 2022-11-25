@@ -9,5 +9,6 @@ dependencies:
   - pandas
   - ete3
   - scanpy
+  - harmonypy
   - alive-progress
   - pytest
