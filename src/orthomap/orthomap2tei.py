@@ -157,9 +157,12 @@ def get_pmatrix(adata, gene_id, gene_age, keep='min', add_obs=True, add_var=True
     var_names_subset = adata.var_names[adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
     var_names_subset_idx = var_names_subset.sort_values(return_indexer=True)[1]
     adata_counts = adata_counts[:, var_names_subset_idx]
+    sumx = adata_counts.sum(1)
+    sumx_rec = np.reciprocal(sumx)
+    sumx_recd = scipy.sparse.diags(np.array(sumx_rec).flatten())
     ps = np.array(id_age_df_keep_subset['Phylostrata'])
     psd = scipy.sparse.diags(ps)
-    pmatrix = psd.dot(adata_counts.transpose()).transpose()
+    pmatrix = sumx_recd.dot(psd.dot(adata_counts.transpose()).transpose())
     adata_pmatrix = ad.AnnData(pmatrix)
     adata_pmatrix.obs_names = adata.obs_names
     adata_pmatrix.var_names = var_names_subset
@@ -215,7 +218,7 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', cumsum=False, group_by=Non
     pstrata_norm_by_pmatrix_sum = np.empty((0, pmatrix.shape[0]))
     for pk in phylostrata:
         pstrata_norm_by_sumx = np.concatenate((pstrata_norm_by_sumx,
-                                               (pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])].sum(1) / sumx).flatten()))
+                                               (pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])].sum(1) / sumx).flatten()), axis=1)
         pstrata_norm_by_pmatrix_sum = np.concatenate((pstrata_norm_by_pmatrix_sum,
                                                (pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])].sum(1) / pmatrix_sum).flatten()))
     pstrata_norm_by_sumx_df = pd.DataFrame(pstrata_norm_by_sumx)
