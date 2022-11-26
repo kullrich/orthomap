@@ -4,5 +4,6 @@ pandas
 ete3
 anndata
 scanpy
+seaborn
 alive-progress
 pytest

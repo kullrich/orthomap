@@ -32,6 +32,7 @@ dependencies = [
     "pandas",
     "ete3",
     "scanpy",
+    "seaborn",
     "harmonypy",
     "alive-progress",
     "pytest",

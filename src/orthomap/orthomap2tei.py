@@ -73,6 +73,35 @@ def keep_min_max(df, keep='min', dup_col=['GeneID'], sort_col=['Phylostrata']):
     return df_out
 
 
+def get_psd(adata, gene_id, gene_age, keep='min'):
+    """
+
+    :param adata:
+    :param gene_id:
+    :param gene_age:
+    :param keep:
+    :return:
+    """
+    id_age_df = pd.DataFrame(data={'GeneID': gene_id, 'Phylostrata': gene_age})
+    # check and drop duplicated GeneID
+    id_age_df_keep = keep_min_max(id_age_df, keep=keep, dup_col=['GeneID'], sort_col=['Phylostrata'])
+    # get overlap
+    gene_intersection = pd.Index(id_age_df_keep['GeneID']).intersection(adata.var_names)
+    id_age_df_keep_subset = id_age_df_keep.loc[id_age_df_keep['GeneID'].isin(gene_intersection)]
+    id_age_df_keep_subset = id_age_df_keep_subset.sort_values('GeneID')
+    adata_counts = adata.X
+    adata_counts = adata_counts[:, adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
+    var_names_subset = adata.var_names[adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
+    var_names_subset_idx = var_names_subset.sort_values(return_indexer=True)[1]
+    adata_counts = adata_counts[:, var_names_subset_idx]
+    sumx = adata_counts.sum(1)
+    sumx_rec = np.reciprocal(sumx)
+    sumx_recd = scipy.sparse.diags(np.array(sumx_rec).flatten())
+    ps = np.array(id_age_df_keep_subset['Phylostrata'])
+    psd = scipy.sparse.diags(ps)
+    return [id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd]
+
+
 def get_tei(adata, gene_id, gene_age, keep='min', add=True, boot=False, bt=10):
     """
     This function computes the phylogenetically based transcriptome evolutionary
@@ -91,21 +120,8 @@ def get_tei(adata, gene_id, gene_age, keep='min', add=True, boot=False, bt=10):
     :param bt:
     :return:
     """
-    id_age_df = pd.DataFrame(data={'GeneID': gene_id, 'Phylostrata': gene_age})
-    # check and drop duplicated GeneID
-    id_age_df_keep = keep_min_max(id_age_df, keep=keep, dup_col=['GeneID'], sort_col=['Phylostrata'])
-    # get overlap
-    gene_intersection = pd.Index(id_age_df_keep['GeneID']).intersection(adata.var_names)
-    id_age_df_keep_subset = id_age_df_keep.loc[id_age_df_keep['GeneID'].isin(gene_intersection)]
-    id_age_df_keep_subset = id_age_df_keep_subset.sort_values('GeneID')
-    adata_counts = adata.X
-    adata_counts = adata_counts[:, adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
-    var_names_subset = adata.var_names[adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
-    var_names_subset_idx = var_names_subset.sort_values(return_indexer=True)[1]
-    adata_counts = adata_counts[:, var_names_subset_idx]
-    sumx = adata_counts.sum(1)
-    ps = np.array(id_age_df_keep_subset['Phylostrata'])
-    psd = scipy.sparse.diags(ps)
+    id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
+        get_psd(adata, gene_id, gene_age, keep)
     teisum = psd.dot(adata_counts.transpose()).transpose().sum(1)
     tei = teisum/sumx
     tei_df = pd.DataFrame(tei, columns=['tei'])
@@ -145,23 +161,8 @@ def get_pmatrix(adata, gene_id, gene_age, keep='min', add_obs=True, add_var=True
     :param add_var:
     :return:
     """
-    id_age_df = pd.DataFrame(data={'GeneID': gene_id, 'Phylostrata': gene_age})
-    # check and drop duplicated GeneID
-    id_age_df_keep = keep_min_max(id_age_df, keep=keep, dup_col=['GeneID'], sort_col=['Phylostrata'])
-    # get overlap
-    gene_intersection = pd.Index(id_age_df_keep['GeneID']).intersection(adata.var_names)
-    id_age_df_keep_subset = id_age_df_keep.loc[id_age_df_keep['GeneID'].isin(gene_intersection)]
-    id_age_df_keep_subset = id_age_df_keep_subset.sort_values('GeneID')
-    adata_counts = adata.X
-    adata_counts = adata_counts[:, adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
-    var_names_subset = adata.var_names[adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
-    var_names_subset_idx = var_names_subset.sort_values(return_indexer=True)[1]
-    adata_counts = adata_counts[:, var_names_subset_idx]
-    sumx = adata_counts.sum(1)
-    sumx_rec = np.reciprocal(sumx)
-    sumx_recd = scipy.sparse.diags(np.array(sumx_rec).flatten())
-    ps = np.array(id_age_df_keep_subset['Phylostrata'])
-    psd = scipy.sparse.diags(ps)
+    id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
+        get_psd(adata, gene_id, gene_age, keep)
     pmatrix = sumx_recd.dot(psd.dot(adata_counts.transpose()).transpose())
     adata_pmatrix = ad.AnnData(pmatrix)
     adata_pmatrix.obs_names = adata.obs_names
@@ -196,31 +197,18 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', cumsum=False, group_by=Non
     :param group_by:
     :return:
     """
-    id_age_df = pd.DataFrame(data={'GeneID': gene_id, 'Phylostrata': gene_age})
-    # check and drop duplicated GeneID
-    id_age_df_keep = keep_min_max(id_age_df, keep=keep, dup_col=['GeneID'], sort_col=['Phylostrata'])
-    # get overlap
-    gene_intersection = pd.Index(id_age_df_keep['GeneID']).intersection(adata.var_names)
-    id_age_df_keep_subset = id_age_df_keep.loc[id_age_df_keep['GeneID'].isin(gene_intersection)]
-    id_age_df_keep_subset = id_age_df_keep_subset.sort_values('GeneID')
-    adata_counts = adata.X
-    adata_counts = adata_counts[:, adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
-    var_names_subset = adata.var_names[adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
-    var_names_subset_idx = var_names_subset.sort_values(return_indexer=True)[1]
-    adata_counts = adata_counts[:, var_names_subset_idx]
-    sumx = adata_counts.sum(1)
-    ps = np.array(id_age_df_keep_subset['Phylostrata'])
-    psd = scipy.sparse.diags(ps)
-    pmatrix = psd.dot(adata_counts.transpose()).transpose()
+    id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
+        get_psd(adata, gene_id, gene_age, keep)
+    pmatrix = sumx_recd.dot(psd.dot(adata_counts.transpose()).transpose())
     pmatrix_sum = pmatrix.sum(1)
     phylostrata = list(set(id_age_df_keep_subset['Phylostrata']))
-    pstrata_norm_by_sumx = np.empty((0, pmatrix.shape[0]))
-    pstrata_norm_by_pmatrix_sum = np.empty((0, pmatrix.shape[0]))
-    for pk in phylostrata:
-        pstrata_norm_by_sumx = np.concatenate((pstrata_norm_by_sumx,
-                                               (pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])].sum(1) / sumx).flatten()), axis=1)
-        pstrata_norm_by_pmatrix_sum = np.concatenate((pstrata_norm_by_pmatrix_sum,
-                                               (pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])].sum(1) / pmatrix_sum).flatten()))
+    pstrata_norm_by_sumx = np.empty((len(phylostrata), pmatrix.shape[0]))
+    pstrata_norm_by_pmatrix_sum = np.empty((len(phylostrata), pmatrix.shape[0]))
+    for pk_idx, pk in enumerate(phylostrata):
+        pstrata_norm_by_sumx[pk_idx, ] = np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
+                                                  .sum(1)).flatten()
+        pstrata_norm_by_pmatrix_sum[pk_idx, ] = np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata']
+                                                         .isin([pk])].sum(1) / pmatrix_sum).flatten()
     pstrata_norm_by_sumx_df = pd.DataFrame(pstrata_norm_by_sumx)
     pstrata_norm_by_sumx_df['ps'] = phylostrata
     pstrata_norm_by_sumx_df.set_index('ps', inplace=True)
@@ -230,7 +218,10 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', cumsum=False, group_by=Non
     pstrata_norm_by_pmatrix_sum_df.set_index('ps', inplace=True)
     pstrata_norm_by_pmatrix_sum_df.columns = adata.obs_names
     if group_by is not None:
-        return
+        pstrata_norm_by_sumx_df =\
+            pstrata_norm_by_sumx_df.transpose().groupby(adata.obs[group_by]).mean().transpose()
+        pstrata_norm_by_pmatrix_sum_df =\
+            pstrata_norm_by_pmatrix_sum_df.transpose().groupby(adata.obs[group_by]).mean().transpose()
     if cumsum:
         pstrata_norm_by_sumx_df = pstrata_norm_by_sumx_df.cumsum(0)
         pstrata_norm_by_pmatrix_sum_df = pstrata_norm_by_pmatrix_sum_df.cumsum(0)
