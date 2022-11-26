@@ -10,6 +10,7 @@ import scipy
 import numpy as np
 import pandas as pd
 import anndata as ad
+import scanpy as sc
 from alive_progress import alive_bar
 
 
@@ -73,13 +74,16 @@ def keep_min_max(df, keep='min', dup_col=['GeneID'], sort_col=['Phylostrata']):
     return df_out
 
 
-def get_psd(adata, gene_id, gene_age, keep='min'):
+def get_psd(adata, gene_id, gene_age, keep='min', normalize_total=False, log1p=False, target_sum=1e6):
     """
 
     :param adata:
     :param gene_id:
     :param gene_age:
     :param keep:
+    :param normalize_total:
+    :param log1p:
+    :param target_sum:
     :return:
     """
     id_age_df = pd.DataFrame(data={'GeneID': gene_id, 'Phylostrata': gene_age})
@@ -90,6 +94,16 @@ def get_psd(adata, gene_id, gene_age, keep='min'):
     id_age_df_keep_subset = id_age_df_keep.loc[id_age_df_keep['GeneID'].isin(gene_intersection)]
     id_age_df_keep_subset = id_age_df_keep_subset.sort_values('GeneID')
     adata_counts = adata.X
+    if normalize_total and log1p:
+        adata_norm = sc.pp.normalize_total(adata, target_sum=target_sum, copy=True)
+        sc.pp.log1p(adata_norm)
+        adata_counts = adata_norm.X
+    if normalize_total and not log1p:
+        adata_norm = sc.pp.normalize_total(adata, target_sum=target_sum, copy=True)
+        adata_counts = adata_norm.X
+    if not normalize_total and log1p:
+        adata_log1p = sc.pp.log1p(adata, copy=True)
+        adata_counts = adata_log1p.X
     adata_counts = adata_counts[:, adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
     var_names_subset = adata.var_names[adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
     var_names_subset_idx = var_names_subset.sort_values(return_indexer=True)[1]
@@ -102,7 +116,8 @@ def get_psd(adata, gene_id, gene_age, keep='min'):
     return [id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd]
 
 
-def get_tei(adata, gene_id, gene_age, keep='min', add=True, boot=False, bt=10):
+def get_tei(adata, gene_id, gene_age, keep='min', add=True, obs_name='tei', boot=False, bt=10, normalize_total=False, log1p=False,
+            target_sum=1e6):
     """
     This function computes the phylogenetically based transcriptome evolutionary
     index (TEI) similar to Domazet-Loso & Tautz, 2010.
@@ -116,31 +131,36 @@ def get_tei(adata, gene_id, gene_age, keep='min', add=True, boot=False, bt=10):
     :param gene_age:
     :param keep:
     :param add:
+    :param obs_name:
     :param boot:
     :param bt:
+    :param normalize_total:
+    :param log1p:
+    :param target_sum:
     :return:
     """
     id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
-        get_psd(adata, gene_id, gene_age, keep)
-    teisum = psd.dot(adata_counts.transpose()).transpose().sum(1)
-    tei = teisum/sumx
+        get_psd(adata, gene_id, gene_age, keep, normalize_total, log1p, target_sum)
+    teimatrix = psd.dot(adata_counts.transpose()).transpose()
+    pmatrix = sumx_recd.dot(teimatrix)
+    tei = pmatrix.sum(1)
     tei_df = pd.DataFrame(tei, columns=['tei'])
     tei_df.index = adata.obs_names
     if add:
-        adata.obs['tei'] = tei_df
+        adata.obs[obs_name] = tei_df
     if boot:
         with alive_bar(bt) as bar:
             for i in range(bt):
                 np.random.shuffle(ps)
                 psd = scipy.sparse.diags(ps)
-                teisum = psd.dot(adata_counts.transpose()).transpose().sum(1)
-                tei = teisum / sumx
+                tei = sumx_recd.dot(psd.dot(adata_counts.transpose()).transpose()).sum(1)
                 tei_df[i] = tei
                 bar()
     return tei_df
 
 
-def get_pmatrix(adata, gene_id, gene_age, keep='min', add_obs=True, add_var=True):
+def get_pmatrix(adata, gene_id, gene_age, keep='min', add_obs=True, add_var=True, normalize_total=False, log1p=False,
+                target_sum=1e6):
     """
     This function computes the partial transcriptome evolutionary index (TEI) values for each single gene.
 
@@ -159,11 +179,16 @@ def get_pmatrix(adata, gene_id, gene_age, keep='min', add_obs=True, add_var=True
     :param keep:
     :param add_obs:
     :param add_var:
+    :param normalize_total:
+    :param log1p:
+    :param target_sum:
     :return:
     """
     id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
-        get_psd(adata, gene_id, gene_age, keep)
-    pmatrix = sumx_recd.dot(psd.dot(adata_counts.transpose()).transpose())
+        get_psd(adata, gene_id, gene_age, keep, normalize_total, log1p, target_sum)
+    teimatrix = psd.dot(adata_counts.transpose()).transpose()
+    pmatrix = sumx_recd.dot(teimatrix)
+    tei = pmatrix.sum(1)
     adata_pmatrix = ad.AnnData(pmatrix)
     adata_pmatrix.obs_names = adata.obs_names
     adata_pmatrix.var_names = var_names_subset
@@ -175,7 +200,8 @@ def get_pmatrix(adata, gene_id, gene_age, keep='min', add_obs=True, add_var=True
             adata_pmatrix.obs[ko] = adata.obs[ko]
     return adata_pmatrix
 
-def get_pstrata(adata, gene_id, gene_age, keep='min', cumsum=False, group_by=None):
+def get_pstrata(adata, gene_id, gene_age, keep='min', cumsum=False, group_by=None, normalize_total=False, log1p=False,
+                target_sum=1e6):
     """
     This function computes the partial transcriptome evolutionary index (TEI) values combined for each strata.
 
@@ -195,12 +221,16 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', cumsum=False, group_by=Non
     :param keep:
     :param cumsum:
     :param group_by:
+    :param normalize_total:
+    :param log1p:
+    :param target_sum:
     :return:
     """
     id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
-        get_psd(adata, gene_id, gene_age, keep)
-    pmatrix = sumx_recd.dot(psd.dot(adata_counts.transpose()).transpose())
-    pmatrix_sum = pmatrix.sum(1)
+        get_psd(adata, gene_id, gene_age, keep, normalize_total, log1p, target_sum)
+    teimatrix = psd.dot(adata_counts.transpose()).transpose()
+    pmatrix = sumx_recd.dot(teimatrix)
+    tei = pmatrix.sum(1)
     phylostrata = list(set(id_age_df_keep_subset['Phylostrata']))
     pstrata_norm_by_sumx = np.empty((len(phylostrata), pmatrix.shape[0]))
     pstrata_norm_by_pmatrix_sum = np.empty((len(phylostrata), pmatrix.shape[0]))
@@ -208,7 +238,7 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', cumsum=False, group_by=Non
         pstrata_norm_by_sumx[pk_idx, ] = np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                                   .sum(1)).flatten()
         pstrata_norm_by_pmatrix_sum[pk_idx, ] = np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata']
-                                                         .isin([pk])].sum(1) / pmatrix_sum).flatten()
+                                                         .isin([pk])].sum(1) / tei).flatten()
     pstrata_norm_by_sumx_df = pd.DataFrame(pstrata_norm_by_sumx)
     pstrata_norm_by_sumx_df['ps'] = phylostrata
     pstrata_norm_by_sumx_df.set_index('ps', inplace=True)
@@ -227,5 +257,45 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', cumsum=False, group_by=Non
         pstrata_norm_by_pmatrix_sum_df = pstrata_norm_by_pmatrix_sum_df.cumsum(0)
     return [pstrata_norm_by_sumx_df, pstrata_norm_by_pmatrix_sum_df]
 
-def get_rematrix():
-    return
+
+def get_rematrix(adata, gene_id, gene_age, keep='min', use='counts', axis=None, group_by=None, normalize_total=False,
+                 log1p=False, target_sum=1e6):
+    """
+
+    :param adata:
+    :param gene_id:
+    :param gene_age:
+    :param keep:
+    :param use:
+    :param axis:
+    :param group_by:
+    :param normalize_total:
+    :param log1p:
+    :param target_sum:
+    :return:
+    """
+    id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
+        get_psd(adata, gene_id, gene_age, keep, normalize_total, log1p, target_sum)
+    phylostrata = list(set(id_age_df_keep_subset['Phylostrata']))
+    rematrix = np.empty((len(phylostrata), adata_counts.shape[0]))
+    if use == 'counts':
+        for pk_idx, pk in enumerate(phylostrata):
+            rematrix[pk_idx, ] = np.array(adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
+                                          .mean(1)).flatten()
+    if use == 'tei':
+        teimatrix = psd.dot(adata_counts.transpose()).transpose()
+        for pk_idx, pk in enumerate(phylostrata):
+            rematrix[pk_idx, ] = np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
+                                          .mean(1)).flatten()
+    rematrix_df = pd.DataFrame(rematrix)
+    rematrix_df['ps'] = phylostrata
+    rematrix_df.set_index('ps', inplace=True)
+    rematrix_df.columns = adata.obs_names
+    if group_by is not None:
+        return
+    if axis is not None:
+        if axis == 0:
+            return
+        if axis == 1:
+            return
+    return rematrix_df
