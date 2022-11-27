@@ -52,6 +52,36 @@ def add_argparse_args(parser: argparse.ArgumentParser):
 
 
 def parse_gtf(gtf, g=False, b=False, p=False, v=False, s=False, output=None, q=False):
+    """
+
+    :param gtf: str
+        File name of GTF file.
+    :param g: bool (default: False)
+        Specify if gene names should be appended if they exist.
+    :param b: bool (default: False)
+        Specify if gene biotype should be appended if they exist.
+    :param p: bool (default: False)
+        Specify if protein id should be appended if they exist.
+    :param v: bool (default: False)
+        Specify if gene/transcript/protein version should be appended.
+    :param s: bool (default: False)
+        Specify if summary should be printed.
+    :param output: Optional[str] (default: None)
+        File name of output file.
+    :param q: bool (default: False)
+        Specify if output should be quite.
+    :return:
+
+    Example
+    --------
+    >>> from orthomap import gtf2t2g
+    >>> # get gene to transcript table for Danio rerio
+    >>> # https://ftp.ensembl.org/pub/release-105/gtf/danio_rerio/Danio_rerio.GRCz11.105.gtf.gz
+    >>> query_species_t2g = gtf2t2g.parse_gtf(\
+    >>> gtf='Danio_rerio.GRCz11.105.gtf.gz',\
+    >>> g=True, b=True, p=True, v=True, s=True, q=True)
+    >>> query_species_t2g
+    """
     if gtf.endswith('gz'):
         gtf_handle = gzip.open(gtf, 'rt')
     else:

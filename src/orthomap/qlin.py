@@ -57,7 +57,7 @@ def get_qtid(ncbi, q=None, qt=None):
     query.
 
     :param ncbi: ete3.NCBITaxa
-        The NCBI database
+        The NCBI database.
     :param q: string
         The name of the queried species.
     :param qt: string
@@ -65,6 +65,10 @@ def get_qtid(ncbi, q=None, qt=None):
     :return: list
         A list of information for the queried species such as the lineage,
         the lineage names and the kingdom.
+
+    Example
+    --------
+    >>>
     """
     # lines 61 (onwards) and 66 (onwards) were the same, because if both arguments
     # are given we are still returning results based on the `taxid`.
@@ -77,7 +81,7 @@ def get_qtid(ncbi, q=None, qt=None):
         qtid = qtid[0]
     qlineage = ncbi.get_lineage(qtid)
     qlineagenames_dict = ncbi.get_taxid_translator(qlineage)
-    qlineagezip = [(a, qlineagenames_dict[a]) for a in qlineage]  # ToDo verify that this is correct.
+    qlineagezip = [(a, qlineagenames_dict[a]) for a in qlineage]
     qlineagenames = pd.DataFrame([(x, y, qlineagenames_dict[y]) for x, y in enumerate(qlineage)],
                                  columns=['PSnum', 'PStaxID', 'PSname'])
     qlineagenames['PSnum'] = [str(x) for x in list(qlineagenames['PSnum'])]
@@ -107,6 +111,12 @@ def get_qlin(q=None, qt=None, quite=False):
     :return: list
         A list of information for the queried species such as the lineage,
         the lineage names and the kingdom.
+
+    Example
+    --------
+    >>> from orthomap import qlin
+    >>> # get query species taxonomic lineage information
+    >>> query_lineage = qlin.get_qlin(q='Caenorhabditis elegans')
     """
     ncbi = NCBITaxa()
     qname, qtid, qlineage, qlineagenames_dict, qlineagezip, qlineagenames, qlineagerev, qk = get_qtid(ncbi, q, qt)
@@ -126,6 +136,10 @@ def get_lineage_topo(qt):
 
     :param qt:
     :return:
+
+    Example
+    --------
+    >>> from orthomap import qlin
     """
     qname, qtid, qlineage, qlineagenames_dict, qlineagezip, qlineagenames, qlineagerev, qk = get_qlin(qt=qt, quite=True)
     qln = list(qlineagenames[['PSnum', 'PStaxID', 'PSname']].apply(lambda x: '/'.join(x), axis=1))
@@ -139,8 +153,13 @@ def get_youngest_common(ql, tl):
     :param ql:
     :param tl:
     :return:
+
+    Example
+    --------
+    >>> from orthomap import qlin
     """
     return [x for x in tl if x in ql][-1]
+
 
 def get_oldest_common(ql, tl):
     """
@@ -148,6 +167,10 @@ def get_oldest_common(ql, tl):
     :param ql:
     :param tl:
     :return:
+
+    Example
+    --------
+    >>> from orthomap import qlin
     """
     return ql[min([x for x, y in enumerate(ql) if y in tl])]
 

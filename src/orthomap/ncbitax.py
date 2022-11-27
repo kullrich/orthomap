@@ -47,6 +47,11 @@ def update_ncbi():
     This function updates or downloads the NCBI taxonomy database using
     the package `ete3`. A parsed version of it will be stored at the home
     directory: `~/.etetoolkit/taxa.sqlite`.
+
+    Example
+    --------
+    >>> from orthomap import ncbitax
+    >>> ncbitax.update_ncbi()
     """
     ncbi = NCBITaxa()
     ncbi.update_taxonomy_database()
