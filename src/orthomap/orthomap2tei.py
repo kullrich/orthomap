@@ -1,6 +1,6 @@
 """
 Author: Kristian K Ullrich
-date: October 2022
+date: November 2022
 email: ullrich@evolbio.mpg.de
 License: GPL-3
 """
@@ -17,8 +17,16 @@ from alive_progress import alive_bar
 def read_orthomap(orthomapfile):
     """
 
-    :param orthomapfile:
+    :param orthomapfile: str
+        File name of pre-calculated orthomap file.
     :return:
+
+    Example
+    --------
+    >>> from orthomap import orthomap2tei
+    >>> # load query species orthomap
+    >>> query_orthomap = orthomap2tei.read_orthomap('Sun2021_Orthomap.tsv')
+    >>> query_orthomap
     """
     orthomap = pd.read_csv(orthomapfile, delimiter='\t')
     return orthomap
@@ -27,9 +35,18 @@ def read_orthomap(orthomapfile):
 def geneset_overlap(geneset1, geneset2):
     """
 
-    :param geneset1:
-    :param geneset2:
+    :param geneset1: list
+        List of gene or transcript names set 1.
+    :param geneset2: list
+        List of gene or transcript names set 2.
     :return:
+
+    Example
+    --------
+    >>> from orthomap import orthomap2tei
+    >>> g1 = ['g1.1', 'g1.2', 'g2.1', 'g3.1', 'g3.2']
+    >>> g2 = ['g1.1', 'g2.1', 'g3.1']
+    >>> orthomap2tei.geneset_overlap(g1, g2)
     """
     g1 = set(geneset1)
     g2 = set(geneset2)
@@ -48,6 +65,10 @@ def replace_by(x_orig, xmatch, xreplace):
     :param xmatch:
     :param xreplace:
     :return:
+
+    Example
+    --------
+    >>>
     """
     replace_dict = {}
     for i, j in enumerate(xmatch):
@@ -59,11 +80,27 @@ def replace_by(x_orig, xmatch, xreplace):
 def keep_min_max(df, keep='min', dup_col=['GeneID'], sort_col=['Phylostrata']):
     """
 
-    :param df:
-    :param keep:
-    :param dup_col:
-    :param sort_col:
+    :param df: DataFrame
+        Expects orthomap DataFrame, but can be any if dup_col and sort_col are present.
+    :param keep: str (default: min)
+        Either define 'min' (ascending pre-sorting) or 'max' (non-ascending pre-sorting) to keep duplicates.
+    :param dup_col: [str] (default: GeneID)
+        Column name(s) to be searched for duplicates.
+    :param sort_col: [str] (default: Phylostrata)
+        Column names(s) to sort DataFrame.
     :return:
+
+    Example
+    --------
+    >>> from orthomap import orthomap2tei
+    >>> # create artificial DataFrame
+    >>> import pandas as pd
+    >>> my_orthomap = pd.DataFrame.from_dict({'GeneID':['g1', 'g1', 'g2', 'g3', 'g3'],\
+    >>> 'Phylostrata':[3, 1, 2, 5, 7]})
+    >>> # keep min value
+    >>> orthomap2tei.keep_min_max(my_orthomap, keep='min')
+    >>> # keep max value
+    >>> orthomap2tei.keep_min_max(my_orthomap, keep='max')
     """
     if keep == 'min':
         df_sorted = df.sort_values(by=sort_col, ascending=True)
@@ -74,17 +111,41 @@ def keep_min_max(df, keep='min', dup_col=['GeneID'], sort_col=['Phylostrata']):
     return df_out
 
 
-def get_psd(adata, gene_id, gene_age, keep='min', normalize_total=False, log1p=False, target_sum=1e6):
+def get_psd(adata, gene_id, gene_age, keep='min', layer=None, normalize_total=False, log1p=False, target_sum=1e6):
     """
 
-    :param adata:
-    :param gene_id:
+    :param adata: AnnData
+        The annotated data matrix of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
+    :param gene_id: list
+        Expects GeneID column from orthomap DataFrame.
     :param gene_age:
-    :param keep:
-    :param normalize_total:
-    :param log1p:
-    :param target_sum:
+        Expects Phylostratum column from orthomap DataFrame.
+    :param keep: (default: min)
+        In case of duplicated GeneIDs with different Phylostrata assignments, either keep 'min' or 'max' value.
+    :param layer: Optional[str] (default: None)
+        Layer to work on instead of X. If None, X is used.
+    :param normalize_total: bool (default: False)
+        Normalize counts per cell prior TEI calculation.
+    :param log1p: bool (default: False)
+        Logarithmize the data matrix prior TEI calculation.
+    :param target_sum: Optional[float] (default: 1e6)
+        After normalization, each observation (cell) has a total count equal to target_sum.
     :return:
+
+    Example
+    --------
+    >>> from orthomap import orthomap2tei
+    >>> # load query species orthomap
+    >>> query_orthomap = orthomap2tei.read_orthomap('Sun2021_Orthomap.tsv')
+    >>> # load scRNA data
+    >>> import scanpy as sc
+    >>> celegans_data = sc.read('celegans.h5ad')
+    >>> # get psd from existing adata object
+    >>> celegans_id_age_df_keep_subset, celegans_adata_counts, celegans_var_names_subset, celegans_sumx,\
+    >>> celegans_sumx_recd, celegans_ps, celegans_psd =\
+    >>> orthomap2tei.get_psd(adata=celegans_data,\
+    >>> gene_id=query_orthomap['GeneID'],\
+    >>> gene_age=query_orthomap['Phylostratum'])
     """
     id_age_df = pd.DataFrame(data={'GeneID': gene_id, 'Phylostrata': gene_age})
     # check and drop duplicated GeneID
@@ -93,16 +154,18 @@ def get_psd(adata, gene_id, gene_age, keep='min', normalize_total=False, log1p=F
     gene_intersection = pd.Index(id_age_df_keep['GeneID']).intersection(adata.var_names)
     id_age_df_keep_subset = id_age_df_keep.loc[id_age_df_keep['GeneID'].isin(gene_intersection)]
     id_age_df_keep_subset = id_age_df_keep_subset.sort_values('GeneID')
+    if layer is not None:
+
     adata_counts = adata.X
     if normalize_total and log1p:
-        adata_norm = sc.pp.normalize_total(adata, target_sum=target_sum, copy=True)
+        adata_norm = sc.pp.normalize_total(adata, target_sum=target_sum, , layer=layer, copy=True)
         sc.pp.log1p(adata_norm)
         adata_counts = adata_norm.X
     if normalize_total and not log1p:
-        adata_norm = sc.pp.normalize_total(adata, target_sum=target_sum, copy=True)
+        adata_norm = sc.pp.normalize_total(adata, target_sum=target_sum, layer=layer, copy=True)
         adata_counts = adata_norm.X
     if not normalize_total and log1p:
-        adata_log1p = sc.pp.log1p(adata, copy=True)
+        adata_log1p = sc.pp.log1p(adata, layer=layer, copy=True)
         adata_counts = adata_log1p.X
     adata_counts = adata_counts[:, adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
     var_names_subset = adata.var_names[adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
@@ -116,28 +179,70 @@ def get_psd(adata, gene_id, gene_age, keep='min', normalize_total=False, log1p=F
     return [id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd]
 
 
-def get_tei(adata, gene_id, gene_age, keep='min', add=True, obs_name='tei', boot=False, bt=10, normalize_total=False, log1p=False,
+def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True, obs_name='tei', boot=False, bt=10, normalize_total=False, log1p=False,
             target_sum=1e6):
     """
     This function computes the phylogenetically based transcriptome evolutionary
     index (TEI) similar to Domazet-Loso & Tautz, 2010.
 
+     The TEI measure represents the weighted arithmetic mean
+     (expression levels as weights for the phylostratum value) over all
+     evolutionary age categories denoted as _phylostra_.
+
+     \deqn{TEI_s = sum (e_is * ps_i) / sum e_is}
+
+     where \eqn{TEI_s} denotes the TEI value in developmental stage \eqn{s, e_is}
+     denotes the gene expression level of gene \eqn{i} in stage \eqn{s}, and \eqn{ps_i}
+     denotes the corresponding phylostratum of gene \eqn{i, i = 1,...,N} and
+     \eqn{N = total number of genes}.
+
     If the parameter boot is set to true,
     the strata values are sampled and the global TEI
     is calculated bt times.
 
-    :param adata:
-    :param gene_id:
-    :param gene_age:
-    :param keep:
-    :param add:
-    :param obs_name:
-    :param boot:
-    :param bt:
-    :param normalize_total:
-    :param log1p:
+    :param adata: AnnData
+        The annotated data matrix of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
+    :param gene_id: list
+        Expects GeneID column from orthomap DataFrame.
+    :param gene_age: list
+        Expects GeneID column from orthomap DataFrame.
+    :param keep: (default: min)
+        In case of duplicated GeneIDs with different Phylostrata assignments, either keep 'min' or 'max' value.
+    :param layer: Optional[str] (default: None)
+        Layer to work on instead of X. If None, X is used.
+    :param add: bool (default: True)
+        Add TEI values as observation to existing adata object using obs_name.
+    :param obs_name: str
+        Observation name to be used for TEI values in existing adata object.
+    :param boot: bool (default: False)
+       Specify if bootstrap TEI values should be calculated and returned as DataFrame.
+    :param bt: int (default: 10)
+        Number of bootstrap to calculate.
+    :param normalize_total: bool (default: False)
+        Normalize counts per cell prior TEI calculation.
+    :param log1p: bool (default: False)
+        Logarithmize the data matrix prior TEI calculation.
     :param target_sum:
     :return:
+
+    Example
+    --------
+    >>> from orthomap import orthomap2tei
+    >>> # load query species orthomap
+    >>> query_orthomap = orthomap2tei.read_orthomap('Sun2021_Orthomap.tsv')
+    >>> # load scRNA data
+    >>> import scanpy as sc
+    >>> celegans_data = sc.read('celegans.h5ad')
+    >>> # add TEI values to existing adata object
+    >>> orthomap2tei.get_tei(adata=celegans_data,\
+    >>> gene_id=query_orthomap['GeneID'],\
+    >>> gene_age=query_orthomap['Phylostratum'],\
+    >>> add=True)
+    >>> # get 10 bootstap TEI values
+    >>> orthomap2tei.get_tei(adata=celegans_data,\
+    >>> gene_id=query_orthomap['GeneID'],\
+    >>> gene_age=query_orthomap['Phylostratum'],\
+    >>> boot=True, bt=10)
     """
     id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
         get_psd(adata, gene_id, gene_age, keep, normalize_total, log1p, target_sum)
@@ -159,8 +264,8 @@ def get_tei(adata, gene_id, gene_age, keep='min', add=True, obs_name='tei', boot
     return tei_df
 
 
-def get_pmatrix(adata, gene_id, gene_age, keep='min', add_obs=True, add_var=True, normalize_total=False, log1p=False,
-                target_sum=1e6):
+def get_pmatrix(adata, gene_id, gene_age, keep='min', layer_name='pmatrix', add_obs=True, add_var=True, normalize_total=False, log1p=False,
+                target_sum=1e6, copy=False):
     """
     This function computes the partial transcriptome evolutionary index (TEI) values for each single gene.
 
@@ -173,7 +278,7 @@ def get_pmatrix(adata, gene_id, gene_age, keep='min', add_obs=True, add_var=True
     analyses and also gives an overall impression of the contribution of each
     gene to the global TEI pattern.
 
-    :param adata:
+    :param adata: AnnData The annotated data matrix of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
     :param gene_id:
     :param gene_age:
     :param keep:
@@ -182,23 +287,32 @@ def get_pmatrix(adata, gene_id, gene_age, keep='min', add_obs=True, add_var=True
     :param normalize_total:
     :param log1p:
     :param target_sum:
+    :param copy:
     :return:
+
+    Example
+    --------
+    >>>
     """
     id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
         get_psd(adata, gene_id, gene_age, keep, normalize_total, log1p, target_sum)
     teimatrix = psd.dot(adata_counts.transpose()).transpose()
     pmatrix = sumx_recd.dot(teimatrix)
     tei = pmatrix.sum(1)
-    adata_pmatrix = ad.AnnData(pmatrix)
-    adata_pmatrix.obs_names = adata.obs_names
-    adata_pmatrix.var_names = var_names_subset
-    if add_var:
-        for kv in adata.var.keys():
-            adata_pmatrix.var[kv] = adata.var[kv][adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
-    if add_obs:
-        for ko in adata.obs.keys():
-            adata_pmatrix.obs[ko] = adata.obs[ko]
-    return adata_pmatrix
+    if copy:
+        adata_pmatrix = ad.AnnData(pmatrix)
+        adata_pmatrix.obs_names = adata.obs_names
+        adata_pmatrix.var_names = var_names_subset
+        if add_var:
+            for kv in adata.var.keys():
+                adata_pmatrix.var[kv] = adata.var[kv][adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
+        if add_obs:
+            for ko in adata.obs.keys():
+                adata_pmatrix.obs[ko] = adata.obs[ko]
+        return adata_pmatrix
+    else:
+        adata.layers[layer_name] = pmatrix
+        return
 
 def get_pstrata(adata, gene_id, gene_age, keep='min', cumsum=False, group_by=None, normalize_total=False, log1p=False,
                 target_sum=1e6):
@@ -215,7 +329,7 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', cumsum=False, group_by=Non
     The partial TEI values combined per strata give an overall impression
     of the contribution of each strata to the global TEI pattern.
 
-    :param adata:
+    :param adata: AnnData The annotated data matrix of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
     :param gene_id:
     :param gene_age:
     :param keep:
@@ -225,6 +339,10 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', cumsum=False, group_by=Non
     :param log1p:
     :param target_sum:
     :return:
+
+    Example
+    --------
+    >>>
     """
     id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
         get_psd(adata, gene_id, gene_age, keep, normalize_total, log1p, target_sum)
@@ -262,7 +380,7 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', use='counts', axis=None, 
                  log1p=False, target_sum=1e6):
     """
 
-    :param adata:
+    :param adata: AnnData The annotated data matrix of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
     :param gene_id:
     :param gene_age:
     :param keep:
@@ -273,6 +391,10 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', use='counts', axis=None, 
     :param log1p:
     :param target_sum:
     :return:
+
+    Example
+    --------
+    >>>
     """
     id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
         get_psd(adata, gene_id, gene_age, keep, normalize_total, log1p, target_sum)
