@@ -6,7 +6,10 @@
 
 ## orthologous maps - evolutionary age index
 
-[`orthomap`](https://github.com/kullrich/orthomap) is a python package to extract orthologous maps (in other words the evolutionary age of a given orthologous group) from OrthoFinder results.
+[`orthomap`](https://github.com/kullrich/orthomap) is a python package to extract orthologous maps
+(in other words the evolutionary age of a given orthologous group) from OrthoFinder results.
+Orthomap results (gene ages per orthogroup) can be further used to calculate weigthed expression data
+from scRNA sequencing objects.
 
 ## Installing `orthomap`
 
@@ -112,7 +115,7 @@ GTF file obtained from [here](https://ftp.ensembl.org/pub/release-105/gtf/danio_
 example: Danio rerio - [http://tome.gs.washington.edu](http://tome.gs.washington.edu)
 ([Qui et al. 2022](https://www.nature.com/articles/s41588-022-01018-x))
 
-`AnnData` file can be found [here](https://doi.org/10.5281/zenodo.7243602) 
+`AnnData` file can be found [here](https://doi.org/10.5281/zenodo.7243602).
 
 ```python
 >>> from orthomap import orthomap2tei
