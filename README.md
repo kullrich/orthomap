@@ -155,11 +155,16 @@ sc.pl.violin(zebrafish_data, ['tei'], groupby='stage')
 ## orthomap via Command Line
 
 `orthomap` can also be used via the command line. To retrieve
-the lineage information for `Danio rerio` run the following command in the
-command:
+the lineage information for `Danio rerio` run the following command:
 
 ```shell
 $ python src/orthomap/qlin.py -q "Danio rerio"
+```
+
+To retrieve the gene to transcript table for `Danio rerio` run the following command:
+
+```shell
+$ python src/orthomap/gtf2t2g.py -g -s -q -i "Danio_rerio.GRCz11.105.gtf.gz"
 ```
 
 ## Development Version
