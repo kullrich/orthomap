@@ -487,10 +487,16 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
                                               .mean(1)).flatten()
             if col_type == 'median':
                 rematrix[pk_idx, ] = np.apply_along_axis(
-                    np.median, 0, np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])])).flatten()
+                    np.median, 1, pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])].toarray()).flatten()
             if col_type == 'sum':
                 rematrix[pk_idx, ] = np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .sum(1)).flatten()
+            if col_type == 'max':
+                rematrix[pk_idx, ] = np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
+                                              .max(1)).flatten()
+            if col_type == 'min':
+                rematrix[pk_idx, ] = np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
+                                              .min(1)).flatten()
     if use == 'teimatrix':
         for pk_idx, pk in enumerate(phylostrata):
             if col_type == 'mean':
@@ -498,10 +504,16 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
                                               .mean(1)).flatten()
             if col_type == 'median':
                 rematrix[pk_idx, ] = np.apply_along_axis(
-                    np.median, 0, np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])])).flatten()
+                    np.median, 1, teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])].toarray()).flatten()
             if col_type == 'sum':
                 rematrix[pk_idx, ] = np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .sum(1)).flatten()
+            if col_type == 'max':
+                rematrix[pk_idx, ] = np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
+                                              .max(1)).flatten()
+            if col_type == 'min':
+                rematrix[pk_idx, ] = np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
+                                              .min(1)).flatten()
     else:
         for pk_idx, pk in enumerate(phylostrata):
             if col_type == 'mean':
@@ -509,10 +521,16 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
                                               .mean(1)).flatten()
             if col_type == 'median':
                 rematrix[pk_idx, ] = np.apply_along_axis(
-                    np.median, 0, np.array(adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])])).flatten()
+                    np.median, 1, adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])].toarray()).flatten()
             if col_type == 'sum':
                 rematrix[pk_idx, ] = np.array(adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .sum(1)).flatten()
+            if col_type == 'max':
+                rematrix[pk_idx, ] = np.array(adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
+                                              .max(1)).flatten()
+            if col_type == 'min':
+                rematrix[pk_idx, ] = np.array(adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
+                                              .min(1)).flatten()
     rematrix_df = pd.DataFrame(rematrix)
     rematrix_df['ps'] = phylostrata
     rematrix_df.set_index('ps', inplace=True)
@@ -527,6 +545,12 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
         if col_type == 'sum':
             rematrix_df = \
                 rematrix_df.transpose().groupby(adata.obs[group_by]).sum().transpose()
+        if col_type == 'max':
+            rematrix_df = \
+                rematrix_df.transpose().groupby(adata.obs[group_by]).max().transpose()
+        if col_type == 'min':
+            rematrix_df = \
+                rematrix_df.transpose().groupby(adata.obs[group_by]).min().transpose()
     if axis is not None:
         if axis == 0:
             rematrix_df = rematrix_df.apply(min_max_to_01, axis=0, raw=True)
