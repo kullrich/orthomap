@@ -120,7 +120,7 @@ def get_psd(adata, gene_id, gene_age, keep='min', layer=None, normalize_total=Fa
         Expects GeneID column from orthomap DataFrame.
     :param gene_age:
         Expects Phylostratum column from orthomap DataFrame.
-    :param keep: (default: min)
+    :param keep: str (default: min)
         In case of duplicated GeneIDs with different Phylostrata assignments, either keep 'min' or 'max' value.
     :param layer: Optional[str] (default: None)
         Layer to work on instead of X. If None, X is used.
@@ -154,19 +154,25 @@ def get_psd(adata, gene_id, gene_age, keep='min', layer=None, normalize_total=Fa
     gene_intersection = pd.Index(id_age_df_keep['GeneID']).intersection(adata.var_names)
     id_age_df_keep_subset = id_age_df_keep.loc[id_age_df_keep['GeneID'].isin(gene_intersection)]
     id_age_df_keep_subset = id_age_df_keep_subset.sort_values('GeneID')
-    if layer is not None:
-
     adata_counts = adata.X
+    if layer is not None:
+        adata_counts = adata.layers[layer]
     if normalize_total and log1p:
-        adata_norm = sc.pp.normalize_total(adata, target_sum=target_sum, , layer=layer, copy=True)
-        sc.pp.log1p(adata_norm)
+        adata_norm = sc.pp.normalize_total(adata, target_sum=target_sum, layer=layer, copy=True)
+        sc.pp.log1p(adata_norm, layer=layer)
         adata_counts = adata_norm.X
+        if layer is not None:
+            adata_counts = adata_norm.layers[layer]
     if normalize_total and not log1p:
         adata_norm = sc.pp.normalize_total(adata, target_sum=target_sum, layer=layer, copy=True)
         adata_counts = adata_norm.X
+        if layer is not None:
+            adata_counts = adata_norm.layers[layer]
     if not normalize_total and log1p:
         adata_log1p = sc.pp.log1p(adata, layer=layer, copy=True)
         adata_counts = adata_log1p.X
+        if layer is not None:
+            adata_counts = adata_log1p.layers[layer]
     adata_counts = adata_counts[:, adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
     var_names_subset = adata.var_names[adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
     var_names_subset_idx = var_names_subset.sort_values(return_indexer=True)[1]
@@ -179,8 +185,8 @@ def get_psd(adata, gene_id, gene_age, keep='min', layer=None, normalize_total=Fa
     return [id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd]
 
 
-def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True, obs_name='tei', boot=False, bt=10, normalize_total=False, log1p=False,
-            target_sum=1e6):
+def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True, obs_name='tei', boot=False, bt=10,
+            normalize_total=False, log1p=False, target_sum=1e6):
     """
     This function computes the phylogenetically based transcriptome evolutionary
     index (TEI) similar to Domazet-Loso & Tautz, 2010.
@@ -206,7 +212,7 @@ def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True, obs_name
         Expects GeneID column from orthomap DataFrame.
     :param gene_age: list
         Expects GeneID column from orthomap DataFrame.
-    :param keep: (default: min)
+    :param keep: str (default: min)
         In case of duplicated GeneIDs with different Phylostrata assignments, either keep 'min' or 'max' value.
     :param layer: Optional[str] (default: None)
         Layer to work on instead of X. If None, X is used.
@@ -222,7 +228,8 @@ def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True, obs_name
         Normalize counts per cell prior TEI calculation.
     :param log1p: bool (default: False)
         Logarithmize the data matrix prior TEI calculation.
-    :param target_sum:
+    :param target_sum: Optional[float] (default: 1e6)
+        After normalization, each observation (cell) has a total count equal to target_sum.
     :return:
 
     Example
@@ -245,7 +252,7 @@ def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True, obs_name
     >>> boot=True, bt=10)
     """
     id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
-        get_psd(adata, gene_id, gene_age, keep, normalize_total, log1p, target_sum)
+        get_psd(adata, gene_id, gene_age, keep, layer, normalize_total, log1p, target_sum)
     teimatrix = psd.dot(adata_counts.transpose()).transpose()
     pmatrix = sumx_recd.dot(teimatrix)
     tei = pmatrix.sum(1)
@@ -264,8 +271,8 @@ def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True, obs_name
     return tei_df
 
 
-def get_pmatrix(adata, gene_id, gene_age, keep='min', layer_name='pmatrix', add_obs=True, add_var=True, normalize_total=False, log1p=False,
-                target_sum=1e6, copy=False):
+def get_pmatrix(adata, gene_id, gene_age, keep='min', layer=None, layer_name='pmatrix', add_obs=True, add_var=True,
+                normalize_total=False, log1p=False, target_sum=1e6):
     """
     This function computes the partial transcriptome evolutionary index (TEI) values for each single gene.
 
@@ -279,15 +286,24 @@ def get_pmatrix(adata, gene_id, gene_age, keep='min', layer_name='pmatrix', add_
     gene to the global TEI pattern.
 
     :param adata: AnnData The annotated data matrix of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
-    :param gene_id:
-    :param gene_age:
-    :param keep:
+    :param gene_id: list
+        Expects GeneID column from orthomap DataFrame.
+    :param gene_age: list
+        Expects Phylostratum column from orthomap DataFrame.
+    :param keep: str (default: min)
+        Either define 'min' (ascending pre-sorting) or 'max' (non-ascending pre-sorting) to keep duplicates.
+    :param layer: Optional[str] (default: None)
+        Layer to work on instead of X. If None, X is used.
+    :param layer_name: str (default: pmatrix)
+        Layer to add to existing adata object. If copy, return a new adata object.
     :param add_obs:
     :param add_var:
-    :param normalize_total:
-    :param log1p:
-    :param target_sum:
-    :param copy:
+    :param normalize_total: bool (default: False)
+        Normalize counts per cell prior TEI calculation.
+    :param log1p: bool (default: False)
+        Logarithmize the data matrix prior TEI calculation.
+    :param target_sum: Optional[float] (default: 1e6)
+        After normalization, each observation (cell) has a total count equal to target_sum.
     :return:
 
     Example
@@ -295,27 +311,25 @@ def get_pmatrix(adata, gene_id, gene_age, keep='min', layer_name='pmatrix', add_
     >>>
     """
     id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
-        get_psd(adata, gene_id, gene_age, keep, normalize_total, log1p, target_sum)
+        get_psd(adata, gene_id, gene_age, keep, layer, normalize_total, log1p, target_sum)
     teimatrix = psd.dot(adata_counts.transpose()).transpose()
     pmatrix = sumx_recd.dot(teimatrix)
     tei = pmatrix.sum(1)
-    if copy:
-        adata_pmatrix = ad.AnnData(pmatrix)
-        adata_pmatrix.obs_names = adata.obs_names
-        adata_pmatrix.var_names = var_names_subset
-        if add_var:
-            for kv in adata.var.keys():
-                adata_pmatrix.var[kv] = adata.var[kv][adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
-        if add_obs:
-            for ko in adata.obs.keys():
-                adata_pmatrix.obs[ko] = adata.obs[ko]
-        return adata_pmatrix
-    else:
-        adata.layers[layer_name] = pmatrix
-        return
+    adata_pmatrix = ad.AnnData(adata_counts)
+    adata_pmatrix.layers[layer_name] = pmatrix
+    adata_pmatrix.obs_names = adata.obs_names
+    adata_pmatrix.var_names = var_names_subset
+    if add_var:
+        for kv in adata.var.keys():
+            adata_pmatrix.var[kv] = adata.var[kv][adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
+    if add_obs:
+        for ko in adata.obs.keys():
+            adata_pmatrix.obs[ko] = adata.obs[ko]
+    return adata_pmatrix
 
-def get_pstrata(adata, gene_id, gene_age, keep='min', cumsum=False, group_by=None, normalize_total=False, log1p=False,
-                target_sum=1e6):
+
+def get_pstrata(adata, gene_id, gene_age, keep='min', layer=None, cumsum=False, group_by=None, normalize_total=False,
+                log1p=False, target_sum=1e6):
     """
     This function computes the partial transcriptome evolutionary index (TEI) values combined for each strata.
 
@@ -330,14 +344,22 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', cumsum=False, group_by=Non
     of the contribution of each strata to the global TEI pattern.
 
     :param adata: AnnData The annotated data matrix of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
-    :param gene_id:
-    :param gene_age:
-    :param keep:
+    :param gene_id: list
+        Expects GeneID column from orthomap DataFrame.
+    :param gene_age: list
+        Expects Phylostratum column from orthomap DataFrame.
+    :param keep: str (default: min)
+        Either define 'min' (ascending pre-sorting) or 'max' (non-ascending pre-sorting) to keep duplicates.
+    :param layer: Optional[str] (default: None)
+        Layer to work on instead of X. If None, X is used.
     :param cumsum:
     :param group_by:
-    :param normalize_total:
-    :param log1p:
-    :param target_sum:
+    :param normalize_total: bool (default: False)
+        Normalize counts per cell prior TEI calculation.
+    :param log1p: bool (default: False)
+        Logarithmize the data matrix prior TEI calculation.
+    :param target_sum: Optional[float] (default: 1e6)
+        After normalization, each observation (cell) has a total count equal to target_sum.
     :return:
 
     Example
@@ -345,7 +367,7 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', cumsum=False, group_by=Non
     >>>
     """
     id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
-        get_psd(adata, gene_id, gene_age, keep, normalize_total, log1p, target_sum)
+        get_psd(adata, gene_id, gene_age, keep, layer, normalize_total, log1p, target_sum)
     teimatrix = psd.dot(adata_counts.transpose()).transpose()
     pmatrix = sumx_recd.dot(teimatrix)
     tei = pmatrix.sum(1)
@@ -376,20 +398,75 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', cumsum=False, group_by=Non
     return [pstrata_norm_by_sumx_df, pstrata_norm_by_pmatrix_sum_df]
 
 
-def get_rematrix(adata, gene_id, gene_age, keep='min', use='counts', axis=None, group_by=None, normalize_total=False,
-                 log1p=False, target_sum=1e6):
+def min_max_to_01(ndarray):
     """
 
-    :param adata: AnnData The annotated data matrix of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
-    :param gene_id:
-    :param gene_age:
-    :param keep:
-    :param use:
-    :param axis:
+    :param ndarray:
+    :return:
+    """
+    ndarray_min = np.min(ndarray)
+    ndarray_max = np.max(ndarray)
+    ndarray_min_max = [((x - ndarray_min)/(ndarray_max-ndarray_min)) for x in ndarray]
+    return ndarray_min_max
+
+
+def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col_type='mean',
+                 axis=None, group_by=None, normalize_total=False, log1p=False, target_sum=1e6):
+    """
+    This function computes relative expression profiles.
+
+    In detail, if axis is set to None, the mean/median/sum expression is being computed over cells
+    and, if group_by is not None, combined per given group by mean/median/sum.
+
+    In detail, if axis is set to 1, the mean/median/sum relative expression profile is being computed over cells
+    and, if group_by is not None, combined per given group by mean/median/sum as follows:
+
+    f_c = (e_c - e_min)/(e_max - e_min)
+
+    where e_min and e_max denote either the minimum/maximum mean/median/sum
+    expression level over cells c.
+
+    In detail, if axis is set to 0, the mean/median/sum relative expression profile is being computed over gene
+    age classes (phylostrata) and, if group_by is not None, combined per given group by mean/median/sum as follows:
+
+    f_ps = (e_ps - e_min)/(e_max - e_min)
+
+    where e_min and e_max denote either the minimum/maximum mean/median/sum
+    expression level over gene age class (phylostrata ps).
+
+    This linear transformation corresponds to a shift by e_min -
+    e_max. As a result, the relative expression level f_c of cell c or f_ps
+    of phylotstratum ps with minimum e_c or e_ps is 0,
+    whereas the relative expression level f_c of cell c or f_ps of phylotstratum ps
+    with maximum e_c or e_ps is 1, and the relative
+    expression levels of all other cells c or
+    phylostrata ps range between 0 and 1.
+
+    :param adata: AnnData
+        The annotated data matrix of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
+    :param gene_id: list
+        Expects GeneID column from orthomap DataFrame.
+    :param gene_age: list
+        Expects Phylostratum column from orthomap DataFrame.
+    :param keep: str (default: min)
+        Either define 'min' (ascending pre-sorting) or 'max' (non-ascending pre-sorting) to keep duplicates.
+    :param layer: Optional[str] (default: None)
+        Layer to work on instead of X. If None, X is used.
+    :param use: Optional[str] (default: None)
+        Specify if counts from adata.X (default if None) should be combined per age group to calculate
+        the relative expression or if the corresponding 'pmatrix' or 'teimatrix' should be used.
+        If layer is not None adata.X refers to adata.layers[layer].X.
+    :param col_type: str (default: mean)
+        Specify how the counts should be combined, either by 'mean', 'median' or 'sum'.
+    :param axis: int (default: None)
+        Specify axis of data to be
     :param group_by:
-    :param normalize_total:
-    :param log1p:
-    :param target_sum:
+    :param normalize_total: bool (default: False)
+        Normalize counts per cell prior TEI calculation.
+    :param log1p: log1p: bool (default: False)
+        Logarithmize the data matrix prior TEI calculation.
+    :param target_sum: Optional[float] (default: 1e6)
+        After normalization, each observation (cell) has a total count equal to target_sum.
     :return:
 
     Example
@@ -397,27 +474,62 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', use='counts', axis=None, 
     >>>
     """
     id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
-        get_psd(adata, gene_id, gene_age, keep, normalize_total, log1p, target_sum)
+        get_psd(adata, gene_id, gene_age, keep, layer, normalize_total, log1p, target_sum)
+    teimatrix = psd.dot(adata_counts.transpose()).transpose()
+    pmatrix = sumx_recd.dot(teimatrix)
+    tei = pmatrix.sum(1)
     phylostrata = list(set(id_age_df_keep_subset['Phylostrata']))
     rematrix = np.empty((len(phylostrata), adata_counts.shape[0]))
-    if use == 'counts':
+    if use == 'pmatrix':
         for pk_idx, pk in enumerate(phylostrata):
-            rematrix[pk_idx, ] = np.array(adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
-                                          .mean(1)).flatten()
-    if use == 'tei':
-        teimatrix = psd.dot(adata_counts.transpose()).transpose()
+            if col_type == 'mean':
+                rematrix[pk_idx, ] = np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
+                                              .mean(1)).flatten()
+            if col_type == 'median':
+                rematrix[pk_idx, ] = np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
+                                              .median(1)).flatten()
+            if col_type == 'sum':
+                rematrix[pk_idx, ] = np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
+                                              .sum(1)).flatten()
+    if use == 'teimatrix':
         for pk_idx, pk in enumerate(phylostrata):
-            rematrix[pk_idx, ] = np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
-                                          .mean(1)).flatten()
+            if col_type == 'mean':
+                rematrix[pk_idx, ] = np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
+                                              .mean(1)).flatten()
+            if col_type == 'median':
+                rematrix[pk_idx, ] = np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
+                                              .median(1)).flatten()
+            if col_type == 'sum':
+                rematrix[pk_idx, ] = np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
+                                              .sum(1)).flatten()
+    else:
+        for pk_idx, pk in enumerate(phylostrata):
+            if col_type == 'mean':
+                rematrix[pk_idx, ] = np.array(adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
+                                              .mean(1)).flatten()
+            if col_type == 'median':
+                rematrix[pk_idx, ] = np.array(adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
+                                              .median(1)).flatten()
+            if col_type == 'sum':
+                rematrix[pk_idx, ] = np.array(adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
+                                              .sum(1)).flatten()
     rematrix_df = pd.DataFrame(rematrix)
     rematrix_df['ps'] = phylostrata
     rematrix_df.set_index('ps', inplace=True)
     rematrix_df.columns = adata.obs_names
     if group_by is not None:
-        return
+        if col_type == 'mean':
+            rematrix_df = \
+                rematrix_df.transpose().groupby(adata.obs[group_by]).mean().transpose()
+        if col_type == 'media':
+            rematrix_df = \
+                rematrix_df.transpose().groupby(adata.obs[group_by]).median().transpose()
+        if col_type == 'sum':
+            rematrix_df = \
+                rematrix_df.transpose().groupby(adata.obs[group_by]).sum().transpose()
     if axis is not None:
         if axis == 0:
-            return
+            rematrix_df = rematrix_df.apply(min_max_to_01, axis=0, raw=True)
         if axis == 1:
-            return
+            rematrix_df = rematrix_df.apply(min_max_to_01, axis=1, raw=True)
     return rematrix_df
