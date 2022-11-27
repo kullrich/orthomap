@@ -3,9 +3,13 @@ Welcome to orthomap's documentation!
 
 `orthomap` is a python package that can:
 
--  extract orthologous maps from OrthoFinder results.
+- extract orthologous maps from OrthoFinder results.
 
-- query species lineage information easilt from the NCBI taxonomic database.
+- query species lineage information from the NCBI taxonomic database.
+
+- extract and match gene and transcript information with scRNA data sets.
+
+- calculate and visulaize transcriptome evolutionary index (TEI) on scRNA data sets.
 
 Quick start
 -----------
