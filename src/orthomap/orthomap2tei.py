@@ -493,10 +493,10 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
                                               .sum(1)).flatten()
             if col_type == 'max':
                 rematrix[pk_idx, ] = np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
-                                              .max(1)).flatten()
+                                              .max(1).toarray()).flatten()
             if col_type == 'min':
                 rematrix[pk_idx, ] = np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
-                                              .min(1)).flatten()
+                                              .min(1).toarray()).flatten()
     if use == 'teimatrix':
         for pk_idx, pk in enumerate(phylostrata):
             if col_type == 'mean':
@@ -510,10 +510,10 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
                                               .sum(1)).flatten()
             if col_type == 'max':
                 rematrix[pk_idx, ] = np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
-                                              .max(1)).flatten()
+                                              .max(1).toarray()).flatten()
             if col_type == 'min':
                 rematrix[pk_idx, ] = np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
-                                              .min(1)).flatten()
+                                              .min(1).toarray()).flatten()
     else:
         for pk_idx, pk in enumerate(phylostrata):
             if col_type == 'mean':
@@ -527,10 +527,10 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
                                               .sum(1)).flatten()
             if col_type == 'max':
                 rematrix[pk_idx, ] = np.array(adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
-                                              .max(1)).flatten()
+                                              .max(1).toarray()).flatten()
             if col_type == 'min':
                 rematrix[pk_idx, ] = np.array(adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
-                                              .min(1)).flatten()
+                                              .min(1).toarray()).flatten()
     rematrix_df = pd.DataFrame(rematrix)
     rematrix_df['ps'] = phylostrata
     rematrix_df.set_index('ps', inplace=True)
