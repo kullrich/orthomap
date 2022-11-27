@@ -418,7 +418,7 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
     In detail, if axis is set to None, the mean/median/sum expression is being computed over cells
     and, if group_by is not None, combined per given group by mean/median/sum.
 
-    In detail, if axis is set to 1, the mean/median/sum relative expression profile is being computed over cells
+    In detail, if axis is set to 0, the mean/median/sum relative expression profile is being computed over cells
     and, if group_by is not None, combined per given group by mean/median/sum as follows:
 
     f_c = (e_c - e_min)/(e_max - e_min)
@@ -426,7 +426,7 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
     where e_min and e_max denote either the minimum/maximum mean/median/sum
     expression level over cells c.
 
-    In detail, if axis is set to 0, the mean/median/sum relative expression profile is being computed over gene
+    In detail, if axis is set to 1, the mean/median/sum relative expression profile is being computed over gene
     age classes (phylostrata) and, if group_by is not None, combined per given group by mean/median/sum as follows:
 
     f_ps = (e_ps - e_min)/(e_max - e_min)
@@ -486,8 +486,8 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
                 rematrix[pk_idx, ] = np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .mean(1)).flatten()
             if col_type == 'median':
-                rematrix[pk_idx, ] = np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
-                                              .median(1)).flatten()
+                rematrix[pk_idx, ] = np.apply_along_axis(
+                    np.median, 0, np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])])).flatten()
             if col_type == 'sum':
                 rematrix[pk_idx, ] = np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .sum(1)).flatten()
@@ -497,8 +497,8 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
                 rematrix[pk_idx, ] = np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .mean(1)).flatten()
             if col_type == 'median':
-                rematrix[pk_idx, ] = np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
-                                              .median(1)).flatten()
+                rematrix[pk_idx, ] = np.apply_along_axis(
+                    np.median, 0, np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])])).flatten()
             if col_type == 'sum':
                 rematrix[pk_idx, ] = np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .sum(1)).flatten()
@@ -508,8 +508,8 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
                 rematrix[pk_idx, ] = np.array(adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .mean(1)).flatten()
             if col_type == 'median':
-                rematrix[pk_idx, ] = np.array(adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
-                                              .median(1)).flatten()
+                rematrix[pk_idx, ] = np.apply_along_axis(
+                    np.median, 0, np.array(adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])])).flatten()
             if col_type == 'sum':
                 rematrix[pk_idx, ] = np.array(adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .sum(1)).flatten()
@@ -521,7 +521,7 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
         if col_type == 'mean':
             rematrix_df = \
                 rematrix_df.transpose().groupby(adata.obs[group_by]).mean().transpose()
-        if col_type == 'media':
+        if col_type == 'median':
             rematrix_df = \
                 rematrix_df.transpose().groupby(adata.obs[group_by]).median().transpose()
         if col_type == 'sum':
