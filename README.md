@@ -65,23 +65,47 @@ taxid. For example `Danio rerio` with taxid `7955`:
 >>> qlin.get_qlin(qt = '7955')
 ```
 
+You can get the query species topology as a tree.
+For example for `Danio rerio` with taxid `7955`:
+
+```python
+>>> from orthomap import qlin
+>>> query_topology = qlin.get_lineage_topo(qt = '7955')
+>>> query_topology.write()
+```
+
 ### Extract orthomap from OrthoFinder result
 
 The following code extracts the orthomap for `Danio rerio` based on the
-ensembl release-105:
-
-```python
->>> from orthomap import orthomap
->>> omap = orthomap.get_orthomap(
-...        seqname = 'Danio_rerio.GRCz11.cds.longest',
-...        qt = '7955',
-...        sl = 'ensembl_105_orthofinder_species_list.tsv',
-...        oc = 'ensembl_105_orthofinder_Orthogroups.GeneCount.tsv',
-...        og = 'ensembl_105_orthofinder_Orthogroups.tsv')
-```
+OrthoFinder results and ensembl release-105:
 
 OrthoFinder results files have been archived and can be found
 [here](https://zenodo.org/record/7242264#.Y1p19i0Rowc).
+
+```python
+>>> from orthomap import of2orthomap
+>>> query_orthomap, orthofinder_species_list, of_species_abundance =\
+... of2orthomap.get_orthomap(
+...     seqname='Danio_rerio.GRCz11.cds.longest',
+...     qt='7955',
+...     sl='ensembl_105_orthofinder_species_list.tsv',
+...     oc='ensembl_105_orthofinder_Orthogroups.GeneCount.tsv',
+...     og='ensembl_105_orthofinder_Orthogroups.tsv',
+...     continuity=True)
+```
+
+### Match gene and transript names to combine with scRNA data set
+
+The following code extracts the gene to transcript table for `Danio rerio`:
+
+GTF file obtained from [here](https://ftp.ensembl.org/pub/release-105/gtf/danio_rerio/Danio_rerio.GRCz11.105.gtf.gz).
+
+```python
+>>> from orthomap import gtf2t2g
+>>> query_species_t2g = gtf2t2g.parse_gtf(
+...     gtf='Danio_rerio.GRCz11.105.gtf.gz',
+...     g=True, b=True, p=True, v=True, s=True, q=True)
+```
 
 ### Calculate transcriptome evolutionary index (TEI) for each cell of a scRNA data set:
 
@@ -92,6 +116,37 @@ example: Danio rerio - [http://tome.gs.washington.edu](http://tome.gs.washington
 
 ```python
 >>> from orthomap import orthomap2tei
+>>> zebrafish_data = sc.read('zebrafish_data.h5ad')
+```
+
+Check overlap of orthomap and scRNA data set:
+
+```python
+orthomap2tei.geneset_overlap(zebrafish_data.var_names, query_orthomap['seqID'])
+```
+
+Convert orthomap transcript IDs into GeneIDs and add them to orthomap:
+
+```python
+>>> query_orthomap['geneID'] = orthomap2tei.replace_by(
+...     x_orig = query_orthomap['seqID'],
+...     xmatch = query_species_t2g['transcript_id_version'],
+...     xreplace = query_species_t2g['gene_id'])
+```
+
+Add TEI values to existing adata object:
+
+```python
+>>> tei_df = orthomap2tei.get_tei(adata=zebrafish_data,
+...     gene_id=query_orthomap['geneID'],
+...     gene_age=query_orthomap['PSnum'],
+...     add=True)
+```
+
+Boxplot TEI per stage:
+
+```python
+sc.pl.violin(zebrafish_data, ['tei'], groupby='stage')
 ```
 
 ## orthomap via Command Line
