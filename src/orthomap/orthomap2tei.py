@@ -411,7 +411,7 @@ def min_max_to_01(ndarray):
 
 
 def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col_type='mean',
-                 axis=None, group_by=None, normalize_total=False, log1p=False, target_sum=1e6):
+                 axis=None, group_by=None, group_type='mean', normalize_total=False, log1p=False, target_sum=1e6):
     """
     This function computes relative expression profiles.
 
@@ -455,12 +455,14 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
     :param use: Optional[str] (default: None)
         Specify if counts from adata.X (default if None) should be combined per age group to calculate
         the relative expression or if the corresponding 'pmatrix' or 'teimatrix' should be used.
-        If layer is not None adata.X refers to adata.layers[layer].X.
+        If layer is not None adata.X refers to adata.layers[layer].
     :param col_type: str (default: mean)
-        Specify how the counts should be combined, either by 'mean', 'median' or 'sum'.
+        Specify how the counts should be combined, either by 'mean', 'median', 'sum', 'max' or 'min'.
     :param axis: int (default: None)
         Specify axis of data to be
     :param group_by:
+    :param group_type: str (default: mean)
+        Specify how the counts should be combined per group, either by 'mean', 'median', 'sum', 'max' or 'min'.
     :param normalize_total: bool (default: False)
         Normalize counts per cell prior TEI calculation.
     :param log1p: log1p: bool (default: False)
@@ -536,19 +538,19 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
     rematrix_df.set_index('ps', inplace=True)
     rematrix_df.columns = adata.obs_names
     if group_by is not None:
-        if col_type == 'mean':
+        if group_type == 'mean':
             rematrix_df = \
                 rematrix_df.transpose().groupby(adata.obs[group_by]).mean().transpose()
-        if col_type == 'median':
+        if group_type == 'median':
             rematrix_df = \
                 rematrix_df.transpose().groupby(adata.obs[group_by]).median().transpose()
-        if col_type == 'sum':
+        if group_type == 'sum':
             rematrix_df = \
                 rematrix_df.transpose().groupby(adata.obs[group_by]).sum().transpose()
-        if col_type == 'max':
+        if group_type == 'max':
             rematrix_df = \
                 rematrix_df.transpose().groupby(adata.obs[group_by]).max().transpose()
-        if col_type == 'min':
+        if group_type == 'min':
             rematrix_df = \
                 rematrix_df.transpose().groupby(adata.obs[group_by]).min().transpose()
     if axis is not None:
