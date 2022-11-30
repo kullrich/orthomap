@@ -131,16 +131,16 @@ def get_eggnog_orthomap(qt, og, out=None, quite=False, continuity=True):
             if out:
                 if continuity:
                     [outhandle.write(x.replace(' ', '') + '\t' + og_tmp[0] + '\t' + og_ps_join + '\t' +
-                                     str(og_continuity_score) + '\n') for x in og_tmp[2].split(',')]
+                                     str(og_continuity_score) + '\n') for x in og_tmp[2]]
                 else:
                     [outhandle.write(x.replace(' ', '') + '\t' + og_tmp[0] + '\t' + og_ps_join + '\n')
-                     for x in og_tmp[2].split(',')]
+                     for x in og_tmp[2]]
         if continuity:
             omap += [[x.replace(' ', ''), og_tmp[0], og_ps[0], og_ps[1], og_ps[2], og_continuity_score]
-                     for x in og_tmp[2].split(',')]
+                     for x in og_tmp[2]]
         else:
             omap += [[x.replace(' ', ''), og_tmp[0], og_ps[0], og_ps[1], og_ps[2]]
-                     for x in og_tmp[2].split(',')]
+                     for x in og_tmp[2]]
     if out:
         outhandle.close()
     omap_df = pd.DataFrame(omap)
