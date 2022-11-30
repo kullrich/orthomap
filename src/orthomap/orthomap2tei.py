@@ -111,6 +111,36 @@ def keep_min_max(df, keep='min', dup_col=['GeneID'], sort_col=['Phylostrata']):
     return df_out
 
 
+def split_gene_id_by_gene_age(gene_id, gene_age, keep='min', adata=None):
+    """
+
+    :param gene_id: list
+        Expects GeneID column from orthomap DataFrame.
+    :param gene_age: list
+        Expects Phylostratum column from orthomap DataFrame.
+    :param keep: str (default: min)
+        In case of duplicated GeneIDs with different Phylostrata assignments, either keep 'min' or 'max' value.
+    :param adata: AnnData (default: None)
+        The annotated data matrix of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
+    :return:
+    """
+    id_age_df = pd.DataFrame(data={'GeneID': gene_id, 'Phylostrata': gene_age})
+    # check and drop duplicated GeneID
+    id_age_df_keep = keep_min_max(id_age_df, keep=keep, dup_col=['GeneID'], sort_col=['Phylostrata'])
+    # get overlap
+    if adata is not None:
+        gene_intersection = pd.Index(id_age_df_keep['GeneID']).intersection(adata.var_names)
+        id_age_df_keep_subset = id_age_df_keep.loc[id_age_df_keep['GeneID'].isin(gene_intersection)]
+        id_age_df_keep_subset = id_age_df_keep_subset.sort_values('GeneID')
+    else:
+        id_age_df_keep_subset = id_age_df_keep
+    phylostrata = list(set(id_age_df_keep_subset['Phylostrata']))
+    gene_id_gene_age_dict = {}
+    for pk_idx, pk in enumerate(phylostrata):
+        gene_id_gene_age_dict[str(pk)] = list(id_age_df_keep_subset[id_age_df_keep_subset['Phylostrata'] == pk]['GeneID'])
+    return gene_id_gene_age_dict
+
+
 def get_psd(adata, gene_id, gene_age, keep='min', layer=None, normalize_total=False, log1p=False, target_sum=1e6):
     """
 
@@ -411,7 +441,7 @@ def min_max_to_01(ndarray):
 
 
 def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col_type='mean',
-                 axis=None, group_by=None, group_type='mean', normalize_total=False, log1p=False, target_sum=1e6):
+                 scale_axis=None, group_by=None, group_type='mean', normalize_total=False, log1p=False, target_sum=1e6):
     """
     This function computes relative expression profiles.
 
@@ -457,12 +487,13 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
         the relative expression or if the corresponding 'pmatrix' or 'teimatrix' should be used.
         If layer is not None adata.X refers to adata.layers[layer].
     :param col_type: str (default: mean)
-        Specify how the counts should be combined, either by 'mean', 'median', 'sum', 'max' or 'min'.
-    :param axis: int (default: None)
-        Specify axis of data to be
+        Specify how the counts should be combined, either by 'mean', 'median', 'sum', 'min' or 'max'.
+    :param scale_axis: int (default: None)
+        Whether or not to standardize the given axis (0: colums, 1: rows) between 0 and 1,
+        meaning for each variable or group, subtract the minimum and divide each by its maximum.
     :param group_by:
     :param group_type: str (default: mean)
-        Specify how the counts should be combined per group, either by 'mean', 'median', 'sum', 'max' or 'min'.
+        Specify how the counts should be combined per group, either by 'mean', 'median', 'sum', 'min' or 'max'.
     :param normalize_total: bool (default: False)
         Normalize counts per cell prior TEI calculation.
     :param log1p: log1p: bool (default: False)
@@ -493,12 +524,12 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
             if col_type == 'sum':
                 rematrix[pk_idx, ] = np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .sum(1)).flatten()
-            if col_type == 'max':
-                rematrix[pk_idx, ] = np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
-                                              .max(1).toarray()).flatten()
             if col_type == 'min':
                 rematrix[pk_idx, ] = np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .min(1).toarray()).flatten()
+            if col_type == 'max':
+                rematrix[pk_idx, ] = np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
+                                              .max(1).toarray()).flatten()
     if use == 'teimatrix':
         for pk_idx, pk in enumerate(phylostrata):
             if col_type == 'mean':
@@ -510,12 +541,12 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
             if col_type == 'sum':
                 rematrix[pk_idx, ] = np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .sum(1)).flatten()
-            if col_type == 'max':
-                rematrix[pk_idx, ] = np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
-                                              .max(1).toarray()).flatten()
             if col_type == 'min':
                 rematrix[pk_idx, ] = np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .min(1).toarray()).flatten()
+            if col_type == 'max':
+                rematrix[pk_idx, ] = np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
+                                              .max(1).toarray()).flatten()
     else:
         for pk_idx, pk in enumerate(phylostrata):
             if col_type == 'mean':
@@ -527,12 +558,12 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
             if col_type == 'sum':
                 rematrix[pk_idx, ] = np.array(adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .sum(1)).flatten()
-            if col_type == 'max':
-                rematrix[pk_idx, ] = np.array(adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
-                                              .max(1).toarray()).flatten()
             if col_type == 'min':
                 rematrix[pk_idx, ] = np.array(adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .min(1).toarray()).flatten()
+            if col_type == 'max':
+                rematrix[pk_idx, ] = np.array(adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
+                                              .max(1).toarray()).flatten()
     rematrix_df = pd.DataFrame(rematrix)
     rematrix_df['ps'] = phylostrata
     rematrix_df.set_index('ps', inplace=True)
@@ -547,15 +578,15 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
         if group_type == 'sum':
             rematrix_df = \
                 rematrix_df.transpose().groupby(adata.obs[group_by]).sum().transpose()
-        if group_type == 'max':
-            rematrix_df = \
-                rematrix_df.transpose().groupby(adata.obs[group_by]).max().transpose()
         if group_type == 'min':
             rematrix_df = \
                 rematrix_df.transpose().groupby(adata.obs[group_by]).min().transpose()
-    if axis is not None:
-        if axis == 0:
+        if group_type == 'max':
+            rematrix_df = \
+                rematrix_df.transpose().groupby(adata.obs[group_by]).max().transpose()
+    if scale_axis is not None:
+        if scale_axis == 0:
             rematrix_df = rematrix_df.apply(min_max_to_01, axis=0, raw=True)
-        if axis == 1:
+        if scale_axis == 1:
             rematrix_df = rematrix_df.apply(min_max_to_01, axis=1, raw=True)
     return rematrix_df
