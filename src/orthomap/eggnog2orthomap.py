@@ -98,6 +98,8 @@ def get_eggnog_orthomap(qt, og, out=None, quite=False, continuity=True):
     continuity_dict = {}
     with alive_bar(len(ogs_dict)) as bar:
         for og in ogs_dict.keys():
+            bar()
+            print(og)
             og_tmp = ogs_dict[og]
             og_hits = [int(x) for x in og_tmp[1]]
             # get list of the youngest common between query and all other species
@@ -114,7 +116,6 @@ def get_eggnog_orthomap(qt, og, out=None, quite=False, continuity=True):
                         of2orthomap.get_youngest_common_counts(qlineage,
                                                                pd.DataFrame(og_hits_youngest_common,
                                                                             columns=['youngest_common'])).counts
-            bar()
     if continuity:
         youngest_common_counts_df = youngest_common_counts_df.join(pd.DataFrame.from_dict(continuity_dict))
     omap = []
@@ -126,6 +127,8 @@ def get_eggnog_orthomap(qt, og, out=None, quite=False, continuity=True):
             outhandle.write('seqID\tOrthogroup\tPSnum\tPStaxID\tPSname\n')
     with alive_bar(len(ogs_dict)) as bar:
         for og in ogs_dict.keys():
+            bar()
+            print(og)
             og_tmp = ogs_dict[og]
             og_ps = qlineagenames[qlineagenames['PStaxID'] ==
                                   str(og_dict[og_tmp[0]])].values.tolist()[0]
@@ -145,7 +148,6 @@ def get_eggnog_orthomap(qt, og, out=None, quite=False, continuity=True):
             else:
                 omap += [[x.replace(' ', ''), og_tmp[0], og_ps[0], og_ps[1], og_ps[2]]
                          for x in og_tmp[2]]
-            bar()
     if out:
         outhandle.close()
     omap_df = pd.DataFrame(omap)
