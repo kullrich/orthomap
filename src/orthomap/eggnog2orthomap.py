@@ -99,7 +99,7 @@ def get_eggnog_orthomap(qt, og, out=None, quite=False, continuity=True):
     with alive_bar(len(ogs_dict)) as bar:
         for og in ogs_dict.keys():
             bar()
-            print(og)
+            print(og, len(ogs_dict))
             og_tmp = ogs_dict[og]
             og_hits = [int(x) for x in og_tmp[1]]
             # get list of the youngest common between query and all other species
@@ -128,7 +128,7 @@ def get_eggnog_orthomap(qt, og, out=None, quite=False, continuity=True):
     with alive_bar(len(ogs_dict)) as bar:
         for og in ogs_dict.keys():
             bar()
-            print(og)
+            print(og, len(ogs_dict))
             og_tmp = ogs_dict[og]
             og_ps = qlineagenames[qlineagenames['PStaxID'] ==
                                   str(og_dict[og_tmp[0]])].values.tolist()[0]
