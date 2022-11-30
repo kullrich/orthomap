@@ -358,8 +358,8 @@ def get_pmatrix(adata, gene_id, gene_age, keep='min', layer=None, layer_name='pm
     return adata_pmatrix
 
 
-def get_pstrata(adata, gene_id, gene_age, keep='min', layer=None, cumsum=False, group_by=None, normalize_total=False,
-                log1p=False, target_sum=1e6):
+def get_pstrata(adata, gene_id, gene_age, keep='min', layer=None, cumsum=False, standard_scale=None, group_by=None,
+                normalize_total=False, log1p=False, target_sum=1e6):
     """
     This function computes the partial transcriptome evolutionary index (TEI) values combined for each strata.
 
@@ -383,6 +383,9 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', layer=None, cumsum=False, 
     :param layer: Optional[str] (default: None)
         Layer to work on instead of X. If None, X is used.
     :param cumsum:
+    :param standard_scale: int (default: None)
+        Whether or not to standardize the given axis (0: colums, 1: rows) between 0 and 1,
+        meaning for each variable or group, subtract the minimum and divide each by its maximum.
     :param group_by:
     :param normalize_total: bool (default: False)
         Normalize counts per cell prior TEI calculation.
@@ -425,6 +428,13 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', layer=None, cumsum=False, 
     if cumsum:
         pstrata_norm_by_sumx_df = pstrata_norm_by_sumx_df.cumsum(0)
         pstrata_norm_by_pmatrix_sum_df = pstrata_norm_by_pmatrix_sum_df.cumsum(0)
+    if standard_scale is not None:
+        if standard_scale == 0:
+            pstrata_norm_by_sumx_df = pstrata_norm_by_sumx_df.apply(min_max_to_01, axis=1, raw=True)
+            pstrata_norm_by_pmatrix_sum_df = pstrata_norm_by_pmatrix_sum_df.apply(min_max_to_01, axis=1, raw=True)
+        if standard_scale == 1:
+            pstrata_norm_by_sumx_df = pstrata_norm_by_sumx_df.apply(min_max_to_01, axis=0, raw=True)
+            pstrata_norm_by_pmatrix_sum_df = pstrata_norm_by_pmatrix_sum_df.apply(min_max_to_01, axis=0, raw=True)
     return [pstrata_norm_by_sumx_df, pstrata_norm_by_pmatrix_sum_df]
 
 
@@ -436,12 +446,15 @@ def min_max_to_01(ndarray):
     """
     ndarray_min = np.min(ndarray)
     ndarray_max = np.max(ndarray)
-    ndarray_min_max = [((x - ndarray_min)/(ndarray_max-ndarray_min)) for x in ndarray]
+    if ndarray_min == ndarray_max:
+        ndarray_min_max = [x - ndarray_min for x in ndarray]
+    else:
+        ndarray_min_max = [((x - ndarray_min)/(ndarray_max-ndarray_min)) for x in ndarray]
     return ndarray_min_max
 
 
 def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col_type='mean',
-                 scale_axis=None, group_by=None, group_type='mean', normalize_total=False, log1p=False, target_sum=1e6):
+                 standard_scale=None, group_by=None, group_type='mean', normalize_total=False, log1p=False, target_sum=1e6):
     """
     This function computes relative expression profiles.
 
@@ -488,7 +501,7 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
         If layer is not None adata.X refers to adata.layers[layer].
     :param col_type: str (default: mean)
         Specify how the counts should be combined, either by 'mean', 'median', 'sum', 'min' or 'max'.
-    :param scale_axis: int (default: None)
+    :param standard_scale: int (default: None)
         Whether or not to standardize the given axis (0: colums, 1: rows) between 0 and 1,
         meaning for each variable or group, subtract the minimum and divide each by its maximum.
     :param group_by:
@@ -584,9 +597,9 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
         if group_type == 'max':
             rematrix_df = \
                 rematrix_df.transpose().groupby(adata.obs[group_by]).max().transpose()
-    if scale_axis is not None:
-        if scale_axis == 0:
-            rematrix_df = rematrix_df.apply(min_max_to_01, axis=0, raw=True)
-        if scale_axis == 1:
+    if standard_scale is not None:
+        if standard_scale == 0:
             rematrix_df = rematrix_df.apply(min_max_to_01, axis=1, raw=True)
+        if standard_scale == 1:
+            rematrix_df = rematrix_df.apply(min_max_to_01, axis=0, raw=True)
     return rematrix_df
