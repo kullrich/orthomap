@@ -502,7 +502,7 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
     :param col_type: str (default: mean)
         Specify how the counts should be combined, either by 'mean', 'median', 'sum', 'min' or 'max'.
     :param standard_scale: int (default: None)
-        Whether or not to standardize the given axis (0: colums, 1: rows) between 0 and 1,
+        Whether or not to standardize the given axis (0: rows, gene age class, 1: columns, cells or group) between 0 and 1,
         meaning for each variable or group, subtract the minimum and divide each by its maximum.
     :param group_by:
     :param group_type: str (default: mean)
