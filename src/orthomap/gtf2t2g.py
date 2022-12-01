@@ -297,7 +297,7 @@ def main():
         output = open(args.o, 'w')
     else:
         output = sys.stdout
-    parse_gtf(args.i, args.g, args.b, args.p, args.v, args.s, output, args.q)
+    parse_gtf(gtf=args.i, g=args.g, b=args.b, p=args.p, v=args.v,s= args.s, output=output, q=args.q)
     output.close()
 
 

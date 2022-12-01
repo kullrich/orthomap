@@ -190,7 +190,7 @@ def main():
         parser.print_help()
         print("\nWarning: Since both query species name and taxid are given taxid is used")
         sys.exit()
-    get_qlin(args.q, args.qt)
+    get_qlin(q=args.q, qt=args.qt, quite=False)
 
 
 if __name__ == "__main__":

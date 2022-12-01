@@ -246,7 +246,8 @@ def main():
         parser.print_help()
         print('\nError <-og>: Please specify orthofinder <Orthogroups.tsv> (see Orthogroups directory)')
         sys.exit()
-    get_orthomap(args.seqname, args.qt, args.sl, args.oc, args.og, args.out)
+    get_orthomap(seqname=args.seqname, qt=args.qt, sl=args.sl, oc=args.oc, og=args.og, out=args.out, quite=False,
+                 continuity=True)
 
 
 if __name__ == '__main__':

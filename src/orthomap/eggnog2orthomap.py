@@ -15,7 +15,6 @@ import argparse
 import pandas as pd
 from orthomap import qlin, of2orthomap
 from ete3 import NCBITaxa
-from alive_progress import alive_bar
 
 
 def define_parser():
@@ -80,10 +79,16 @@ def get_eggnog_orthomap(qt, og, subset=None, out=None, quite=False, continuity=T
             if subset is not None:
                 if col2_og_name not in subset_dict:
                     continue
+                else:
+                    if str(qtid) in col5_comma_separated_list_of_species:
+                        col6_comma_separated_list_of_members = col6_comma_separated_list_of_members.split(',')
+                        q_genes = [x for x in col6_comma_separated_list_of_members if x.split('.')[0] == str(qtid)]
+                        ogs_dict[col2_og_name] = [col2_og_name, col5_comma_separated_list_of_species, q_genes]
+                        species_list = list(set(species_list + col5_comma_separated_list_of_species))
             else:
                 if str(qtid) in col5_comma_separated_list_of_species:
                     col6_comma_separated_list_of_members = col6_comma_separated_list_of_members.split(',')
-                    q_genes = [x for x in col6_comma_separated_list_of_members if x.split('.')[0]==str(qtid)]
+                    q_genes = [x for x in col6_comma_separated_list_of_members if x.split('.')[0] == str(qtid)]
                     ogs_dict[col2_og_name] = [col2_og_name, col5_comma_separated_list_of_species, q_genes]
                     species_list = list(set(species_list + col5_comma_separated_list_of_species))
     if len(species_list) == 0:
@@ -182,7 +187,7 @@ def main():
         parser.print_help()
         print('\nError <-og>: Please specify eggnog <e6.og2seqs_and_species.tsv>')
         sys.exit()
-    get_eggnog_orthomap(args.qt, args.og, args.out)
+    get_eggnog_orthomap(args.qt, args.og, subset=args.subset, out=args.out)
 
 
 if __name__ == '__main__':
