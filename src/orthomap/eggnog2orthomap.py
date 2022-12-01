@@ -109,26 +109,23 @@ def get_eggnog_orthomap(qt, og, subset=None, out=None, quite=False, continuity=T
                                  [int(nsplit[1])])].counts)[0])
     og_dict = {}
     continuity_dict = {}
-    with alive_bar(len(ogs_dict)) as bar:
-        for og in ogs_dict.keys():
-            bar()
-            print(og, len(ogs_dict))
-            og_tmp = ogs_dict[og]
-            og_hits = [int(x) for x in og_tmp[1]]
-            # get list of the youngest common between query and all other species
-            og_hits_youngest_common = list(species_list_df.youngest_common[
-                                               [x for x, y in enumerate(species_list_df.taxID)
-                                                if y in og_hits]])
-            # evaluate all youngest common nodes to retain the oldest of them and assign as the orthogroup
-            # ancestral state (gene age)
-            if len(og_hits_youngest_common) > 0:
-                og_oldest_common = qlin.get_oldest_common(qlineage, og_hits_youngest_common)
-                og_dict[og_tmp[0]] = og_oldest_common
-                if continuity:
-                    continuity_dict[og_tmp[0]] =\
-                        of2orthomap.get_youngest_common_counts(qlineage,
-                                                               pd.DataFrame(og_hits_youngest_common,
-                                                                            columns=['youngest_common'])).counts
+    for og in ogs_dict.keys():
+        og_tmp = ogs_dict[og]
+        og_hits = [int(x) for x in og_tmp[1]]
+        # get list of the youngest common between query and all other species
+        og_hits_youngest_common = list(species_list_df.youngest_common[
+                                            [x for x, y in enumerate(species_list_df.taxID)
+                                            if y in og_hits]])
+        # evaluate all youngest common nodes to retain the oldest of them and assign as the orthogroup
+        # ancestral state (gene age)
+        if len(og_hits_youngest_common) > 0:
+            og_oldest_common = qlin.get_oldest_common(qlineage, og_hits_youngest_common)
+            og_dict[og_tmp[0]] = og_oldest_common
+            if continuity:
+                continuity_dict[og_tmp[0]] =\
+                    of2orthomap.get_youngest_common_counts(qlineage,
+                                                            pd.DataFrame(og_hits_youngest_common,
+                                                                        columns=['youngest_common'])).counts
     if continuity:
         youngest_common_counts_df = youngest_common_counts_df.join(pd.DataFrame.from_dict(continuity_dict))
     omap = []
@@ -138,29 +135,26 @@ def get_eggnog_orthomap(qt, og, subset=None, out=None, quite=False, continuity=T
             outhandle.write('seqID\tOrthogroup\tPSnum\tPStaxID\tPSname\tPScontinuity\n')
         else:
             outhandle.write('seqID\tOrthogroup\tPSnum\tPStaxID\tPSname\n')
-    with alive_bar(len(ogs_dict)) as bar:
-        for og in ogs_dict.keys():
-            bar()
-            print(og, len(ogs_dict))
-            og_tmp = ogs_dict[og]
-            og_ps = qlineagenames[qlineagenames['PStaxID'] ==
-                                  str(og_dict[og_tmp[0]])].values.tolist()[0]
-            og_ps_join = '\t'.join(og_ps)
-            if continuity:
-                og_continuity_score = of2orthomap.get_continuity_score(og_tmp[0], youngest_common_counts_df)
-                if out:
-                    if continuity:
-                        [outhandle.write(x.replace(' ', '') + '\t' + og_tmp[0] + '\t' + og_ps_join + '\t' +
-                                         str(og_continuity_score) + '\n') for x in og_tmp[2]]
-                    else:
-                        [outhandle.write(x.replace(' ', '') + '\t' + og_tmp[0] + '\t' + og_ps_join + '\n')
-                         for x in og_tmp[2]]
-            if continuity:
-                omap += [[x.replace(' ', ''), og_tmp[0], og_ps[0], og_ps[1], og_ps[2], og_continuity_score]
-                         for x in og_tmp[2]]
-            else:
-                omap += [[x.replace(' ', ''), og_tmp[0], og_ps[0], og_ps[1], og_ps[2]]
-                         for x in og_tmp[2]]
+    for og in ogs_dict.keys():
+        og_tmp = ogs_dict[og]
+        og_ps = qlineagenames[qlineagenames['PStaxID'] ==
+                                str(og_dict[og_tmp[0]])].values.tolist()[0]
+        og_ps_join = '\t'.join(og_ps)
+        if continuity:
+            og_continuity_score = of2orthomap.get_continuity_score(og_tmp[0], youngest_common_counts_df)
+            if out:
+                if continuity:
+                    [outhandle.write(x.replace(' ', '') + '\t' + og_tmp[0] + '\t' + og_ps_join + '\t' +
+                                     str(og_continuity_score) + '\n') for x in og_tmp[2]]
+                else:
+                    [outhandle.write(x.replace(' ', '') + '\t' + og_tmp[0] + '\t' + og_ps_join + '\n')
+                     for x in og_tmp[2]]
+        if continuity:
+            omap += [[x.replace(' ', ''), og_tmp[0], og_ps[0], og_ps[1], og_ps[2], og_continuity_score]
+                     for x in og_tmp[2]]
+        else:
+            omap += [[x.replace(' ', ''), og_tmp[0], og_ps[0], og_ps[1], og_ps[2]]
+                     for x in og_tmp[2]]
     if out:
         outhandle.close()
     omap_df = pd.DataFrame(omap)
