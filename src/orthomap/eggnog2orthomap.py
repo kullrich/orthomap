@@ -44,15 +44,18 @@ def add_argparse_args(parser: argparse.ArgumentParser):
     """
     parser.add_argument('-qt', help='query species taxid (e.g. use <orthomap qlin -h> to get taxid)')
     parser.add_argument('-og', help='specify eggnog <e6.og2seqs_and_species.tsv>')
+    parser.add_argument('-subset', help='specify file of orthologous groups to include'
+                                        '<e6.og2parents_and_children.new.tsv>')
     parser.add_argument('-out', help='specify output file <orthomap.tsv> (default: orthomap.tsv)',
                         default='orthomap.tsv')
 
 
-def get_eggnog_orthomap(qt, og, out=None, quite=False, continuity=True):
+def get_eggnog_orthomap(qt, og, subset=None, out=None, quite=False, continuity=True):
     """
 
     :param qt:
     :param og:
+    :param subset:
     :param out:
     :param quite:
     :param continuity:
@@ -61,6 +64,12 @@ def get_eggnog_orthomap(qt, og, out=None, quite=False, continuity=True):
     ncbi = NCBITaxa()
     qname, qtid, qlineage, qlineagenames_dict, qlineagezip, qlineagenames, qlineagerev, qk = qlin.get_qlin(qt=qt, quite=True)
     query_lineage_topo = qlin.get_lineage_topo(qt)
+    if subset is not None:
+        subset_dict = {}
+        with open(subset, 'r') as subset_ogs:
+            for subset_tmp in subset_ogs:
+                sog_name = subset_ogs.strip().split('\t')[0]
+                subset_dict[sog_name] = []
     ogs_dict = {}
     species_list = []
     with open(og, 'r') as ogs:
@@ -68,11 +77,15 @@ def get_eggnog_orthomap(qt, og, out=None, quite=False, continuity=True):
             col1_taxonomic_level, col2_og_name, col3_number_of_species, col4_number_of_members,\
             col5_comma_separated_list_of_species, col6_comma_separated_list_of_members = og_line.strip().split('\t')
             col5_comma_separated_list_of_species = col5_comma_separated_list_of_species.split(',')
-            if str(qtid) in col5_comma_separated_list_of_species:
-                col6_comma_separated_list_of_members = col6_comma_separated_list_of_members.split(',')
-                q_genes = [x for x in col6_comma_separated_list_of_members if x.split('.')[0]==str(qtid)]
-                ogs_dict[col2_og_name] = [col2_og_name, col5_comma_separated_list_of_species, q_genes]
-                species_list = list(set(species_list + col5_comma_separated_list_of_species))
+            if subset is not None:
+                if col2_og_name not in subset_dict:
+                    continue
+            else:
+                if str(qtid) in col5_comma_separated_list_of_species:
+                    col6_comma_separated_list_of_members = col6_comma_separated_list_of_members.split(',')
+                    q_genes = [x for x in col6_comma_separated_list_of_members if x.split('.')[0]==str(qtid)]
+                    ogs_dict[col2_og_name] = [col2_og_name, col5_comma_separated_list_of_species, q_genes]
+                    species_list = list(set(species_list + col5_comma_separated_list_of_species))
     if len(species_list) == 0:
         print('\nError <-qt>: query species taxID not in eggnog results, please check taxID.')
         sys.exit()
