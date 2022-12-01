@@ -68,7 +68,7 @@ def get_eggnog_orthomap(qt, og, subset=None, out=None, quite=False, continuity=T
         subset_dict = {}
         with open(subset, 'r') as subset_ogs:
             for subset_tmp in subset_ogs:
-                sog_name = subset_ogs.strip().split('\t')[0]
+                sog_name = subset_tmp.strip().split('\t')[0]
                 subset_dict[sog_name] = []
     ogs_dict = {}
     species_list = []
