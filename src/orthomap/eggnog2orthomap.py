@@ -84,13 +84,14 @@ def get_eggnog_orthomap(qt, og, subset=None, out=None, quite=False, continuity=T
                         col6_comma_separated_list_of_members = col6_comma_separated_list_of_members.split(',')
                         q_genes = [x for x in col6_comma_separated_list_of_members if x.split('.')[0] == str(qtid)]
                         ogs_dict[col2_og_name] = [col2_og_name, col5_comma_separated_list_of_species, q_genes]
-                        species_list = list(set(species_list + col5_comma_separated_list_of_species))
+                        species_list += col5_comma_separated_list_of_species
             else:
                 if str(qtid) in col5_comma_separated_list_of_species:
                     col6_comma_separated_list_of_members = col6_comma_separated_list_of_members.split(',')
                     q_genes = [x for x in col6_comma_separated_list_of_members if x.split('.')[0] == str(qtid)]
                     ogs_dict[col2_og_name] = [col2_og_name, col5_comma_separated_list_of_species, q_genes]
-                    species_list = list(set(species_list + col5_comma_separated_list_of_species))
+                    species_list += col5_comma_separated_list_of_species
+    species_list = list(set(species_list))
     if len(species_list) == 0:
         print('\nError <-qt>: query species taxID not in eggnog results, please check taxID.')
         sys.exit()
