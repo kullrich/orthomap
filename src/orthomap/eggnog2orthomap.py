@@ -130,7 +130,7 @@ def get_eggnog_orthomap(qt, og, subset=None, out=None, quite=False, continuity=T
             if continuity:
                 continuity_dict[og_tmp[0]] =\
                     of2orthomap.get_youngest_common_counts(qlineage,
-                                                            pd.DataFrame(og_hits_youngest_common,
+                                                           pd.DataFrame(og_hits_youngest_common,
                                                                         columns=['youngest_common'])).counts
     if continuity:
         youngest_common_counts_df = youngest_common_counts_df.join(pd.DataFrame.from_dict(continuity_dict))
@@ -169,7 +169,7 @@ def get_eggnog_orthomap(qt, og, subset=None, out=None, quite=False, continuity=T
     else:
         omap_df.columns = ['seqID', 'Orthogroup', 'PSnum', 'PStaxID', 'PSname']
     omap_df['PSnum'] = [int(x) for x in list(omap_df['PSnum'])]
-    return [omap_df, species_list, youngest_common_counts_df]
+    return [omap_df, species_list_df, youngest_common_counts_df]
 
 
 def main():
