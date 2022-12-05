@@ -1,7 +1,7 @@
 import argparse
 
 import pandas as pd
-from ete3 import NCBITaxa
+from ete3 import NCBITaxa, Tree
 
 from orthomap import qlin
 
@@ -76,3 +76,22 @@ def test_get_qtid():
     assert info[1] == int(qt)
     for i in range(2, 5):
         assert info[i] == info2[i]
+
+
+def test_lineage_topo():
+    qt = "7955"
+    tree = qlin.get_lineage_topo(qt)
+
+    assert isinstance(tree, Tree)
+
+def test_get_youngest_common():
+    ql = ['A', 'B', 'C']
+    tl = ['Q', 'N', 'A', 'C', 'B']
+
+    assert qlin.get_youngest_common(ql, tl) == 'B'
+
+def test_oldest_common():
+    ql = ['A', 'B', 'C']
+    tl = ['Q', 'N', 'A', 'C', 'B']
+
+    assert qlin.get_oldest_common(ql, tl) == 'A'

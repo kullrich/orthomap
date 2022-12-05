@@ -19,13 +19,14 @@ from ete3 import NCBITaxa
 
 def define_parser():
     """
+    A helper function for using `of2orthomap.py` via the terminal.
 
-    :return:
+    :return: argparse.ArgumentParser
     """
     of2orthomap_example = '''example:
 
     #
-    of2orthomap -seqname -qt 10090 -sl -oc -og
+    $ of2orthomap -seqname -qt 10090 -sl -oc -og
     '''
     parser = argparse.ArgumentParser(prog='of2orthomap', usage='%(prog)s [options] [<arguments>...]',
                                      description='extract orthomap from orthofinder output for query species',
@@ -37,9 +38,9 @@ def define_parser():
 
 def add_argparse_args(parser: argparse.ArgumentParser):
     """
+    This function attaches individual argument specifications to the parser.
 
-    :param parser:
-    :return:
+    :param parser: argparse.ArgumentParser
     """
     parser.add_argument('-seqname', help='sequence name of the query species in orthofinder'
                                          '(see column names of  <Orthogroups.tsv>)')
@@ -54,7 +55,6 @@ def add_argparse_args(parser: argparse.ArgumentParser):
 
 def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False, continuity=True):
     """
-
     :param seqname:
     :param qt:
     :param sl:
@@ -221,8 +221,7 @@ def get_continuity_score(og_name, youngest_common_counts_df):
 
 def main():
     """
-
-    :return:
+    The main function that is being called when `of2orthomap.py` is used via the terminal.
     """
     parser = define_parser()
     args = parser.parse_args()

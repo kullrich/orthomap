@@ -147,7 +147,7 @@ def get_lineage_topo(qt):
     >>> from orthomap import qlin
     >>> lineage_tree = qlin.get_lineage_topo(qt=)
     """
-    qname, qtid, qlineage, qlineagenames_dict, qlineagezip, qlineagenames, qlineagerev, qk = get_qlin(qt=qt, quite=True)
+    _, _, _, _, _, qlineagenames, _, _ = get_qlin(qt=qt, quite=True)
     qln = list(qlineagenames[['PSnum', 'PStaxID', 'PSname']].apply(lambda x: '/'.join(x), axis=1))
     qln = [x.replace('(', '_').replace(')', '_') for x in qln]
     tree = Tree('(' * len(qln) + ''.join([str(x) + '),' for x in qln[1::][::-1]])+str(qln[0])+');')
