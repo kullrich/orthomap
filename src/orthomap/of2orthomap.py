@@ -174,13 +174,14 @@ def get_counts_per_ps(omap_df, psnum_col='PSnum', pstaxid_col='PStaxID', psname_
     :param psname_col:
     :return:
     """
-    counts_df = pd.DataFrame(omap_df[psnum_col].value_counts())
+    counts_df = pd.DataFrame(omap_df.value_counts(psnum_col))
     counts_df.columns = ['counts']
-    counts_df[psnum_col] = list(list(omap_df[psnum_col].value_counts().index.values))
+    counts_df.reset_index(inplace=True)
     if pstaxid_col:
-        counts_df[pstaxid_col] = list(list(omap_df[pstaxid_col].value_counts().index.values))
+        counts_df = counts_df.merge(omap_df[~omap_df.duplicated(psnum_col)][[psnum_col, pstaxid_col]], on=psnum_col)
     if psname_col:
-        counts_df[psname_col] = list(list(omap_df[psname_col].value_counts().index.values))
+        counts_df = counts_df.merge(omap_df[~omap_df.duplicated(psnum_col)][[psnum_col, psname_col]], on=psnum_col)
+    counts_df.set_index(psnum_col, inplace=True, drop=False)
     counts_df = counts_df.sort_index()
     return counts_df
 
