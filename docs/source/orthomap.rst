@@ -20,10 +20,18 @@ orthomap.ncbitax module
    :undoc-members:
    :show-inheritance:
 
-orthomap.orthomap module
-------------------------
+orthomap.of2orthomap module
+---------------------------
 
-.. automodule:: orthomap.orthomap
+.. automodule:: orthomap.of2orthomap
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+orthomap.orthomap2tei module
+----------------------------
+
+.. automodule:: orthomap.orthomap2tei
    :members:
    :undoc-members:
    :show-inheritance:

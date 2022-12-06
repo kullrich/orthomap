@@ -26,9 +26,9 @@ def define_parser():
 
     # get query lineage to be used with orthomap later on using query species taxid
     # Mus musculus; 10090
-    qlin -qt 10090
+    $ qlin -qt 10090
     # using query species name
-    qlin -q "Mus musculus"
+    $ qlin -q "Mus musculus"
     """
     parser = argparse.ArgumentParser(
         prog="qlin",
@@ -56,6 +56,9 @@ def get_qtid(ncbi, q=None, qt=None):
     This function searches the NCBI database for results matching the
     query.
 
+    Note that if the user specifies both the name and the taxid of a species,
+    the returning result is based on the taxid.
+
     :param ncbi: ete3.NCBITaxa
         The NCBI database.
     :param q: string
@@ -68,10 +71,9 @@ def get_qtid(ncbi, q=None, qt=None):
 
     Example
     --------
-    >>>
+    >>> >>> from orthomap import qlin
+    >>> qlin.get_qlin(q='Danio rerio')
     """
-    # lines 61 (onwards) and 66 (onwards) were the same, because if both arguments
-    # are given we are still returning results based on the `taxid`.
     if qt:
         taxid2name = ncbi.get_taxid_translator([int(qt)])
         qtid, qname = list(taxid2name.items())[0]
@@ -133,15 +135,19 @@ def get_qlin(q=None, qt=None, quite=False):
 
 def get_lineage_topo(qt):
     """
+    A function that returns a species lineage as a tree object.
 
-    :param qt:
-    :return:
+    :param qt: string
+        The taxid of the queried species.
+    :return: ete3.Tree
+        The linage of a species as a ete3.Tree.
 
     Example
     --------
     >>> from orthomap import qlin
+    >>> lineage_tree = qlin.get_lineage_topo(qt=)
     """
-    qname, qtid, qlineage, qlineagenames_dict, qlineagezip, qlineagenames, qlineagerev, qk = get_qlin(qt=qt, quite=True)
+    _, _, _, _, _, qlineagenames, _, _ = get_qlin(qt=qt, quite=True)
     qln = list(qlineagenames[['PSnum', 'PStaxID', 'PSname']].apply(lambda x: '/'.join(x), axis=1))
     qln = [x.replace('(', '_').replace(')', '_').replace(':', '_') for x in qln]
     tree = Tree('(' * len(qln) + ''.join([str(x) + '),' for x in qln[1::][::-1]])+str(qln[0])+');')
@@ -165,7 +171,7 @@ def get_youngest_common(ql, tl):
 def get_oldest_common(ql, tl):
     """
 
-    :param ql:
+    :param ql: 
     :param tl:
     :return:
 

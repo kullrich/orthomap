@@ -1,6 +1,9 @@
-from orthomap import qlin
 import argparse
-from ete3 import NCBITaxa
+
+import pandas as pd
+from ete3 import NCBITaxa, Tree
+
+from orthomap import qlin
 
 
 def test_define_parse():
@@ -17,8 +20,9 @@ def test_get_qlin_q_argument():
     assert isinstance(info[3], dict)
     assert isinstance(info[-1], str)
 
-    for info_index in [2, 4, 5]:
+    for info_index in [2, 4]:
         assert isinstance(info[info_index], list)
+    assert isinstance(info[5], pd.DataFrame)
 
 
 def test_get_qlin_qt_argument():
@@ -30,8 +34,9 @@ def test_get_qlin_qt_argument():
     assert isinstance(info[3], dict)
     assert isinstance(info[-1], str)
 
-    for info_index in [2, 4, 5]:
+    for info_index in [2, 4]:
         assert isinstance(info[info_index], list)
+    assert isinstance(info[5], pd.DataFrame)
 
 
 def test_get_qlin_q_and_qt_argument():
@@ -69,4 +74,24 @@ def test_get_qtid():
     assert isinstance(info, list)
     assert info[0] == q
     assert info[1] == int(qt)
-    assert info == info2
+    for i in range(2, 5):
+        assert info[i] == info2[i]
+
+
+def test_lineage_topo():
+    qt = "7955"
+    tree = qlin.get_lineage_topo(qt)
+
+    assert isinstance(tree, Tree)
+
+def test_get_youngest_common():
+    ql = ['A', 'B', 'C']
+    tl = ['Q', 'N', 'A', 'C', 'B']
+
+    assert qlin.get_youngest_common(ql, tl) == 'B'
+
+def test_oldest_common():
+    ql = ['A', 'B', 'C']
+    tl = ['Q', 'N', 'A', 'C', 'B']
+
+    assert qlin.get_oldest_common(ql, tl) == 'A'

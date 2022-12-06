@@ -11,4 +11,5 @@ with the package.
    tei.rst
    ncbi.rst
    lineage_information.rst
+   convert_gtf.rst
    command_line.rst

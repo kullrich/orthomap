@@ -110,6 +110,19 @@ GTF file obtained from [here](https://ftp.ensembl.org/pub/release-105/gtf/danio_
 ...     g=True, b=True, p=True, v=True, s=True, q=True)
 ```
 
+### Convert a gene transfer file to a pandas DataFrame
+
+```python
+>>> from orthomap import gtf2t2g
+>>> file = 'examples/Mus_musculus.GRCm39.108.chr.gtf.gz'
+
+>>> df = gtf2t2g.parse_gtf(file, g=True, p=True, s=True, q=True, v=True)
+>>> df.head()
+gene_id	gene_id_version	transcript_id	transcript_id_version	gene_name	gene_type	protein_id	protein_id_version
+0	ENSMUSG00000102628	ENSMUSG00000102628.2	ENSMUST00000193198	ENSMUST00000193198.2	Gm37671	None	None	None
+1	ENSMUSG00000100595	ENSMUSG00000100595.2	ENSMUST00000191430	ENSMUST00000191430.2	Gm19087	None	None	None
+```
+
 ### Calculate transcriptome evolutionary index (TEI) for each cell of a scRNA data set:
 
 example: Danio rerio - [http://tome.gs.washington.edu](http://tome.gs.washington.edu)
