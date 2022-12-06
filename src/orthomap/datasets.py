@@ -12,7 +12,6 @@ License: GPL-3
 
 import os
 import wget
-import anndata as ad
 import scanpy as sc
 
 
