@@ -6,4 +6,5 @@ anndata
 scanpy
 seaborn
 alive-progress
+wget
 pytest

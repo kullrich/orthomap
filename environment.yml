@@ -11,4 +11,5 @@ dependencies:
   - scanpy
   - harmonypy
   - alive-progress
+  - python-wget
   - pytest

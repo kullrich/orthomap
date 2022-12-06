@@ -35,6 +35,7 @@ dependencies = [
     "seaborn",
     "harmonypy",
     "alive-progress",
+    "wget",
     "pytest",
 ]
 
