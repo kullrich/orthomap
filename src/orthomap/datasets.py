@@ -42,6 +42,34 @@ def ensembl105(datapath='.'):
     return [oc_filename, og_filename, sl_filename]
 
 
+def zebrafish_gtf(datapath='.'):
+    """
+    Download GTF for species Danio rerio from ensembl release-105
+    https://ftp.ensembl.org/pub/release-105/gtf/danio_rerio/
+
+    :param datapath:
+    :return:
+    """
+    zebrafish_gtf_filename = os.path.join(datapath, 'Danio_rerio.GRCz11.105.gtf.gz')
+    zebrafish_gtf_url = 'https://ftp.ensembl.org/pub/release-105/gtf/danio_rerio/Danio_rerio.GRCz11.105.gtf.gz'
+    wget.download(url=zebrafish_gtf_url, out=datapath)
+    return zebrafish_gtf_filename
+
+
+def mouse_gtf(datapath='.'):
+    """
+    Download GTF for species Mus musculus from ensembl release-105
+    https://ftp.ensembl.org/pub/release-105/gtf/mus_musculus/
+
+    :param datapath:
+    :return:
+    """
+    mouse_gtf_filename = os.path.join(datapath, 'Mus_musculus.GRCm39.105.gtf.gz')
+    mouse_gtf_url = 'https://ftp.ensembl.org/pub/release-105/gtf/mus_musculus/Mus_musculus.GRCm39.105.gtf.gz'
+    wget.download(url=mouse_gtf_url, out=datapath)
+    return mouse_gtf_filename
+
+
 def sun21_orthomap(datapath='.'):
     """
     Pre-calculated orthomap from:
