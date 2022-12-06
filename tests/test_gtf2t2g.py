@@ -1,9 +1,9 @@
 import numpy as np
 import pandas as pd
 
-from orthomap import gtf2t2g
+from orthomap import gtf2t2g, datasets
 
-file = "Mus_musculus.GRCm39.108.chr.gtf.gz"
+file = datasets.mouse_gtf()
 
 expected_columns = [
     "gene_id",
