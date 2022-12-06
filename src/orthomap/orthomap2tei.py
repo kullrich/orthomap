@@ -6,6 +6,7 @@ License: GPL-3
 """
 
 
+import os
 import scipy
 import numpy as np
 import pandas as pd
@@ -28,7 +29,8 @@ def read_orthomap(orthomapfile):
     >>> query_orthomap = orthomap2tei.read_orthomap('Sun2021_Orthomap.tsv')
     >>> query_orthomap
     """
-    orthomap = pd.read_csv(orthomapfile, delimiter='\t')
+    if os.path.exists(orthomapfile):
+        orthomap = pd.read_csv(orthomapfile, delimiter='\t')
     return orthomap
 
 

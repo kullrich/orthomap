@@ -10,6 +10,7 @@ License: GPL-3
 """
 
 
+import os
 import sys
 import argparse
 import pandas as pd
@@ -51,9 +52,10 @@ def add_argparse_args(parser: argparse.ArgumentParser):
     parser.add_argument('-og', help='specify orthofinder <Orthogroups.tsv> (see Orthogroups directory)')
     parser.add_argument('-out', help='specify output file <orthomap.tsv> (default: orthomap.tsv)',
                         default='orthomap.tsv')
+    parser.add_argument('-overwrite', help='specify if existing output file should be overwritten (default: True)',
+                        default=True, type=bool)
 
-
-def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False, continuity=True):
+def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False, continuity=True, overwrite=True):
     """
     :param seqname:
     :param qt:
@@ -119,6 +121,9 @@ def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False, continuity=True
         youngest_common_counts_df = youngest_common_counts_df.join(pd.DataFrame.from_dict(continuity_dict))
     omap = []
     if out:
+        if os.path.exists(out) and not overwrite:
+            print('\nError <-overwrite>: output file exists, please set to True if it should be overwritten\n')
+            sys.exit()
         outhandle = open(out, 'w')
         if continuity:
             outhandle.write('seqID\tOrthogroup\tPSnum\tPStaxID\tPSname\tPScontinuity\n')
@@ -247,7 +252,7 @@ def main():
         print('\nError <-og>: Please specify orthofinder <Orthogroups.tsv> (see Orthogroups directory)')
         sys.exit()
     get_orthomap(seqname=args.seqname, qt=args.qt, sl=args.sl, oc=args.oc, og=args.og, out=args.out, quite=False,
-                 continuity=True)
+                 continuity=True, overwrite=args.overwrite)
 
 
 if __name__ == '__main__':

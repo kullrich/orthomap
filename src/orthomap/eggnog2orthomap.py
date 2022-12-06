@@ -10,6 +10,7 @@ License: GPL-3
 """
 
 
+import os
 import sys
 import argparse
 import pandas as pd
@@ -48,9 +49,11 @@ def add_argparse_args(parser: argparse.ArgumentParser):
                                         '<e6.og2parents_and_children.new.tsv>')
     parser.add_argument('-out', help='specify output file <orthomap.tsv> (default: orthomap.tsv)',
                         default='orthomap.tsv')
+    parser.add_argument('-overwrite', help='specify if existing output file should be overwritten (default: True)',
+                        default=True, type=bool)
 
 
-def get_eggnog_orthomap(qt, og, subset=None, out=None, quite=False, continuity=True):
+def get_eggnog_orthomap(qt, og, subset=None, out=None, quite=False, continuity=True, overwrite=True):
     """
 
     :param qt:
@@ -137,6 +140,9 @@ def get_eggnog_orthomap(qt, og, subset=None, out=None, quite=False, continuity=T
         youngest_common_counts_df = youngest_common_counts_df.join(pd.DataFrame.from_dict(continuity_dict))
     omap = []
     if out:
+        if os.path.exists(out) and not overwrite:
+            print('\nError <-overwrite>: output file exists, please set to True if it should be overwritten\n')
+            sys.exit()
         outhandle = open(out, 'w')
         if continuity:
             outhandle.write('seqID\tOrthogroup\tPSnum\tPStaxID\tPSname\tPScontinuity\n')
@@ -188,7 +194,7 @@ def main():
         parser.print_help()
         print('\nError <-og>: Please specify eggnog <e6.og2seqs_and_species.tsv>')
         sys.exit()
-    get_eggnog_orthomap(args.qt, args.og, subset=args.subset, out=args.out)
+    get_eggnog_orthomap(args.qt, args.og, subset=args.subset, out=args.out, overwrite=args.overwrite)
 
 
 if __name__ == '__main__':

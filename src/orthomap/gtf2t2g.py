@@ -10,6 +10,7 @@ License: GPL-3
 """
 
 
+import os
 import sys
 import argparse
 import gzip
@@ -58,6 +59,8 @@ def add_argparse_args(parser: argparse.ArgumentParser):
     parser.add_argument("-v", help="specify if gene/transcript/protein version should be appended", action="store_true")
     parser.add_argument("-s", help="specify if summary should be printed", action="store_true")
     parser.add_argument("-q", help="specify if output should be quite", action="store_true")
+    parser.add_argument('-overwrite', help='specify if existing output file should be overwritten (default: True)',
+                        default=True, type=bool)
 
 
 def information_based_on_key(infosplit, key, q, lines, version=False):
@@ -95,8 +98,8 @@ def parse_gtf(gtf, g=False, b=False, p=False, v=False, s=False, output=None, q=F
         Specify if gene/transcript/protein version should be appended.
     :param s: bool (default: False)
         Specify if summary should be printed.
-    :param output: Optional[str] (default: None)
-        File name of output file.
+    :param output: Optional[file object] (default: None)
+        File object.
     :param q: bool (default: False)
         Specify if output should be quite.
     :return:
@@ -253,10 +256,13 @@ def main():
         print("\nError <-i>: Please specify GTF input file")
         sys.exit()
     if args.o:
+        if os.path.exists(args.o) and not args.overwrite:
+            print('\nError <-overwrite>: output file exists, please set to True if it should be overwritten\n')
+            sys.exit()
         output = open(args.o, "w")
     else:
         output = sys.stdout
-    parse_gtf(gtf=args.i, g=args.g, b=args.b, p=args.p, v=args.v,s= args.s, output=output, q=args.q)
+    parse_gtf(gtf=args.i, g=args.g, b=args.b, p=args.p, v=args.v, s=args.s, output=output, q=args.q)
     output.close()
 
 
