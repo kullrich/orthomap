@@ -236,7 +236,7 @@ def parse_gtf(gtf, g=False, b=False, p=False, v=False, s=False, output=None, q=F
             'gene_type',
             'protein_id',
             'protein_id_version', ], )
-    t2g_df.sort_values(by='gene_id')
+    t2g_df.sort_values(by='gene_id', inplace=True)
     t2g_df.reset_index(drop=True, inplace=True)
     gtf_handle.close()
     return t2g_df
