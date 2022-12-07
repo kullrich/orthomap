@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+
 from orthomap import ncbitax
 import argparse
 import os
@@ -11,6 +14,6 @@ def test_update_ncbi():
     path = os.path.expanduser('~/.etetoolkit/taxa.sqlite')
     path_exist = os.path.exists(path)
 
-    if path_exist == False:
+    if not path_exist:
         ncbitax.update_ncbi()
         assert os.path.exists(path)
