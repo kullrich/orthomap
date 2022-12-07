@@ -29,10 +29,12 @@ def define_parser():
     #
     $ eggnog2orthomap -qt 10090 -og
     '''
-    parser = argparse.ArgumentParser(prog='eggnog2orthomap', usage='%(prog)s [options] [<arguments>...]',
-                                     description='extract orthomap from eggnog output for query species',
-                                     epilog=eggnog2orthomap_example,
-                                     formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        prog='eggnog2orthomap',
+        usage='%(prog)s [options] [<arguments>...]',
+        description='extract orthomap from eggnog output for query species',
+        epilog=eggnog2orthomap_example,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
     add_argparse_args(parser=parser)
     return parser
 

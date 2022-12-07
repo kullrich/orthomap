@@ -29,10 +29,12 @@ def define_parser():
     #
     $ of2orthomap -seqname -qt 10090 -sl -oc -og
     '''
-    parser = argparse.ArgumentParser(prog='of2orthomap', usage='%(prog)s [options] [<arguments>...]',
-                                     description='extract orthomap from orthofinder output for query species',
-                                     epilog=of2orthomap_example,
-                                     formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        prog='of2orthomap',
+        usage='%(prog)s [options] [<arguments>...]',
+        description='extract orthomap from orthofinder output for query species',
+        epilog=of2orthomap_example,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
     add_argparse_args(parser=parser)
     return parser
 

@@ -26,9 +26,11 @@ def define_parser():
     #update ncbi taxonomy database
     ncbitax
     '''
-    parser = argparse.ArgumentParser(prog='ncbitax', usage='%(prog)s [options] [<arguments>...]',
-                                     description='update local ncbi taxonomy database', epilog=ncbitax_example,
-                                     formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        prog='ncbitax',
+        usage='%(prog)s [options] [<arguments>...]',
+        description='update local ncbi taxonomy database', epilog=ncbitax_example,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
     add_argparse_args(parser=parser)
     return parser
 

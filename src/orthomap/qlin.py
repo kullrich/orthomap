@@ -31,12 +31,11 @@ def define_parser():
     $ qlin -q "Mus musculus"
     """
     parser = argparse.ArgumentParser(
-        prog="qlin",
-        usage="%(prog)s [options] [<arguments>...]",
-        description="get query lineage based on ncbi taxonomy",
+        prog='qlin',
+        usage='%(prog)s [options] [<arguments>...]',
+        description='get query lineage based on ncbi taxonomy',
         epilog=qlin_example,
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-    )
+        formatter_class=argparse.RawDescriptionHelpFormatter)
     add_argparse_args(parser=parser)
     return parser
 
@@ -47,8 +46,8 @@ def add_argparse_args(parser: argparse.ArgumentParser):
 
     :param parser: argparse.ArgumentParser
     """
-    parser.add_argument("-q", help="query species name")
-    parser.add_argument("-qt", help="query species taxid")
+    parser.add_argument('-q', help='query species name')
+    parser.add_argument('-qt', help='query species taxid')
 
 
 def get_qtid(ncbi, q=None, qt=None):
@@ -91,11 +90,11 @@ def get_qtid(ncbi, q=None, qt=None):
     qlineagenames['PSname'] = [str(x) for x in list(qlineagenames['PSname'])]
     qlineagerev = qlineage[::-1]
     if qlineage[2] == 2:
-        qk = "Bacteria"
+        qk = 'Bacteria'
     if qlineage[2] == 2157:
-        qk = "Archea"
+        qk = 'Archea'
     if qlineage[2] == 2759:
-        qk = "Eukaryota"
+        qk = 'Eukaryota'
     return [qname, qtid, qlineage, qlineagenames_dict, qlineagezip, qlineagenames, qlineagerev, qk]
 
 
@@ -123,13 +122,13 @@ def get_qlin(q=None, qt=None, quite=False):
     ncbi = NCBITaxa()
     qname, qtid, qlineage, qlineagenames_dict, qlineagezip, qlineagenames, qlineagerev, qk = get_qtid(ncbi, q, qt)
     if not quite:
-        print("query name: %s" % qname)
-        print("query taxid: %s" % str(qtid))
-        print("query kingdom: %s" % qk)
+        print('query name: %s' % qname)
+        print('query taxid: %s' % str(qtid))
+        print('query kingdom: %s' % qk)
         print(
-            "query lineage names: \n%s" % str([qlineagenames_dict[x] + "(" + str(x) + ")" for x in qlineage])
+            'query lineage names: \n%s' % str([qlineagenames_dict[x] + '(' + str(x) + ')' for x in qlineage])
         )
-        print("query lineage: \n%s" % str(qlineage))
+        print('query lineage: \n%s' % str(qlineage))
     return [qname, qtid, qlineage, qlineagenames_dict, qlineagezip, qlineagenames, qlineagerev, qk]
 
 
@@ -191,14 +190,14 @@ def main():
     print(args)
     if not args.q and not args.qt:
         parser.print_help()
-        print("\nError <-q> <-qt>: Please specify query species name or taxid")
+        print('\nError <-q> <-qt>: Please specify query species name or taxid')
         sys.exit()
     if args.q and args.qt:
         parser.print_help()
-        print("\nWarning: Since both query species name and taxid are given taxid is used")
+        print('\nWarning: Since both query species name and taxid are given taxid is used')
         sys.exit()
     get_qlin(q=args.q, qt=args.qt, quite=False)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
