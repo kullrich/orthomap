@@ -57,7 +57,7 @@ def test_gtf2t2g_with_gene_protein_id_version():
         assert output[col].unique()[0] == 'None' or output[col].unique()[0] is None
 
 
-def test_Mus_musculus():
+def test_mus_musculus():
     expected_first_row = [
         'ENSMUSG00000000001',
         'ENSMUSG00000000001.5',
@@ -79,6 +79,7 @@ def test_Mus_musculus():
     output = gtf2t2g.parse_gtf(file, g=True, p=True, s=True, q=True, v=True)
     assert (output.iloc[0].values == expected_first_row).all()
     assert (output.iloc[-1].values == expected_last_row).all()
+
 
 def test_duplicates():
     # Need KU help here.
