@@ -28,7 +28,7 @@ def ensembl105(datapath='.'):
     :return:
     """
     oc_filename = os.path.join(datapath, 'ensembl_105_orthofinder_Orthogroups.GeneCount.tsv.zip')
-    og_filename = os.path.join(datapath, 'ensembl_105_orthofinder_Orthogroups.zip.tsv')
+    og_filename = os.path.join(datapath, 'ensembl_105_orthofinder_Orthogroups.tsv.zip')
     sl_filename = os.path.join(datapath, 'ensembl_105_orthofinder_species_list.tsv')
     oc_url = 'https://github.com/kullrich/orthomap/raw/main/examples/' \
              'ensembl_105_orthofinder_Orthogroups.GeneCount.tsv.zip'
