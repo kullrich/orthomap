@@ -12,6 +12,7 @@ License: GPL-3
 
 import os
 import sys
+import zipfile
 import argparse
 import pandas as pd
 from orthomap import qlin
@@ -92,33 +93,38 @@ def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False, continuity=True
                                  [int(nsplit[1])])].counts)[0])
     oc_og_dict = {}
     continuity_dict = {}
-    with open(oc, 'r') as oc_lines:
-        oc_species = next(oc_lines).strip().split('\t')
-        oc_qidx = [x for x, y in enumerate(oc_species) if y == seqname]
-        if len(oc_qidx) == 0:
-            print('\nError <-qname>: query species name not in orthofinder results, please check spelling\n'
-                  'e.g. <head -1 Orthogroups.GeneCounts.tsv>')
-            sys.exit()
-        for oc_line in oc_lines:
-            oc_og = oc_line.strip().split('\t')
-            if int(oc_og[oc_qidx[0]]) == 0:
-                continue
-            if int(oc_og[oc_qidx[0]]) > 0:
-                oc_og_hits = [oc_species[x+1] for x, y in enumerate(oc_og[1::][::-1][1::][::-1]) if int(y) > 0]
-                # get list of the youngest common between query and all other species
-                oc_og_hits_youngest_common = list(species_list.youngest_common[
-                                                      [x for x, y in enumerate(species_list.species)
-                                                       if y in oc_og_hits]])
-                # evaluate all youngest common nodes to retain the oldest of them and assign as the orthogroup
-                # ancestral state (gene age)
-                if len(oc_og_hits_youngest_common) > 0:
-                    oc_og_oldest_common = qlin.get_oldest_common(qlineage, oc_og_hits_youngest_common)
-                    oc_og_dict[oc_og[0]] = oc_og_oldest_common
-                    if continuity:
-                        continuity_dict[oc_og[0]] =\
-                            get_youngest_common_counts(qlineage,
-                                                       pd.DataFrame(oc_og_hits_youngest_common,
-                                                                    columns=['youngest_common'])).counts
+    if os.path.basename(oc).split('.')[-1] == 'zip':
+        oc_zip = zipfile.Path(oc, at='.'.join(os.path.basename(oc).split('.')[:-1]))
+        oc_lines = oc_zip.open(newline='')
+    else:
+        oc_lines = open(oc, 'r')
+    oc_species = next(oc_lines).strip().split('\t')
+    oc_qidx = [x for x, y in enumerate(oc_species) if y == seqname]
+    if len(oc_qidx) == 0:
+        print('\nError <-qname>: query species name not in orthofinder results, please check spelling\n'
+              'e.g. <head -1 Orthogroups.GeneCounts.tsv>')
+        sys.exit()
+    for oc_line in oc_lines:
+        oc_og = oc_line.strip().split('\t')
+        if int(oc_og[oc_qidx[0]]) == 0:
+            continue
+        if int(oc_og[oc_qidx[0]]) > 0:
+            oc_og_hits = [oc_species[x+1] for x, y in enumerate(oc_og[1::][::-1][1::][::-1]) if int(y) > 0]
+            # get list of the youngest common between query and all other species
+            oc_og_hits_youngest_common = list(species_list.youngest_common[
+                                                  [x for x, y in enumerate(species_list.species)
+                                                   if y in oc_og_hits]])
+            # evaluate all youngest common nodes to retain the oldest of them and assign as the orthogroup
+            # ancestral state (gene age)
+            if len(oc_og_hits_youngest_common) > 0:
+                oc_og_oldest_common = qlin.get_oldest_common(qlineage, oc_og_hits_youngest_common)
+                oc_og_dict[oc_og[0]] = oc_og_oldest_common
+                if continuity:
+                    continuity_dict[oc_og[0]] =\
+                        get_youngest_common_counts(qlineage,
+                                                   pd.DataFrame(oc_og_hits_youngest_common,
+                                                                columns=['youngest_common'])).counts
+    oc_lines.close()
     if continuity:
         youngest_common_counts_df = youngest_common_counts_df.join(pd.DataFrame.from_dict(continuity_dict))
     omap = []
@@ -131,36 +137,41 @@ def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False, continuity=True
             outhandle.write('seqID\tOrthogroup\tPSnum\tPStaxID\tPSname\tPScontinuity\n')
         else:
             outhandle.write('seqID\tOrthogroup\tPSnum\tPStaxID\tPSname\n')
-    with open(og, 'r') as og_lines:
-        og_species = next(og_lines).strip().split('\t')
-        og_qidx = [x for x, y in enumerate(og_species) if y == seqname]
-        if len(oc_qidx) == 0:
-            print('\nError <-qname>: query species name not in orthofinder results, please check spelling\n'
-                  'e.g. <head -1 Orthogroups.tsv>')
-            sys.exit()
-        for og_line in og_lines:
-            og_og = og_line.strip().split('\t')
-            if og_og[0] not in oc_og_dict:
-                continue
-            else:
-                og_ps = qlineagenames[qlineagenames['PStaxID'] ==
-                                      str(oc_og_dict[og_og[0]])].values.tolist()[0]
-                og_ps_join = '\t'.join(og_ps)
-                if continuity:
-                    og_continuity_score = get_continuity_score(og_og[0], youngest_common_counts_df)
-                if out:
-                    if continuity:
-                        [outhandle.write(x.replace(' ', '') + '\t' + og_og[0] + '\t' + og_ps_join + '\t' +
-                                         str(og_continuity_score) + '\n') for x in og_og[og_qidx[0]].split(',')]
-                    else:
-                        [outhandle.write(x.replace(' ', '') + '\t' + og_og[0] + '\t' + og_ps_join + '\n')
-                         for x in og_og[og_qidx[0]].split(',')]
+    if os.path.basename(og).split('.')[-1] == 'zip':
+        og_zip = zipfile.Path(og, at='.'.join(os.path.basename(og).split('.')[:-1]))
+        og_lines = og_zip.open(newline='')
+    else:
+        og_lines = open(og, 'r')
+    og_species = next(og_lines).strip().split('\t')
+    og_qidx = [x for x, y in enumerate(og_species) if y == seqname]
+    if len(oc_qidx) == 0:
+        print('\nError <-qname>: query species name not in orthofinder results, please check spelling\n'
+              'e.g. <head -1 Orthogroups.tsv>')
+        sys.exit()
+    for og_line in og_lines:
+        og_og = og_line.strip().split('\t')
+        if og_og[0] not in oc_og_dict:
+            continue
+        else:
+            og_ps = qlineagenames[qlineagenames['PStaxID'] ==
+                                  str(oc_og_dict[og_og[0]])].values.tolist()[0]
+            og_ps_join = '\t'.join(og_ps)
             if continuity:
-                omap += [[x.replace(' ', ''), og_og[0], og_ps[0], og_ps[1], og_ps[2], og_continuity_score]
-                         for x in og_og[og_qidx[0]].split(',')]
-            else:
-                omap += [[x.replace(' ', ''), og_og[0], og_ps[0], og_ps[1], og_ps[2]]
-                         for x in og_og[og_qidx[0]].split(',')]
+                og_continuity_score = get_continuity_score(og_og[0], youngest_common_counts_df)
+            if out:
+                if continuity:
+                    [outhandle.write(x.replace(' ', '') + '\t' + og_og[0] + '\t' + og_ps_join + '\t' +
+                                     str(og_continuity_score) + '\n') for x in og_og[og_qidx[0]].split(',')]
+                else:
+                    [outhandle.write(x.replace(' ', '') + '\t' + og_og[0] + '\t' + og_ps_join + '\n')
+                     for x in og_og[og_qidx[0]].split(',')]
+        if continuity:
+            omap += [[x.replace(' ', ''), og_og[0], og_ps[0], og_ps[1], og_ps[2], og_continuity_score]
+                     for x in og_og[og_qidx[0]].split(',')]
+        else:
+            omap += [[x.replace(' ', ''), og_og[0], og_ps[0], og_ps[1], og_ps[2]]
+                     for x in og_og[og_qidx[0]].split(',')]
+    og_lines.close()
     if out:
         outhandle.close()
     omap_df = pd.DataFrame(omap)
