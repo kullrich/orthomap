@@ -26,6 +26,11 @@ def ensembl105(datapath='.'):
 
     :param datapath:
     :return:
+
+    Example
+    --------
+    >>> from orthomap import datasets
+    >>> datasets.ensembl105(datapath='.')
     """
     oc_filename = os.path.join(datapath, 'ensembl_105_orthofinder_Orthogroups.GeneCount.tsv.zip')
     og_filename = os.path.join(datapath, 'ensembl_105_orthofinder_Orthogroups.tsv.zip')
@@ -49,6 +54,11 @@ def zebrafish_gtf(datapath='.'):
 
     :param datapath:
     :return:
+
+    Example
+    --------
+    >>> from orthomap import datasets
+    >>> datasets.zebrafish_gtf(datapath='.')
     """
     zebrafish_gtf_filename = os.path.join(datapath, 'Danio_rerio.GRCz11.105.gtf.gz')
     zebrafish_gtf_url = 'https://ftp.ensembl.org/pub/release-105/gtf/danio_rerio/Danio_rerio.GRCz11.105.gtf.gz'
@@ -63,6 +73,11 @@ def mouse_gtf(datapath='.'):
 
     :param datapath:
     :return:
+
+    Example
+    --------
+    >>> from orthomap import datasets
+    >>> datasets.mouse_gtf(datapath='.')
     """
     mouse_gtf_filename = os.path.join(datapath, 'Mus_musculus.GRCm39.105.gtf.gz')
     mouse_gtf_url = 'https://ftp.ensembl.org/pub/release-105/gtf/mus_musculus/Mus_musculus.GRCm39.105.gtf.gz'
@@ -81,6 +96,11 @@ def sun21_orthomap(datapath='.'):
 
     :param datapath:
     :return:
+
+    Example
+    --------
+    >>> from orthomap import datasets
+    >>> datasets.sun21_orthomap(datapath='.')
     """
     sun21_orthomap_filename = os.path.join(datapath, 'Sun2021_Orthomap.tsv')
     sun21_orthomap_url = 'https://zenodo.org/record/7404798/files/Sun2021_Orthomap.tsv'
@@ -99,6 +119,11 @@ def cazet22_orthomap(datapath='.'):
 
     :param datapath:
     :return:
+
+    Example
+    --------
+    >>> from orthomap import datasets
+    >>> datasets.cazet22_orthomap(datapath='.')
     """
     cazet22_orthomap_filename = os.path.join(datapath, 'Cazet2022_Orthomap.tsv')
     cazet22_orthomap_url = 'https://zenodo.org/record/7404798/files/Cazet2022_Orthomap.tsv'
@@ -120,11 +145,43 @@ def packer19(datapath='.'):
 
     :param datapath:
     :return:
+
+    Example
+    --------
+    >>> from orthomap import datasets
+    >>> datasets.packer19(datapath='.')
     """
     packer19_filename = os.path.join(datapath, 'GSE126954.h5ad')
-    packer19_url = 'https://zenodo.org/record/7245548/files/GSE126954.h5ad'
+    packer19_url = 'https://zenodo.org/record/7496490/files/GSE126954.h5ad'
     wget.download(url=packer19_url, out=datapath)
     adata = sc.read(packer19_filename)
+    return adata
+
+
+def packer19_small(datapath='.'):
+    """
+    scRNA count data from:
+
+    Packer, J.S., Zhu, Q., Huynh, C., Sivaramakrishnan, P., Preston, E., Dueck, H., Stefanik, D.,
+    Tan, K., Trapnell, C., Kim, J. and Waterston, R.H., 2019.
+    A lineage-resolved molecular atlas of C. elegans embryogenesis at single-cell resolution.
+    Science, 365(6459), p.eaax1971.
+
+    All files can be obtained from here:
+    https://doi.org/10.5281/zenodo.7245547
+
+    :param datapath:
+    :return:
+
+    Example
+    --------
+    >>> from orthomap import datasets
+    >>> datasets.packer19_small(datapath='.')
+    """
+    packer19_small_filename = os.path.join(datapath, 'packer19_small.h5ad')
+    packer19_small_url = 'https://zenodo.org/record/7496490/files/packer19_small.h5ad'
+    wget.download(url=packer19_small_url, out=datapath)
+    adata = sc.read(packer19_small_filename)
     return adata
 
 
@@ -142,6 +199,11 @@ def cazet22(datapath='.'):
 
     :param datapath:
     :return:
+
+    Example
+    --------
+    >>> from orthomap import datasets
+    >>> datasets.cazet22(datapath='.')
     """
     cazet22_filename = os.path.join(datapath, 'aepAtlasNonDub.h5ad')
     cazet22_url = 'https://zenodo.org/record/7369647/files/aepAtlasNonDub.h5ad'
@@ -174,6 +236,11 @@ def qiu22_zebrafish(datapath='.'):
 
     :param datapath:
     :return:
+
+    Example
+    --------
+    >>> from orthomap import datasets
+    >>> datasets.qiu22_zebrafish(datapath='.')
     """
     qiu22_zebrafish_filename = os.path.join(datapath, 'zebrafish_data.h5ad')
     qiu22_zebrafish_url = 'https://zenodo.org/record/7243603/files/zebrafish_data.h5ad'
@@ -202,6 +269,11 @@ def qiu22_frog(datapath='.'):
 
     :param datapath:
     :return:
+
+    Example
+    --------
+    >>> from orthomap import datasets
+    >>> datasets.qiu22_frog(datapath='.')
     """
     qiu22_frog_filename = os.path.join(datapath, 'frog_data.h5ad')
     qiu22_frog_url = 'https://zenodo.org/record/7244441/files/frog_data.h5ad'
@@ -246,6 +318,11 @@ def qiu22_mouse(datapath='.'):
 
     :param datapath:
     :return:
+
+    Example
+    --------
+    >>> from orthomap import datasets
+    >>> datasets.qiu22_mouse(datapath='.')
     """
     qiu22_mouse_filename = os.path.join(datapath, 'mouse_data.h5ad')
     qiu22_mouse_url = 'https://zenodo.org/record/7244568/files/mouse_data.h5ad'
