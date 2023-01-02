@@ -2,7 +2,8 @@
 # -*- coding: UTF-8 -*-
 
 import pandas as pd
-from orthomap import orthomap2tei, datasets
+
+from orthomap import datasets, orthomap2tei
 
 
 def test_read_orthomap():
@@ -66,22 +67,9 @@ def test_split_gene_id_by_gene_age():
     pass
 
 
-def test_get_ps():
+def test_get_psd():
     # No data to run the example.
     pass
-
-
-def test_get_pmatrix():
-    pass
-
-
-def test_get_tei():
-    pass
-
-
-def test_get_pstrata():
-    pass
-
 
 def test_min_max_to_01():
     ndarray_example_one = [1 for _ in range(5)]

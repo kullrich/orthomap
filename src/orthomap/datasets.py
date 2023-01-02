@@ -11,8 +11,9 @@ License: GPL-3
 
 
 import os
-import wget
+
 import scanpy as sc
+import wget
 
 
 def ensembl105(datapath='.'):

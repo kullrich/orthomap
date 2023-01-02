@@ -10,10 +10,11 @@ License: GPL-3
 """
 
 
-import os
-import sys
 import argparse
 import gzip
+import os
+import sys
+
 import pandas as pd
 
 

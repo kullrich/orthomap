@@ -7,11 +7,12 @@ License: GPL-3
 
 
 import os
-import scipy
+
+import anndata as ad
 import numpy as np
 import pandas as pd
-import anndata as ad
 import scanpy as sc
+import scipy
 from alive_progress import alive_bar
 
 

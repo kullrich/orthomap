@@ -10,8 +10,9 @@ License: GPL-3
 """
 
 
-import sys
 import argparse
+import sys
+
 import pandas as pd
 from ete3 import NCBITaxa, Tree
 

@@ -10,12 +10,14 @@ License: GPL-3
 """
 
 
+import argparse
 import os
 import sys
-import argparse
+
 import pandas as pd
-from orthomap import qlin, of2orthomap
 from ete3 import NCBITaxa
+
+from orthomap import of2orthomap, qlin
 
 
 def define_parser():
