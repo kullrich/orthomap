@@ -1,9 +1,10 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 
-from orthomap import ncbitax
 import argparse
 import os
+
+from orthomap import ncbitax
 
 
 def test_define_parse():
