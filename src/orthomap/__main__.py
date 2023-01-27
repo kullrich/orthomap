@@ -4,7 +4,7 @@
 
 """
 Author: Kristian K Ullrich
-date: October 2022
+date: January 2023
 email: ullrich@evolbio.mpg.de
 License: GPL-3
 """
@@ -18,7 +18,7 @@ def define_parser():
     parser = argparse.ArgumentParser(prog='orthomap', usage='%(prog)s <sub-command>',
                                      description='orthomap')
     subparsers = parser.add_subparsers(title='sub-commands', help='sub-commands help')
-    of2orthomap_example = '''example:
+    of2orthomap_example = '''of2orthomap example:
 
     #
     of2orthomap -seqname -qt 10090 -sl -oc -og

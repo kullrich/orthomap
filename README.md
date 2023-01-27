@@ -8,7 +8,7 @@
 
 [`orthomap`](https://github.com/kullrich/orthomap) is a python package to extract orthologous maps
 (in other words the evolutionary age of a given orthologous group) from OrthoFinder results.
-Orthomap results (gene ages per orthogroup) can be further used to calculate weigthed expression data
+Orthomap results (gene ages per orthogroup) can be further used to calculate weighted expression data
 from scRNA sequencing objects.
 
 ## Installing `orthomap`
@@ -17,7 +17,7 @@ from scRNA sequencing objects.
 
 The environment is created with `conda create` in which `orthomap` is installed.
 
-If you do not have a working installation of Python 3.7 (or later), consider
+If you do not have a working installation of Python 3.8 (or later), consider
 installing [Miniconda] (see [Installing Miniconda](#installing-miniconda)).
 Then run:
 

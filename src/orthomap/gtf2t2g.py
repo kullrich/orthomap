@@ -4,7 +4,7 @@
 
 """
 Author: Kristian K Ullrich
-date: November 2022
+date: January 2023
 email: ullrich@evolbio.mpg.de
 License: GPL-3
 """
@@ -23,7 +23,7 @@ def define_parser():
 
     :return: argparse.ArgumentParser
     """
-    gtf2t2g_example = """gtf2t2g example:
+    gtf2t2g_example = '''gtf2t2g example:
     
     # to get GTF from Mus musculus on Linux run:
     $ wget https://ftp.ensembl.org/pub/release-108/gtf/mus_musculus/Mus_musculus.GRCm39.108.chr.gtf.gz
@@ -33,7 +33,7 @@ def define_parser():
 
     # create t2g from GTF
     $ gtf2t2g -i Mus_musculus.GRCm39.108.chr.gtf.gz -o Mus_musculus.GRCm39.108.chr.gtf.t2g.tsv -g -b -p -v -s
-    """
+    '''
     parser = argparse.ArgumentParser(
         prog='gtf2t2g',
         usage='%(prog)s [options] [<arguments>...]',
@@ -71,6 +71,10 @@ def information_based_on_key(infosplit, key, q, lines, version=False):
     :param lines:
     :param version:
     :return:
+
+    Example
+    --------
+    >>>
     """
     output = None
     if version:
@@ -116,7 +120,7 @@ def parse_gtf(gtf, g=False, b=False, p=False, v=False, s=False, output=None, q=F
     >>> from orthomap import gtf2t2g, datasets
     >>> # get gene to transcript table for Danio rerio
     >>> # https://ftp.ensembl.org/pub/release-105/gtf/danio_rerio/Danio_rerio.GRCz11.105.gtf.gz
-    >>> gtf_file = datasets.zebrafish_gtf(datapath='/tmp')
+    >>> gtf_file = datasets.zebrafish_gtf(datapath='.')
     >>> query_species_t2g = gtf2t2g.parse_gtf(\
     >>> gtf=gtf_file,\
     >>> g=True, b=True, p=True, v=True, s=True, q=True)

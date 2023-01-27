@@ -1,5 +1,5 @@
 celegans	https://doi.org/10.5281/zenodo.7245547
 frog	https://doi.org/10.5281/zenodo.7244440
 hvulgaris	https://doi.org/10.5281/zenodo.7366178
-mouse
+mouse   https://doi.org/10.5281/zenodo.7244567
 zebrafish	https://doi.org/10.5281/zenodo.7243602

@@ -1,2 +1,4 @@
 ensembl105	https://doi.org/10.5281/zenodo.7242263
 eggnog6.0	https://doi.org/10.5281/zenodo.7242263
+Sun2021 https://doi.org/10.5281/zenodo.7242263
+Cazet2022   https://doi.org/10.5281/zenodo.7242263

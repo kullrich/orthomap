@@ -1,5 +1,5 @@
 Update/download NCBI database
-==============================
+=============================
 
 You can download or update your local fo the NCBI's taxonomy database (~300MB)
 using `orthomap`::

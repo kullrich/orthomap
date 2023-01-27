@@ -1,6 +1,6 @@
 """
 Author: Kristian K Ullrich
-date: November 2022
+date: January 2023
 email: ullrich@evolbio.mpg.de
 License: GPL-3
 """
@@ -24,9 +24,11 @@ def read_orthomap(orthomapfile):
 
     Example
     --------
-    >>> from orthomap import orthomap2tei
+    >>> from orthomap import orthomap2tei, datasets
+    >>> # download pre-calculated orthomap
+    >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
     >>> # load query species orthomap
-    >>> query_orthomap = orthomap2tei.read_orthomap('Sun2021_Orthomap.tsv')
+    >>> query_orthomap = orthomap2tei.read_orthomap(orthomapfile=sun21_orthomap_file)
     >>> query_orthomap
     """
     if os.path.exists(orthomapfile):
@@ -46,9 +48,9 @@ def geneset_overlap(geneset1, geneset2):
     Example
     --------
     >>> from orthomap import orthomap2tei
-    >>> g1 = ['g1.1', 'g1.2', 'g2.1', 'g3.1', 'g3.2']
-    >>> g2 = ['g1.1', 'g2.1', 'g3.1']
-    >>> orthomap2tei.geneset_overlap(g1, g2)
+    >>> geneset1 = ['g1.1', 'g1.2', 'g2.1', 'g3.1', 'g3.2']
+    >>> geneset2 = ['g1.1', 'g2.1', 'g3.1']
+    >>> orthomap2tei.geneset_overlap(geneset1, geneset2)
     """
     g1 = set(geneset1)
     g2 = set(geneset2)
@@ -94,9 +96,9 @@ def keep_min_max(df, keep='min', dup_col=['GeneID'], sort_col=['Phylostrata']):
 
     Example
     --------
+    >>> import pandas as pd
     >>> from orthomap import orthomap2tei
     >>> # create artificial DataFrame
-    >>> import pandas as pd
     >>> my_orthomap = pd.DataFrame.from_dict({'GeneID':['g1', 'g1', 'g2', 'g3', 'g3'],\
     >>> 'Phylostrata':[3, 1, 2, 5, 7]})
     >>> # keep min value
@@ -125,6 +127,10 @@ def split_gene_id_by_gene_age(gene_id, gene_age, keep='min', adata=None):
     :param adata: AnnData (default: None)
         The annotated data matrix of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
     :return:
+
+    Example
+    --------
+    >>>
     """
     id_age_df = pd.DataFrame(data={'GeneID': gene_id, 'Phylostrata': gene_age})
     # check and drop duplicated GeneID
@@ -166,16 +172,19 @@ def get_psd(adata, gene_id, gene_age, keep='min', layer=None, normalize_total=Fa
 
     Example
     --------
-    >>> from orthomap import orthomap2tei
-    >>> # load query species orthomap
-    >>> query_orthomap = orthomap2tei.read_orthomap('Sun2021_Orthomap.tsv')
-    >>> # load scRNA data
     >>> import scanpy as sc
-    >>> celegans_data = sc.read('celegans.h5ad')
+    >>> from orthomap import orthomap2tei, datasets
+    >>> # download pre-calculated orthomap
+    >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
+    >>> # load query species orthomap
+    >>> query_orthomap = orthomap2tei.read_orthomap(orthomapfile=sun21_orthomap_file)
+    >>> # download and load scRNA data
+    >>> #packer19_small = sc.read('packer19_small.h5ad')
+    >>> packer19_small = datasets.packer19_small(datapath='.')
     >>> # get psd from existing adata object
     >>> celegans_id_age_df_keep_subset, celegans_adata_counts, celegans_var_names_subset, celegans_sumx,\
     >>> celegans_sumx_recd, celegans_ps, celegans_psd =\
-    >>> orthomap2tei.get_psd(adata=celegans_data,\
+    >>> orthomap2tei.get_psd(adata=packer19_small,\
     >>> gene_id=query_orthomap['GeneID'],\
     >>> gene_age=query_orthomap['Phylostratum'])
     """
@@ -266,19 +275,22 @@ def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True, obs_name
 
     Example
     --------
-    >>> from orthomap import orthomap2tei
-    >>> # load query species orthomap
-    >>> query_orthomap = orthomap2tei.read_orthomap('Sun2021_Orthomap.tsv')
-    >>> # load scRNA data
     >>> import scanpy as sc
-    >>> celegans_data = sc.read('celegans.h5ad')
+    >>> from orthomap import orthomap2tei, datasets
+    >>> # download pre-calculated orthomap
+    >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
+    >>> # load query species orthomap
+    >>> query_orthomap = orthomap2tei.read_orthomap(orthomapfile=sun21_orthomap_file)
+    >>> # download and load scRNA data
+    >>> #packer19_small = sc.read('packer19_small.h5ad')
+    >>> packer19_small = datasets.packer19_small(datapath='.')
     >>> # add TEI values to existing adata object
-    >>> orthomap2tei.get_tei(adata=celegans_data,\
+    >>> orthomap2tei.get_tei(adata=packer19_small,\
     >>> gene_id=query_orthomap['GeneID'],\
     >>> gene_age=query_orthomap['Phylostratum'],\
     >>> add=True)
-    >>> # get 10 bootstap TEI values
-    >>> orthomap2tei.get_tei(adata=celegans_data,\
+    >>> # get 10 bootstrap TEI values
+    >>> orthomap2tei.get_tei(adata=packer19_small,\
     >>> gene_id=query_orthomap['GeneID'],\
     >>> gene_age=query_orthomap['Phylostratum'],\
     >>> boot=True, bt=10)
@@ -340,7 +352,20 @@ def get_pmatrix(adata, gene_id, gene_age, keep='min', layer=None, layer_name='pm
 
     Example
     --------
-    >>>
+    >>> import scanpy as sc
+    >>> from orthomap import orthomap2tei, datasets
+    >>> # download pre-calculated orthomap
+    >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
+    >>> # load query species orthomap
+    >>> query_orthomap = orthomap2tei.read_orthomap(orthomapfile=sun21_orthomap_file)
+    >>> # download and load scRNA data
+    >>> #packer19_small = sc.read('packer19_small.h5ad')
+    >>> packer19_small = datasets.packer19_small(datapath='.')
+    >>> # add TEI values to existing adata object
+    >>> orthomap2tei.get_tei(adata=packer19_small,\
+    >>> gene_id=query_orthomap['GeneID'],\
+    >>> gene_age=query_orthomap['Phylostratum'],\
+    >>> add=True)
     """
     id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
         get_psd(adata, gene_id, gene_age, keep, layer, normalize_total, log1p, target_sum)
@@ -399,7 +424,20 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', layer=None, cumsum=False, 
 
     Example
     --------
-    >>>
+    >>> import scanpy as sc
+    >>> from orthomap import orthomap2tei, datasets
+    >>> # download pre-calculated orthomap
+    >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
+    >>> # load query species orthomap
+    >>> query_orthomap = orthomap2tei.read_orthomap(orthomapfile=sun21_orthomap_file)
+    >>> # download and load scRNA data
+    >>> #packer19_small = sc.read('packer19_small.h5ad')
+    >>> packer19_small = datasets.packer19_small(datapath='.')
+    >>> # add TEI values to existing adata object
+    >>> orthomap2tei.get_tei(adata=packer19_small,\
+    >>> gene_id=query_orthomap['GeneID'],\
+    >>> gene_age=query_orthomap['Phylostratum'],\
+    >>> add=True)
     """
     id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
         get_psd(adata, gene_id, gene_age, keep, layer, normalize_total, log1p, target_sum)
@@ -407,8 +445,8 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', layer=None, cumsum=False, 
     pmatrix = sumx_recd.dot(teimatrix)
     tei = pmatrix.sum(1)
     phylostrata = list(set(id_age_df_keep_subset['Phylostrata']))
-    pstrata_norm_by_sumx = np.empty((len(phylostrata), pmatrix.shape[0]))
-    pstrata_norm_by_pmatrix_sum = np.empty((len(phylostrata), pmatrix.shape[0]))
+    pstrata_norm_by_sumx = np.zeros((len(phylostrata), pmatrix.shape[0]))
+    pstrata_norm_by_pmatrix_sum = np.zeros((len(phylostrata), pmatrix.shape[0]))
     for pk_idx, pk in enumerate(phylostrata):
         pstrata_norm_by_sumx[pk_idx, ] = np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                                   .sum(1)).flatten()
@@ -445,6 +483,12 @@ def min_max_to_01(ndarray):
 
     :param ndarray:
     :return:
+
+    Example
+    --------
+    >>> import numpy as np
+    >>> random_array = np.random.rand(10)
+    >>> min_max_to_01(random_array)
     """
     ndarray_min = np.min(ndarray)
     ndarray_max = np.max(ndarray)
@@ -456,7 +500,8 @@ def min_max_to_01(ndarray):
 
 
 def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col_type='mean',
-                 standard_scale=None, group_by=None, group_type='mean', normalize_total=False, log1p=False, target_sum=1e6):
+                 standard_scale=None, group_by=None, group_type='mean', normalize_total=False, log1p=False,
+                 target_sum=1e6):
     """
     This function computes relative expression profiles.
 
@@ -519,7 +564,20 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
 
     Example
     --------
-    >>>
+    >>> import scanpy as sc
+    >>> from orthomap import orthomap2tei, datasets
+    >>> # download pre-calculated orthomap
+    >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
+    >>> # load query species orthomap
+    >>> query_orthomap = orthomap2tei.read_orthomap(orthomapfile=sun21_orthomap_file)
+    >>> # download and load scRNA data
+    >>> #packer19_small = sc.read('packer19_small.h5ad')
+    >>> packer19_small = datasets.packer19_small(datapath='.')
+    >>> # add TEI values to existing adata object
+    >>> orthomap2tei.get_tei(adata=packer19_small,\
+    >>> gene_id=query_orthomap['GeneID'],\
+    >>> gene_age=query_orthomap['Phylostratum'],\
+    >>> add=True)
     """
     id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
         get_psd(adata, gene_id, gene_age, keep, layer, normalize_total, log1p, target_sum)
@@ -527,7 +585,7 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
     pmatrix = sumx_recd.dot(teimatrix)
     tei = pmatrix.sum(1)
     phylostrata = list(set(id_age_df_keep_subset['Phylostrata']))
-    rematrix = np.empty((len(phylostrata), adata_counts.shape[0]))
+    rematrix = np.zeros((len(phylostrata), adata_counts.shape[0]))
     if use == 'pmatrix':
         for pk_idx, pk in enumerate(phylostrata):
             if col_type == 'mean':
@@ -605,3 +663,96 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
         if standard_scale == 1:
             rematrix_df = rematrix_df.apply(min_max_to_01, axis=0, raw=True)
     return rematrix_df
+
+
+def get_min_max_expr_number(ndarray, min_expr=1, max_expr=None):
+    """
+
+    :param ndarray:
+    :param min_expr:
+    :param max_expr:
+    :return:
+
+    Example
+    --------
+    >>>
+    """
+    if type(min_expr) == str:
+        min_expr = np.quantile(a=ndarray, q=float(min_expr.split('q')[1])/100)
+    if type(max_expr) == str:
+        max_expr = np.quantile(a=ndarray, q=float(max_expr.split('q')[1])/100)
+    if max_expr is not None:
+        return np.bitwise_and(np.greater_equal(ndarray, min_expr), np.less(ndarray, max_expr)).sum()
+    else:
+        return np.greater_equal(ndarray, min_expr).sum()
+
+
+def get_quantile_expr_number(ndarray, quantile=[0, 5, 25, 50, 75, 95], min_expr=1, max_expr=None):
+    """
+
+    :param ndarray:
+    :param quantile:
+    :param min_expr:
+    :param max_expr:
+    :return:
+
+    Example
+    --------
+    >>>
+    """
+    q_expr = []
+    if type(min_expr) == str:
+        min_expr = np.quantile(a=ndarray, q=float(min_expr.split('q')[1])/100)
+    if type(max_expr) == str:
+        max_expr = np.quantile(a=ndarray, q=float(max_expr.split('q')[1])/100)
+    for q in quantile:
+        if max_expr is not None:
+            q_expr.append(np.percentile(a=ndarray[np.bitwise_and(np.greater_equal(ndarray, min_expr),
+                                                                 np.less(ndarray, max_expr))], q=q))
+        else:
+            q_expr.append(np.percentile(a=ndarray[np.greater_equal(ndarray, min_expr)], q=q))
+    q_expr_number = []
+    for qe in q_expr:
+        q_expr_number.append(get_min_max_expr_number(ndarray, min_expr=qe, max_expr=max_expr))
+    return q_expr_number
+
+
+def get_e50(adata, gene_id, gene_age, keep='min', layer=None, use=None, col_type='mean',
+                 standard_scale=None, group_by=None, group_type='mean', normalize_total=False, log1p=False,
+                 target_sum=1e6, min_expr=1, max_expr=None):
+    """
+
+    :param adata:
+    :param gene_id:
+    :param gene_age:
+    :param keep:
+    :param layer:
+    :param use:
+    :param col_type:
+    :param standard_scale:
+    :param group_by:
+    :param group_type:
+    :param normalize_total:
+    :param log1p:
+    :param target_sum:
+    :param min_expr:
+    :param max_expr:
+    :return:
+
+    Example
+    --------
+    >>>
+    """
+    id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
+        get_psd(adata, gene_id, gene_age, keep, layer, normalize_total, log1p, target_sum)
+    phylostrata = list(set(id_age_df_keep_subset['Phylostrata']))
+    min_expr_global = np.apply_along_axis(
+        get_min_expr_number, 1, adata_counts.toarray(), min_expr=min_expr)
+    e50_global = np.apply_along_axis(
+        get_quantile_expr_number, 1, adata_counts.toarray(), quantile=50, min_expr=min_expr)
+    for pk_idx, pk in enumerate(phylostrata):
+        e50matrix[pk_idx,] = np.apply_along_axis(
+            np.median, 1, adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])].toarray()).flatten()
+    #if group_by is not None:
+    #if standard_scale is not None:
+    return

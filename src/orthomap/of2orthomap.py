@@ -4,7 +4,7 @@
 
 """
 Author: Kristian K Ullrich
-date: November 2022
+date: January 2023
 email: ullrich@evolbio.mpg.de
 License: GPL-3
 """
@@ -25,7 +25,7 @@ def define_parser():
 
     :return: argparse.ArgumentParser
     """
-    of2orthomap_example = '''example:
+    of2orthomap_example = '''of2orthomap example:
 
     #
     $ of2orthomap -seqname -qt 10090 -sl -oc -og
@@ -58,6 +58,7 @@ def add_argparse_args(parser: argparse.ArgumentParser):
     parser.add_argument('-overwrite', help='specify if existing output file should be overwritten (default: True)',
                         default=True, type=bool)
 
+
 def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False, continuity=True, overwrite=True):
     """
     :param seqname:
@@ -68,10 +69,16 @@ def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False, continuity=True
     :param out:
     :param quite:
     :param continuity:
+    :param overwrite:
     :return:
+
+    Example
+    --------
+    >>>
     """
     ncbi = NCBITaxa()
-    qname, qtid, qlineage, qlineagenames_dict, qlineagezip, qlineagenames, qlineagerev, qk = qlin.get_qlin(qt=qt, quite=True)
+    qname, qtid, qlineage, qlineagenames_dict, qlineagezip, qlineagenames, qlineagerev, qk = \
+        qlin.get_qlin(qt=qt, quite=True)
     query_lineage_topo = qlin.get_lineage_topo(qt)
     species_list = pd.read_csv(sl, sep='\t', header=None)
     species_list.columns = ['species', 'taxID']
@@ -191,6 +198,10 @@ def get_counts_per_ps(omap_df, psnum_col='PSnum', pstaxid_col='PStaxID', psname_
     :param pstaxid_col:
     :param psname_col:
     :return:
+
+    Example
+    --------
+    >>>
     """
     counts_df = pd.DataFrame(omap_df.value_counts(psnum_col))
     counts_df.columns = ['counts']
@@ -210,6 +221,10 @@ def get_youngest_common_counts(qlineage, species_list):
     :param qlineage:
     :param species_list:
     :return:
+
+    Example
+    --------
+    >>>
     """
     counts_df = pd.DataFrame(qlineage, columns=['lineage'])
     counts_df.set_index('lineage', inplace=True)
@@ -226,6 +241,10 @@ def get_continuity_score(og_name, youngest_common_counts_df):
     :param og_name:
     :param youngest_common_counts_df:
     :return:
+
+    Example
+    --------
+    >>>
     """
     og_continuity_score = 0.0
     og_df = youngest_common_counts_df[~youngest_common_counts_df['counts'].isna()][og_name]

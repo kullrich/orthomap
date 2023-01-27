@@ -10,3 +10,4 @@ Contents:
    :maxdepth: 2
 
    installation.rst
+   notebooks/

@@ -4,7 +4,7 @@
 
 """
 Author: Kristian K Ullrich
-date: November 2022
+date: January 2023
 email: ullrich@evolbio.mpg.de
 License: GPL-3
 """
@@ -22,14 +22,14 @@ def define_parser():
 
     :return: argparse.ArgumentParser
     """
-    qlin_example = """qlin example:
+    qlin_example = '''qlin example:
 
     # get query lineage to be used with orthomap later on using query species taxid
     # Mus musculus; 10090
     $ qlin -qt 10090
     # using query species name
     $ qlin -q "Mus musculus"
-    """
+    '''
     parser = argparse.ArgumentParser(
         prog='qlin',
         usage='%(prog)s [options] [<arguments>...]',
@@ -70,7 +70,7 @@ def get_qtid(ncbi, q=None, qt=None):
 
     Example
     --------
-    >>> >>> from orthomap import qlin
+    >>> from orthomap import qlin
     >>> qlin.get_qlin(q='Danio rerio')
     """
     if qt:
@@ -144,7 +144,7 @@ def get_lineage_topo(qt):
     Example
     --------
     >>> from orthomap import qlin
-    >>> lineage_tree = qlin.get_lineage_topo(qt=)
+    >>> lineage_tree = qlin.get_lineage_topo(qt='10090')
     """
     _, _, _, _, _, qlineagenames, _, _ = get_qlin(qt=qt, quite=True)
     qln = list(qlineagenames[['PSnum', 'PStaxID', 'PSname']].apply(lambda x: '/'.join(x), axis=1))
@@ -163,6 +163,12 @@ def get_youngest_common(ql, tl):
     Example
     --------
     >>> from orthomap import qlin
+    >>> # get query species taxonomic lineage information
+    >>> query_lineage = qlin.get_qlin(q='Caenorhabditis elegans')
+    >>> # get target species taxonomic lineage information
+    >>> target_lineage = qlin.get_qlin(q='Mus musculus')
+    >>> # get youngest common
+    >>> get_youngest_common(query_lineage, target_lineage)
     """
     return [x for x in tl if x in ql][-1]
 
@@ -177,6 +183,12 @@ def get_oldest_common(ql, tl):
     Example
     --------
     >>> from orthomap import qlin
+    >>> # get query species taxonomic lineage information
+    >>> query_lineage = qlin.get_qlin(q='Caenorhabditis elegans')
+    >>> # get target species taxonomic lineage information
+    >>> target_lineage = qlin.get_qlin(q='Mus musculus')
+    >>> # get oldest common
+    >>> get_oldest_common(query_lineage, target_lineage)
     """
     return ql[min([x for x, y in enumerate(ql) if y in tl])]
 

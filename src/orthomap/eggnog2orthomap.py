@@ -4,7 +4,7 @@
 
 """
 Author: Kristian K Ullrich
-date: November 2022
+date: January 2023
 email: ullrich@evolbio.mpg.de
 License: GPL-3
 """
@@ -65,6 +65,10 @@ def get_eggnog_orthomap(qt, og, subset=None, out=None, quite=False, continuity=T
     :param quite:
     :param continuity:
     :return:
+
+    Example
+    --------
+    >>>
     """
     ncbi = NCBITaxa()
     qname, qtid, qlineage, qlineagenames_dict, qlineagezip, qlineagenames, qlineagerev, qk = qlin.get_qlin(qt=qt, quite=True)
