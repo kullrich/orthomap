@@ -18,7 +18,7 @@ from orthomap import qlin, of2orthomap
 from ete3 import NCBITaxa
 
 
-def define_parser():
+def _define_parser():
     """
     A helper function for using `eggnog2orthomap.py` via the terminal.
 
@@ -35,11 +35,11 @@ def define_parser():
         description='extract orthomap from eggnog output for query species',
         epilog=eggnog2orthomap_example,
         formatter_class=argparse.RawDescriptionHelpFormatter)
-    add_argparse_args(parser=parser)
+    _add_argparse_args(parser=parser)
     return parser
 
 
-def add_argparse_args(parser: argparse.ArgumentParser):
+def _add_argparse_args(parser: argparse.ArgumentParser):
     """
     This function attaches individual argument specifications to the parser.
 
@@ -189,7 +189,7 @@ def main():
     """
     The main function that is being called when `eggnog2orthomap.py` is used via the terminal.
     """
-    parser = define_parser()
+    parser = _define_parser()
     args = parser.parse_args()
     print(args)
     if not args.qt:

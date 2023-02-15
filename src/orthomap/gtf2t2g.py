@@ -17,7 +17,7 @@ import gzip
 import pandas as pd
 
 
-def define_parser():
+def _define_parser():
     """
     A helper function for using `gtf2t2g.py` via the terminal.
 
@@ -40,11 +40,11 @@ def define_parser():
         description='extracts transcript to gene table from GTF',
         epilog=gtf2t2g_example,
         formatter_class=argparse.RawDescriptionHelpFormatter, )
-    add_argparse_args(parser=parser)
+    _add_argparse_args(parser=parser)
     return parser
 
 
-def add_argparse_args(parser: argparse.ArgumentParser):
+def _add_argparse_args(parser: argparse.ArgumentParser):
     """
     This function attaches individual argument specifications to the parser.
 
@@ -62,7 +62,7 @@ def add_argparse_args(parser: argparse.ArgumentParser):
                         default=True, type=bool)
 
 
-def information_based_on_key(infosplit, key, q, lines, version=False):
+def _information_based_on_key(infosplit, key, q, lines, version=False):
     """
 
     :param infosplit:
@@ -146,19 +146,19 @@ def parse_gtf(gtf, g=False, b=False, p=False, v=False, s=False, output=None, q=F
             gid_first_version = None
             tid_first_version = None
             infosplit = line[8].strip().split(';')
-            gid, gid_first = information_based_on_key(infosplit, 'gene_id', q, lines)
+            gid, gid_first = _information_based_on_key(infosplit, 'gene_id', q, lines)
             if not gid:
                 continue
-            tid, tid_first = information_based_on_key(infosplit, 'transcript_id', q, lines)
+            tid, tid_first = _information_based_on_key(infosplit, 'transcript_id', q, lines)
             if not tid:
                 continue
             if g:
-                _, gname_first = information_based_on_key(infosplit, 'gene_name', q, lines)
+                _, gname_first = _information_based_on_key(infosplit, 'gene_name', q, lines)
             if b:
-                _, gtype_first = information_based_on_key(infosplit, 'gene_biotype', q, lines)
+                _, gtype_first = _information_based_on_key(infosplit, 'gene_biotype', q, lines)
             if v:
-                _, gv_first = information_based_on_key(infosplit, 'gene_version', q, line, version=True)
-                _, tv_first = information_based_on_key(infosplit, 'transcript_version', q, line, version=True)
+                _, gv_first = _information_based_on_key(infosplit, 'gene_version', q, line, version=True)
+                _, tv_first = _information_based_on_key(infosplit, 'transcript_version', q, line, version=True)
                 if gv_first:
                     gid_first_version = gid_first + '.' + gv_first
                 if tv_first:
@@ -196,15 +196,15 @@ def parse_gtf(gtf, g=False, b=False, p=False, v=False, s=False, output=None, q=F
                 tid_first = None
                 pv_first = None
                 infosplit = line[8].strip().split(';')
-                tid, tid_first = information_based_on_key(infosplit, 'transcript_id', q, lines)
+                tid, tid_first = _information_based_on_key(infosplit, 'transcript_id', q, lines)
                 tid = [x for x in infosplit if 'transcript_id' in x]
                 if not tid:
                     continue
-                pid, pid_first = information_based_on_key(infosplit, 'protein_id', q, lines)
+                pid, pid_first = _information_based_on_key(infosplit, 'protein_id', q, lines)
                 if not pid:
                     continue
                 if v:
-                    _, pv_first = information_based_on_key(infosplit, 'protein_version', q, lines)
+                    _, pv_first = _information_based_on_key(infosplit, 'protein_version', q, lines)
                     if pv_first:
                         pid_first_version = pid_first + '.' + pv_first
                 if tid_first in t2p:
@@ -250,7 +250,7 @@ def main():
     """
     The main function that is being called when `gt2t2g.py` is used via the terminal.
     """
-    parser = define_parser()
+    parser = _define_parser()
     args = parser.parse_args()
     print(args)
     if not args.i:

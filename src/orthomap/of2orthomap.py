@@ -19,7 +19,7 @@ from orthomap import qlin
 from ete3 import NCBITaxa
 
 
-def define_parser():
+def _define_parser():
     """
     A helper function for using `of2orthomap.py` via the terminal.
 
@@ -36,11 +36,11 @@ def define_parser():
         description='extract orthomap from orthofinder output for query species',
         epilog=of2orthomap_example,
         formatter_class=argparse.RawDescriptionHelpFormatter)
-    add_argparse_args(parser=parser)
+    _add_argparse_args(parser=parser)
     return parser
 
 
-def add_argparse_args(parser: argparse.ArgumentParser):
+def _add_argparse_args(parser: argparse.ArgumentParser):
     """
     This function attaches individual argument specifications to the parser.
 
@@ -91,7 +91,7 @@ def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False, continuity=True
         print(qname)
         print(qt)
         print(species_list)
-    youngest_common_counts_df = get_youngest_common_counts(qlineage, species_list)
+    youngest_common_counts_df = _get_youngest_common_counts(qlineage, species_list)
     for node in query_lineage_topo.traverse('postorder'):
         nsplit = node.name.split('/')
         if len(nsplit) == 3:
@@ -128,9 +128,9 @@ def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False, continuity=True
                 oc_og_dict[oc_og[0]] = oc_og_oldest_common
                 if continuity:
                     continuity_dict[oc_og[0]] =\
-                        get_youngest_common_counts(qlineage,
-                                                   pd.DataFrame(oc_og_hits_youngest_common,
-                                                                columns=['youngest_common'])).counts
+                        _get_youngest_common_counts(qlineage,
+                                                    pd.DataFrame(oc_og_hits_youngest_common,
+                                                                 columns=['youngest_common'])).counts
     oc_lines.close()
     if continuity:
         youngest_common_counts_df = youngest_common_counts_df.join(pd.DataFrame.from_dict(continuity_dict))
@@ -164,7 +164,7 @@ def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False, continuity=True
                                   str(oc_og_dict[og_og[0]])].values.tolist()[0]
             og_ps_join = '\t'.join(og_ps)
             if continuity:
-                og_continuity_score = get_continuity_score(og_og[0], youngest_common_counts_df)
+                og_continuity_score = _get_continuity_score(og_og[0], youngest_common_counts_df)
             if out:
                 if continuity:
                     [outhandle.write(x.replace(' ', '') + '\t' + og_og[0] + '\t' + og_ps_join + '\t' +
@@ -215,7 +215,7 @@ def get_counts_per_ps(omap_df, psnum_col='PSnum', pstaxid_col='PStaxID', psname_
     return counts_df
 
 
-def get_youngest_common_counts(qlineage, species_list):
+def _get_youngest_common_counts(qlineage, species_list):
     """
 
     :param qlineage:
@@ -235,7 +235,7 @@ def get_youngest_common_counts(qlineage, species_list):
     return counts_df
 
 
-def get_continuity_score(og_name, youngest_common_counts_df):
+def _get_continuity_score(og_name, youngest_common_counts_df):
     """
 
     :param og_name:
@@ -260,7 +260,7 @@ def main():
     """
     The main function that is being called when `of2orthomap.py` is used via the terminal.
     """
-    parser = define_parser()
+    parser = _define_parser()
     args = parser.parse_args()
     print(args)
     if not args.seqname:

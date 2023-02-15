@@ -81,7 +81,7 @@ def replace_by(x_orig, xmatch, xreplace):
     return x_new
 
 
-def keep_min_max(df, keep='min', dup_col=['GeneID'], sort_col=['Phylostrata']):
+def _keep_min_max(df, keep='min', dup_col=['GeneID'], sort_col=['Phylostrata']):
     """
 
     :param df: DataFrame
@@ -102,9 +102,9 @@ def keep_min_max(df, keep='min', dup_col=['GeneID'], sort_col=['Phylostrata']):
     >>> my_orthomap = pd.DataFrame.from_dict({'GeneID':['g1', 'g1', 'g2', 'g3', 'g3'],\
     >>> 'Phylostrata':[3, 1, 2, 5, 7]})
     >>> # keep min value
-    >>> orthomap2tei.keep_min_max(my_orthomap, keep='min')
+    >>> orthomap2tei._keep_min_max(my_orthomap, keep='min')
     >>> # keep max value
-    >>> orthomap2tei.keep_min_max(my_orthomap, keep='max')
+    >>> orthomap2tei._keep_min_max(my_orthomap, keep='max')
     """
     if keep == 'min':
         df_sorted = df.sort_values(by=sort_col, ascending=True)
@@ -115,7 +115,7 @@ def keep_min_max(df, keep='min', dup_col=['GeneID'], sort_col=['Phylostrata']):
     return df_out
 
 
-def split_gene_id_by_gene_age(gene_id, gene_age, keep='min', adata=None):
+def _split_gene_id_by_gene_age(gene_id, gene_age, keep='min', adata=None):
     """
 
     :param gene_id: list
@@ -134,7 +134,7 @@ def split_gene_id_by_gene_age(gene_id, gene_age, keep='min', adata=None):
     """
     id_age_df = pd.DataFrame(data={'GeneID': gene_id, 'Phylostrata': gene_age})
     # check and drop duplicated GeneID
-    id_age_df_keep = keep_min_max(id_age_df, keep=keep, dup_col=['GeneID'], sort_col=['Phylostrata'])
+    id_age_df_keep = _keep_min_max(id_age_df, keep=keep, dup_col=['GeneID'], sort_col=['Phylostrata'])
     # get overlap
     if adata is not None:
         gene_intersection = pd.Index(id_age_df_keep['GeneID']).intersection(adata.var_names)
@@ -149,7 +149,7 @@ def split_gene_id_by_gene_age(gene_id, gene_age, keep='min', adata=None):
     return gene_id_gene_age_dict
 
 
-def get_psd(adata, gene_id, gene_age, keep='min', layer=None, normalize_total=False, log1p=False, target_sum=1e6):
+def _get_psd(adata, gene_id, gene_age, keep='min', layer=None, normalize_total=False, log1p=False, target_sum=1e6):
     """
 
     :param adata: AnnData
@@ -184,13 +184,13 @@ def get_psd(adata, gene_id, gene_age, keep='min', layer=None, normalize_total=Fa
     >>> # get psd from existing adata object
     >>> celegans_id_age_df_keep_subset, celegans_adata_counts, celegans_var_names_subset, celegans_sumx,\
     >>> celegans_sumx_recd, celegans_ps, celegans_psd =\
-    >>> orthomap2tei.get_psd(adata=packer19_small,\
+    >>> orthomap2tei._get_psd(adata=packer19_small,\
     >>> gene_id=query_orthomap['GeneID'],\
     >>> gene_age=query_orthomap['Phylostratum'])
     """
     id_age_df = pd.DataFrame(data={'GeneID': gene_id, 'Phylostrata': gene_age})
     # check and drop duplicated GeneID
-    id_age_df_keep = keep_min_max(id_age_df, keep=keep, dup_col=['GeneID'], sort_col=['Phylostrata'])
+    id_age_df_keep = _keep_min_max(id_age_df, keep=keep, dup_col=['GeneID'], sort_col=['Phylostrata'])
     # get overlap
     gene_intersection = pd.Index(id_age_df_keep['GeneID']).intersection(adata.var_names)
     id_age_df_keep_subset = id_age_df_keep.loc[id_age_df_keep['GeneID'].isin(gene_intersection)]
@@ -259,7 +259,7 @@ def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True, obs_name
         Layer to work on instead of X. If None, X is used.
     :param add: bool (default: True)
         Add TEI values as observation to existing adata object using obs_name.
-    :param obs_name: str
+    :param obs_name: str (default: tei)
         Observation name to be used for TEI values in existing adata object.
     :param boot: bool (default: False)
        Specify if bootstrap TEI values should be calculated and returned as DataFrame.
@@ -276,6 +276,8 @@ def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True, obs_name
     Example
     --------
     >>> import scanpy as sc
+    >>> import matplotlib.pyplot as plt
+    >>> import seaborn as sns
     >>> from orthomap import orthomap2tei, datasets
     >>> # download pre-calculated orthomap
     >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
@@ -289,6 +291,26 @@ def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True, obs_name
     >>> gene_id=query_orthomap['GeneID'],\
     >>> gene_age=query_orthomap['Phylostratum'],\
     >>> add=True)
+    >>> # plot tei boxplot grouped by embryo.time.bin observation
+    >>> sns.boxplot(x='embryo.time.bin', y='tei', data=packer19_small.obs)
+    >>> plt.show()
+    >>> # plot tei violinplot for each cell.type grouped by cell.type and embryo.time.bin observation
+    >>> # create new observation as a combination from embryo.time.bin and cell.type
+    >>> packer19_small.obs['etb_cell.type'] = packer19_small.obs[['embryo.time.bin', 'cell.type']]\
+    >>> .apply(lambda x: str(x[0]) + '_' + x[1], axis=1)
+    >>> # convert into category
+    >>> packer19_small.obs['etb_cell.type'] = packer19_small.obs['etb_cell.type'].astype('category')
+    >>> # reorder categories
+    >>> packer19_small.obs['etb_cell.type'] = packer19_small.obs['etb_cell.type'].cat\
+    >>> .reorder_categories(list(packer19_small.obs['etb_cell.type']\
+    >>> .value_counts().index[np.argsort([int(x.split('_')[0]) for x in\
+    >>> list(packer19_small.obs['etb_cell.type'].value_counts().index)])]))
+    >>> for c in packer19_small.obs['cell.type'].value_counts().index:
+    >>>    plt.figure()
+    >>>    sns.violinplot(x=packer19_small.obs[packer19_small.obs['cell.type'].isin([c])]\
+    >>>    ['etb_cell.type'].cat.remove_unused_categories(),\
+    >>>    y='tei', data=packer19_small.obs[packer19_small.obs['cell.type'].isin([c])])
+    >>> plt.show()
     >>> # get 10 bootstrap TEI values
     >>> orthomap2tei.get_tei(adata=packer19_small,\
     >>> gene_id=query_orthomap['GeneID'],\
@@ -296,7 +318,7 @@ def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True, obs_name
     >>> boot=True, bt=10)
     """
     id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
-        get_psd(adata, gene_id, gene_age, keep, layer, normalize_total, log1p, target_sum)
+        _get_psd(adata, gene_id, gene_age, keep, layer, normalize_total, log1p, target_sum)
     teimatrix = psd.dot(adata_counts.transpose()).transpose()
     pmatrix = sumx_recd.dot(teimatrix)
     tei = pmatrix.sum(1)
@@ -315,8 +337,8 @@ def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True, obs_name
     return tei_df
 
 
-def get_pmatrix(adata, gene_id, gene_age, keep='min', layer=None, layer_name='pmatrix', add_obs=True, add_var=True,
-                normalize_total=False, log1p=False, target_sum=1e6):
+def get_pmatrix(adata, gene_id, gene_age, keep='min', layer=None, layer_name='pmatrix', add_obs=True,
+                add_var=True, normalize_total=False, log1p=False, target_sum=1e6):
     """
     This function computes the partial transcriptome evolutionary index (TEI) values for each single gene.
 
@@ -339,9 +361,11 @@ def get_pmatrix(adata, gene_id, gene_age, keep='min', layer=None, layer_name='pm
     :param layer: Optional[str] (default: None)
         Layer to work on instead of X. If None, X is used.
     :param layer_name: str (default: pmatrix)
-        Layer to add to existing adata object. If copy, return a new adata object.
-    :param add_obs:
-    :param add_var:
+        Layer to add to existing adata object.
+    :param add_obs: bool (default: True)
+        Add original observations to new adata object.
+    :param add_var: bool (default: True)
+        Add original variables to new adata object.
     :param normalize_total: bool (default: False)
         Normalize counts per cell prior TEI calculation.
     :param log1p: bool (default: False)
@@ -361,27 +385,25 @@ def get_pmatrix(adata, gene_id, gene_age, keep='min', layer=None, layer_name='pm
     >>> # download and load scRNA data
     >>> #packer19_small = sc.read('packer19_small.h5ad')
     >>> packer19_small = datasets.packer19_small(datapath='.')
-    >>> # add TEI values to existing adata object
-    >>> orthomap2tei.get_tei(adata=packer19_small,\
+    >>> # get pmatrix as new adata object
+    >>> packer19_small_pmatrix = orthomap2tei.get_pmatrix(adata=packer19_small,\
     >>> gene_id=query_orthomap['GeneID'],\
-    >>> gene_age=query_orthomap['Phylostratum'],\
-    >>> add=True)
+    >>> gene_age=query_orthomap['Phylostratum'])
     """
     id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
-        get_psd(adata, gene_id, gene_age, keep, layer, normalize_total, log1p, target_sum)
+        _get_psd(adata, gene_id, gene_age, keep, layer, normalize_total, log1p, target_sum)
     teimatrix = psd.dot(adata_counts.transpose()).transpose()
     pmatrix = sumx_recd.dot(teimatrix)
-    tei = pmatrix.sum(1)
     adata_pmatrix = ad.AnnData(adata_counts)
     adata_pmatrix.layers[layer_name] = pmatrix
     adata_pmatrix.obs_names = adata.obs_names
     adata_pmatrix.var_names = var_names_subset
-    if add_var:
-        for kv in adata.var.keys():
-            adata_pmatrix.var[kv] = adata.var[kv][adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
     if add_obs:
         for ko in adata.obs.keys():
             adata_pmatrix.obs[ko] = adata.obs[ko]
+    if add_var:
+        for kv in adata.var.keys():
+            adata_pmatrix.var[kv] = adata.var[kv][adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
     return adata_pmatrix
 
 
@@ -409,7 +431,8 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', layer=None, cumsum=False, 
         Either define 'min' (ascending pre-sorting) or 'max' (non-ascending pre-sorting) to keep duplicates.
     :param layer: Optional[str] (default: None)
         Layer to work on instead of X. If None, X is used.
-    :param cumsum:
+    :param cumsum: bool (default: False)
+        Return cumsum 
     :param standard_scale: int (default: None)
         Whether or not to standardize the given axis (0: colums, 1: rows) between 0 and 1,
         meaning for each variable or group, subtract the minimum and divide each by its maximum.
@@ -425,6 +448,8 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', layer=None, cumsum=False, 
     Example
     --------
     >>> import scanpy as sc
+    >>> import matplotlib.pyplot as plt
+    >>> import seaborn as sns
     >>> from orthomap import orthomap2tei, datasets
     >>> # download pre-calculated orthomap
     >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
@@ -433,14 +458,29 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', layer=None, cumsum=False, 
     >>> # download and load scRNA data
     >>> #packer19_small = sc.read('packer19_small.h5ad')
     >>> packer19_small = datasets.packer19_small(datapath='.')
-    >>> # add TEI values to existing adata object
-    >>> orthomap2tei.get_tei(adata=packer19_small,\
+    >>> # get pstrata
+    >>> packer19_small_pstrata = orthomap2tei.get_pstrata(adata=packer19_small,\
+    >>> gene_id=query_orthomap['GeneID'],\
+    >>> gene_age=query_orthomap['Phylostratum'])
+    >>> # get cumsum over strata
+    >>> packer19_small_pstrata_cumsum = orthomap2tei.get_pstrata(adata=packer19_small,\
     >>> gene_id=query_orthomap['GeneID'],\
     >>> gene_age=query_orthomap['Phylostratum'],\
-    >>> add=True)
+    >>> cumsum=True)
+    >>> # group by embryo.time.bin observation
+    >>> packer19_small_pstrata_grouped = orthomap2tei.get_pstrata(adata=packer19_small,\
+    >>> gene_id=query_orthomap['GeneID'],\
+    >>> gene_age=query_orthomap['Phylostratum'],\
+    >>> group_by='embryo.time.bin')
+    >>> # plot heatmap using partial TEI values
+    >>> sns.heatmap(packer19_small_pstrata_grouped[0], cmap='viridis')
+    >>> plt.show()
+    >>> # plot heatmap using partial TEI percent
+    >>> sns.heatmap(packer19_small_pstrata_grouped[1], cmap='viridis')
+    >>> plt.show()
     """
     id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
-        get_psd(adata, gene_id, gene_age, keep, layer, normalize_total, log1p, target_sum)
+        _get_psd(adata, gene_id, gene_age, keep, layer, normalize_total, log1p, target_sum)
     teimatrix = psd.dot(adata_counts.transpose()).transpose()
     pmatrix = sumx_recd.dot(teimatrix)
     tei = pmatrix.sum(1)
@@ -460,25 +500,25 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', layer=None, cumsum=False, 
     pstrata_norm_by_pmatrix_sum_df['ps'] = phylostrata
     pstrata_norm_by_pmatrix_sum_df.set_index('ps', inplace=True)
     pstrata_norm_by_pmatrix_sum_df.columns = adata.obs_names
+    if cumsum:
+        pstrata_norm_by_sumx_df = pstrata_norm_by_sumx_df.cumsum(0)
+        pstrata_norm_by_pmatrix_sum_df = pstrata_norm_by_pmatrix_sum_df.cumsum(0)
     if group_by is not None:
         pstrata_norm_by_sumx_df =\
             pstrata_norm_by_sumx_df.transpose().groupby(adata.obs[group_by]).mean().transpose()
         pstrata_norm_by_pmatrix_sum_df =\
             pstrata_norm_by_pmatrix_sum_df.transpose().groupby(adata.obs[group_by]).mean().transpose()
-    if cumsum:
-        pstrata_norm_by_sumx_df = pstrata_norm_by_sumx_df.cumsum(0)
-        pstrata_norm_by_pmatrix_sum_df = pstrata_norm_by_pmatrix_sum_df.cumsum(0)
     if standard_scale is not None:
         if standard_scale == 0:
-            pstrata_norm_by_sumx_df = pstrata_norm_by_sumx_df.apply(min_max_to_01, axis=1, raw=True)
-            pstrata_norm_by_pmatrix_sum_df = pstrata_norm_by_pmatrix_sum_df.apply(min_max_to_01, axis=1, raw=True)
+            pstrata_norm_by_sumx_df = pstrata_norm_by_sumx_df.apply(_min_max_to_01, axis=1, raw=True)
+            pstrata_norm_by_pmatrix_sum_df = pstrata_norm_by_pmatrix_sum_df.apply(_min_max_to_01, axis=1, raw=True)
         if standard_scale == 1:
-            pstrata_norm_by_sumx_df = pstrata_norm_by_sumx_df.apply(min_max_to_01, axis=0, raw=True)
-            pstrata_norm_by_pmatrix_sum_df = pstrata_norm_by_pmatrix_sum_df.apply(min_max_to_01, axis=0, raw=True)
+            pstrata_norm_by_sumx_df = pstrata_norm_by_sumx_df.apply(_min_max_to_01, axis=0, raw=True)
+            pstrata_norm_by_pmatrix_sum_df = pstrata_norm_by_pmatrix_sum_df.apply(_min_max_to_01, axis=0, raw=True)
     return [pstrata_norm_by_sumx_df, pstrata_norm_by_pmatrix_sum_df]
 
 
-def min_max_to_01(ndarray):
+def _min_max_to_01(ndarray):
     """
 
     :param ndarray:
@@ -580,7 +620,7 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
     >>> add=True)
     """
     id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
-        get_psd(adata, gene_id, gene_age, keep, layer, normalize_total, log1p, target_sum)
+        _get_psd(adata, gene_id, gene_age, keep, layer, normalize_total, log1p, target_sum)
     teimatrix = psd.dot(adata_counts.transpose()).transpose()
     pmatrix = sumx_recd.dot(teimatrix)
     tei = pmatrix.sum(1)
@@ -659,13 +699,13 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
                 rematrix_df.transpose().groupby(adata.obs[group_by]).max().transpose()
     if standard_scale is not None:
         if standard_scale == 0:
-            rematrix_df = rematrix_df.apply(min_max_to_01, axis=1, raw=True)
+            rematrix_df = rematrix_df.apply(_min_max_to_01, axis=1, raw=True)
         if standard_scale == 1:
-            rematrix_df = rematrix_df.apply(min_max_to_01, axis=0, raw=True)
+            rematrix_df = rematrix_df.apply(_min_max_to_01, axis=0, raw=True)
     return rematrix_df
 
 
-def get_min_max_expr_number(ndarray, min_expr=1, max_expr=None):
+def _get_min_max_expr_number(ndarray, min_expr=1, max_expr=None):
     """
 
     :param ndarray:
@@ -687,7 +727,7 @@ def get_min_max_expr_number(ndarray, min_expr=1, max_expr=None):
         return np.greater_equal(ndarray, min_expr).sum()
 
 
-def get_quantile_expr_number(ndarray, quantile=[0, 5, 25, 50, 75, 95], min_expr=1, max_expr=None):
+def _get_quantile_expr_number(ndarray, quantile=[0, 5, 25, 50, 75, 95], min_expr=1, max_expr=None):
     """
 
     :param ndarray:
@@ -713,7 +753,7 @@ def get_quantile_expr_number(ndarray, quantile=[0, 5, 25, 50, 75, 95], min_expr=
             q_expr.append(np.percentile(a=ndarray[np.greater_equal(ndarray, min_expr)], q=q))
     q_expr_number = []
     for qe in q_expr:
-        q_expr_number.append(get_min_max_expr_number(ndarray, min_expr=qe, max_expr=max_expr))
+        q_expr_number.append(_get_min_max_expr_number(ndarray, min_expr=qe, max_expr=max_expr))
     return q_expr_number
 
 
@@ -743,16 +783,16 @@ def get_e50(adata, gene_id, gene_age, keep='min', layer=None, use=None, col_type
     --------
     >>>
     """
-    id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
-        get_psd(adata, gene_id, gene_age, keep, layer, normalize_total, log1p, target_sum)
-    phylostrata = list(set(id_age_df_keep_subset['Phylostrata']))
-    min_expr_global = np.apply_along_axis(
-        get_min_expr_number, 1, adata_counts.toarray(), min_expr=min_expr)
-    e50_global = np.apply_along_axis(
-        get_quantile_expr_number, 1, adata_counts.toarray(), quantile=50, min_expr=min_expr)
-    for pk_idx, pk in enumerate(phylostrata):
-        e50matrix[pk_idx,] = np.apply_along_axis(
-            np.median, 1, adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])].toarray()).flatten()
+    #id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
+    #    _get_psd(adata, gene_id, gene_age, keep, layer, normalize_total, log1p, target_sum)
+    #phylostrata = list(set(id_age_df_keep_subset['Phylostrata']))
+    #min_expr_global = np.apply_along_axis(
+    #    _get_min_max_expr_number, 1, adata_counts.toarray(), min_expr=min_expr)
+    #e50_global = np.apply_along_axis(
+    #    _get_quantile_expr_number, 1, adata_counts.toarray(), quantile=50, min_expr=min_expr)
+    #for pk_idx, pk in enumerate(phylostrata):
+    #    e50matrix[pk_idx,] = np.apply_along_axis(
+    #        np.median, 1, adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])].toarray()).flatten()
     #if group_by is not None:
     #if standard_scale is not None:
     return

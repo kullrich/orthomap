@@ -16,7 +16,7 @@ import pandas as pd
 from ete3 import NCBITaxa, Tree
 
 
-def define_parser():
+def _define_parser():
     """
     A helper function for using `qlin.py` via the terminal.
 
@@ -36,11 +36,11 @@ def define_parser():
         description='get query lineage based on ncbi taxonomy',
         epilog=qlin_example,
         formatter_class=argparse.RawDescriptionHelpFormatter)
-    add_argparse_args(parser=parser)
+    _add_argparse_args(parser=parser)
     return parser
 
 
-def add_argparse_args(parser: argparse.ArgumentParser):
+def _add_argparse_args(parser: argparse.ArgumentParser):
     """
     This function attaches individual argument specifications to the parser.
 
@@ -197,7 +197,7 @@ def main():
     """
     The main function that is being called when `qlin` is used via the terminal.
     """
-    parser = define_parser()
+    parser = _define_parser()
     args = parser.parse_args()
     print(args)
     if not args.q and not args.qt:
