@@ -9,6 +9,7 @@ dependencies:
   - pandas>=1.5.1
   - ete3
   - scanpy
+  - seaborn
   - harmonypy
   - alive-progress
   - python-wget

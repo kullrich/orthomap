@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 import anndata as ad
 import scanpy as sc
+import seaborn as sns
 from alive_progress import alive_bar
 
 
@@ -182,8 +183,8 @@ def _get_psd(adata, gene_id, gene_age, keep='min', layer=None, normalize_total=F
     >>> #packer19_small = sc.read('packer19_small.h5ad')
     >>> packer19_small = datasets.packer19_small(datapath='.')
     >>> # get psd from existing adata object
-    >>> celegans_id_age_df_keep_subset, celegans_adata_counts, celegans_var_names_subset, celegans_sumx,\
-    >>> celegans_sumx_recd, celegans_ps, celegans_psd =\
+    >>> celegans_var_names_df, celegans_id_age_df_keep_subset, celegans_adata_counts, celegans_var_names_subset,\
+    >>> celegans_sumx, celegans_sumx_recd, celegans_ps, celegans_psd =\
     >>> orthomap2tei._get_psd(adata=packer19_small,\
     >>> gene_id=query_orthomap['GeneID'],\
     >>> gene_age=query_orthomap['Phylostratum'])
@@ -191,6 +192,11 @@ def _get_psd(adata, gene_id, gene_age, keep='min', layer=None, normalize_total=F
     id_age_df = pd.DataFrame(data={'GeneID': gene_id, 'Phylostrata': gene_age})
     # check and drop duplicated GeneID
     id_age_df_keep = _keep_min_max(id_age_df, keep=keep, dup_col=['GeneID'], sort_col=['Phylostrata'])
+    # get overlap with var_names before NaN removal
+    var_names_df = pd.merge(left=pd.DataFrame(adata.var_names, columns=['GeneID']),
+                            right=id_age_df_keep, how='left', on='GeneID')
+    # check and remove NaN
+    id_age_df_keep = id_age_df_keep[~id_age_df_keep['Phylostrata'].isna()]
     # get overlap
     gene_intersection = pd.Index(id_age_df_keep['GeneID']).intersection(adata.var_names)
     id_age_df_keep_subset = id_age_df_keep.loc[id_age_df_keep['GeneID'].isin(gene_intersection)]
@@ -216,14 +222,57 @@ def _get_psd(adata, gene_id, gene_age, keep='min', layer=None, normalize_total=F
             adata_counts = adata_log1p.layers[layer]
     adata_counts = adata_counts[:, adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
     var_names_subset = adata.var_names[adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
-    var_names_subset_idx = var_names_subset.sort_values(return_indexer=True)[1]
+    var_names_subset, var_names_subset_idx = var_names_subset.sort_values(return_indexer=True)
     adata_counts = adata_counts[:, var_names_subset_idx]
     sumx = adata_counts.sum(1)
     sumx_rec = np.reciprocal(sumx)
     sumx_recd = scipy.sparse.diags(np.array(sumx_rec).flatten())
     ps = np.array(id_age_df_keep_subset['Phylostrata'])
     psd = scipy.sparse.diags(ps)
-    return [id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd]
+    return [var_names_df, id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd]
+
+
+def add_gene_age2adata_var(adata, gene_id, gene_age, keep='min', var_name='Phylostrata'):
+    """
+        This function add gene age to an existing adata object.
+
+        :param adata: AnnData
+            The annotated data matrix of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
+        :param gene_id: list
+            Expects GeneID column from orthomap DataFrame.
+        :param gene_age: list
+            Expects GeneID column from orthomap DataFrame.
+        :param keep: str (default: min)
+            In case of duplicated GeneIDs with different Phylostrata assignments, either keep 'min' or 'max' value.
+        :param var_name: str (default: Phylostrata)
+            Variable name to be used for gene age values in existing adata object.
+        :return:
+
+        Example
+        --------
+        >>> import scanpy as sc
+        >>> from orthomap import orthomap2tei, datasets
+        >>> # download pre-calculated orthomap
+        >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
+        >>> # load query species orthomap
+        >>> query_orthomap = orthomap2tei.read_orthomap(orthomapfile=sun21_orthomap_file)
+        >>> # download and load scRNA data
+        >>> #packer19_small = sc.read('packer19_small.h5ad')
+        >>> packer19_small = datasets.packer19_small(datapath='.')
+        >>> # add gene age values to existing adata object
+        >>> orthomap2tei.add_gene_age2adata_var(adata=packer19_small,\
+        >>> gene_id=query_orthomap['GeneID'],\
+        >>> gene_age=query_orthomap['Phylostratum'])
+        >>> packer19_small.var
+        """
+    id_age_df = pd.DataFrame(data={'GeneID': gene_id, 'Phylostrata': gene_age})
+    # check and drop duplicated GeneID
+    id_age_df_keep = _keep_min_max(id_age_df, keep=keep, dup_col=['GeneID'], sort_col=['Phylostrata'])
+    # get overlap with var_names
+    var_names_df = pd.merge(left=pd.DataFrame(adata.var_names, columns=['GeneID']),
+                            right=id_age_df_keep, how='left', on='GeneID')
+    # add gene age
+    adata.var[var_name] = list(var_names_df['Phylostrata'])
 
 
 def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True, obs_name='tei', boot=False, bt=10,
@@ -317,7 +366,7 @@ def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True, obs_name
     >>> gene_age=query_orthomap['Phylostratum'],\
     >>> boot=True, bt=10)
     """
-    id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
+    var_names_df, id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
         _get_psd(adata, gene_id, gene_age, keep, layer, normalize_total, log1p, target_sum)
     teimatrix = psd.dot(adata_counts.transpose()).transpose()
     pmatrix = sumx_recd.dot(teimatrix)
@@ -390,7 +439,7 @@ def get_pmatrix(adata, gene_id, gene_age, keep='min', layer=None, layer_name='pm
     >>> gene_id=query_orthomap['GeneID'],\
     >>> gene_age=query_orthomap['Phylostratum'])
     """
-    id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
+    var_names_df, id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
         _get_psd(adata, gene_id, gene_age, keep, layer, normalize_total, log1p, target_sum)
     teimatrix = psd.dot(adata_counts.transpose()).transpose()
     pmatrix = sumx_recd.dot(teimatrix)
@@ -403,8 +452,17 @@ def get_pmatrix(adata, gene_id, gene_age, keep='min', layer=None, layer_name='pm
             adata_pmatrix.obs[ko] = adata.obs[ko]
     if add_var:
         for kv in adata.var.keys():
-            adata_pmatrix.var[kv] = adata.var[kv][adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
+            adata_pmatrix.var[kv] = pd.merge(left=adata_pmatrix.var,
+                                             right=adata.var[kv][adata.var_names.isin(id_age_df_keep_subset['GeneID'])],
+                                             left_index=True,right_index=True)[kv]
+    adata_pmatrix.var['Phylostrata'] = list(pd.merge(left=pd.DataFrame(adata_pmatrix.var_names, columns=['GeneID']),
+                                                     right=var_names_df, how='left', on='GeneID')['Phylostrata'])
     return adata_pmatrix
+
+
+def plot_pmatrix(adata, group_by_var='Phylostrata', group_by_obs=None):
+    var_groups = adata.var[group_by_var].value_counts().sort_index()
+
 
 
 def get_pstrata(adata, gene_id, gene_age, keep='min', layer=None, cumsum=False, standard_scale=None, group_by=None,
@@ -434,7 +492,7 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', layer=None, cumsum=False, 
     :param cumsum: bool (default: False)
         Return cumsum 
     :param standard_scale: int (default: None)
-        Whether or not to standardize the given axis (0: colums, 1: rows) between 0 and 1,
+        Wether or not to standardize the given axis (0: colums, 1: rows) between 0 and 1,
         meaning for each variable or group, subtract the minimum and divide each by its maximum.
     :param group_by:
     :param normalize_total: bool (default: False)
@@ -479,7 +537,7 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', layer=None, cumsum=False, 
     >>> sns.heatmap(packer19_small_pstrata_grouped[1], cmap='viridis')
     >>> plt.show()
     """
-    id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
+    var_names_df, id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
         _get_psd(adata, gene_id, gene_age, keep, layer, normalize_total, log1p, target_sum)
     teimatrix = psd.dot(adata_counts.transpose()).transpose()
     pmatrix = sumx_recd.dot(teimatrix)
@@ -589,7 +647,7 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
     :param col_type: str (default: mean)
         Specify how the counts should be combined, either by 'mean', 'median', 'sum', 'min' or 'max'.
     :param standard_scale: int (default: None)
-        Whether or not to standardize the given axis (0: rows, gene age class, 1: columns, cells or group) between 0 and 1,
+        Wether or not to standardize the given axis (0: rows, gene age class, 1: columns, cells or group) between 0 and 1,
         meaning for each variable or group, subtract the minimum and divide each by its maximum.
     :param group_by:
     :param group_type: str (default: mean)
@@ -605,6 +663,8 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
     Example
     --------
     >>> import scanpy as sc
+    >>> import matplotlib.pyplot as plt
+    >>> import seaborn as sns
     >>> from orthomap import orthomap2tei, datasets
     >>> # download pre-calculated orthomap
     >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
@@ -613,11 +673,36 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
     >>> # download and load scRNA data
     >>> #packer19_small = sc.read('packer19_small.h5ad')
     >>> packer19_small = datasets.packer19_small(datapath='.')
-    >>> # add TEI values to existing adata object
-    >>> orthomap2tei.get_tei(adata=packer19_small,\
+    >>> # get rematrix
+    >>> packer19_small_rematrix = orthomap2tei.get_rematrix(adata=packer19_small,\
+    >>> gene_id=query_orthomap['GeneID'],\
+    >>> gene_age=query_orthomap['Phylostratum'])
+    >>> # group by embryo.time.bin observation
+    >>> packer19_small_rematrix_grouped = orthomap2tei.get_rematrix(adata=packer19_small,\
     >>> gene_id=query_orthomap['GeneID'],\
     >>> gene_age=query_orthomap['Phylostratum'],\
-    >>> add=True)
+    >>> group_by='embryo.time.bin')
+    >>> # plot heatmap using partial TEI values
+    >>> sns.heatmap(packer19_small_rematrix_grouped, cmap='viridis')
+    >>> plt.show()
+    >>> # group by embryo.time.bin observation and scale over rows
+    >>> packer19_small_rematrix_grouped_rows = orthomap2tei.get_rematrix(adata=packer19_small,\
+    >>> gene_id=query_orthomap['GeneID'],\
+    >>> gene_age=query_orthomap['Phylostratum'],\
+    >>> group_by='embryo.time.bin',\
+    >>> standard_scale=0)
+    >>> # plot heatmap using partial TEI values
+    >>> sns.heatmap(packer19_small_rematrix_grouped_rows, cmap='viridis')
+    >>> plt.show()
+    >>> # group by embryo.time.bin observation and scale over columns
+    >>> packer19_small_rematrix_grouped_columns = orthomap2tei.get_rematrix(adata=packer19_small,\
+    >>> gene_id=query_orthomap['GeneID'],\
+    >>> gene_age=query_orthomap['Phylostratum'],\
+    >>> group_by='embryo.time.bin',\
+    >>> standard_scale=1)
+    >>> # plot heatmap using partial TEI values
+    >>> sns.heatmap(packer19_small_rematrix_grouped_columns, cmap='viridis')
+    >>> plt.show()
     """
     id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd =\
         _get_psd(adata, gene_id, gene_age, keep, layer, normalize_total, log1p, target_sum)
