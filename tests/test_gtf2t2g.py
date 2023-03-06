@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 import pandas as pd
-from orthomap import gtf2t2g, datasets
+from orthomap import datasets, gtf2t2g
 
 
 file = datasets.mouse_gtf(datapath='/tmp')

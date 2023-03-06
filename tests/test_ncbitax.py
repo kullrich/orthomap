@@ -7,7 +7,7 @@ import os
 
 
 def test_define_parse():
-    parse = ncbitax.define_parser()
+    parse = ncbitax._define_parser()
     assert isinstance(parse, argparse.ArgumentParser)
 
 

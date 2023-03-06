@@ -6,16 +6,16 @@ channels:
 dependencies:
   - python=3.8
   - numpy<1.24
-  - numba>=0.56.4
-  - scipy>=1.10.1
+  - numba
+  - scipy
   - pandas>=1.5.1
-  - ete3>=3.1.2
-  - anndata>=0.8.0
+  - ete3
+  - anndata
   - scanpy>=1.9.3
-  - seaborn>=0.12.2
-  - alive-progress>=3.0.1
-  - python-wget>=3.2
-  - pytest>=7.2.2
-  - pip>=23.0.1
+  - seaborn
+  - alive-progress
+  - python-wget
+  - pytest
+  - pip
   - pip:
       - harmonypy>=0.0.9

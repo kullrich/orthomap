@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 import pandas as pd
-from orthomap import of2orthomap, datasets
+from orthomap import datasets, of2orthomap
 
 
 ensembl105_oc, ensembl105_og, ensembl105_sl = datasets.ensembl105('/tmp')
