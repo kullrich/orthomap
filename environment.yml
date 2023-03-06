@@ -11,8 +11,9 @@ dependencies:
   - anndata>=0.8.0
   - scanpy>=1.9.3
   - seaborn>=0.12.2
-  - harmonypy>=0.0.9
   - alive-progress>=3.0.1
   - python-wget>=3.2
   - pytest>=7.2.2
   - pip>=23.0.1
+  - pip:
+      - harmonypy>=0.0.9
