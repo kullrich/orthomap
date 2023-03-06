@@ -1,0 +1,37 @@
+name: build_and_test
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup conda, install packages, and test orthomap
+        run: |
+            sudo apt-get update
+            wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+            bash miniconda.sh -b -p $HOME/miniconda
+            source "$HOME/miniconda/etc/profile.d/conda.sh"
+            hash -r
+            conda config --set always_yes yes --set changeps1 no
+            #conda update -q conda
+            # Useful for debugging any issues with conda
+            conda info -a
+            # Create env
+            conda create -q python=3.8 --file environment.yml
+            
+            # Check pip
+            echo pip_path
+            which pip
+            # Install orthomap
+            pip install .
+            # Show installed package
+            conda list
+            # command to run tests
+            pytest -v
