@@ -111,17 +111,24 @@ def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False, continuity=True
     continuity_dict = {}
     if os.path.basename(oc).split('.')[-1] == 'zip':
         oc_zip = zipfile.Path(oc, at='.'.join(os.path.basename(oc).split('.')[:-1]))
-        oc_lines = oc_zip.open(newline='')
+        oc_lines = oc_zip.open()
     else:
         oc_lines = open(oc, 'r')
-    oc_species = next(oc_lines).strip().split('\t')
+    oc_species = next(oc_lines)
+    if type(oc_species) == bytes:
+        oc_species = oc_species.decode('utf-8').strip().split('\t')
+    else:
+        oc_species = oc_species.strip().split('\t')
     oc_qidx = [x for x, y in enumerate(oc_species) if y == seqname]
     if len(oc_qidx) == 0:
         print('\nError <-qname>: query species name not in orthofinder results, please check spelling\n'
               'e.g. <head -1 Orthogroups.GeneCounts.tsv>')
         sys.exit()
     for oc_line in oc_lines:
-        oc_og = oc_line.strip().split('\t')
+        if type(oc_line) == bytes:
+            oc_og = oc_line.decode('utf-8').strip().split('\t')
+        else:
+            oc_og = oc_line.strip().split('\t')
         if int(oc_og[oc_qidx[0]]) == 0:
             continue
         if int(oc_og[oc_qidx[0]]) > 0:
@@ -155,17 +162,24 @@ def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False, continuity=True
             outhandle.write('seqID\tOrthogroup\tPSnum\tPStaxID\tPSname\n')
     if os.path.basename(og).split('.')[-1] == 'zip':
         og_zip = zipfile.Path(og, at='.'.join(os.path.basename(og).split('.')[:-1]))
-        og_lines = og_zip.open(newline='')
+        og_lines = og_zip.open()
     else:
         og_lines = open(og, 'r')
-    og_species = next(og_lines).strip().split('\t')
+    og_species = next(og_lines)
+    if type(og_species) == bytes:
+        og_species = og_species.decode('utf-8').strip().split('\t')
+    else:
+        og_species = og_species.strip().split('\t')
     og_qidx = [x for x, y in enumerate(og_species) if y == seqname]
     if len(oc_qidx) == 0:
         print('\nError <-qname>: query species name not in orthofinder results, please check spelling\n'
               'e.g. <head -1 Orthogroups.tsv>')
         sys.exit()
     for og_line in og_lines:
-        og_og = og_line.strip().split('\t')
+        if type(og_line) == bytes:
+            og_og = og_line.decode('utf-8').strip().split('\t')
+        else:
+            og_og = og_line.strip().split('\t')
         if og_og[0] not in oc_og_dict:
             continue
         else:
