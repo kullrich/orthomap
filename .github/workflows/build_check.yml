@@ -24,7 +24,7 @@ jobs:
             # Useful for debugging any issues with conda
             conda info -a
             # Create env
-            conda create -q python=3.8 --file environment.yml
+            conda env create -q --file environment.yml
             
             # Check pip
             echo pip_path
