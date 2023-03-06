@@ -1,7 +1,10 @@
 # orthomap
 
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/kullrich/orthomap/build_check.yml?branch=main)](https://github.com/kullrich/orthomap/actions/workflows/build_check.yml)
+[![PyPI](https://img.shields.io/pypi/v/orthomap?color=blue)](https://pypi.org/project/orthomap/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/orthomap)](https://pypi.org/project/orthomap/)
+[![PyPI - Wheel](https://img.shields.io/pypi/wheel/orthomap)](https://pypi.org/project/orthomap/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![pypi-badge](https://img.shields.io/pypi/v/orthomap)](https://pypi.org/project/orthomap)
 [![docs-badge](https://readthedocs.org/projects/orthomap/badge/?version=latest)](https://orthomap.readthedocs.io/en/latest/?badge=latest)
 
 ## orthologous maps - evolutionary age index
