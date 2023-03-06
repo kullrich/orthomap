@@ -23,8 +23,13 @@ jobs:
             #conda update -q conda
             # Useful for debugging any issues with conda
             conda info -a
-            # Create env
-            conda env create -q --file environment.yml
+            # activate basic env
+            conda activate
+            conda install -c conda-forge mamba
+            # mamba create env
+            mamba env create -q --file environment.yml
+            # activate orthomap env
+            conda activate orthomap
             
             # Check pip
             echo pip_path
