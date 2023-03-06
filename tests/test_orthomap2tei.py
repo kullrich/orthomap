@@ -42,7 +42,7 @@ def test_keep_min_max_case_max():
         .drop_duplicates('GeneID')
         .sort_values('Phylostrata', ascending=ascending['max'])
     )
-    filtered_orthomap = orthomap2tei.keep_min_max(my_orthomap, keep='max')
+    filtered_orthomap = orthomap2tei._keep_min_max(my_orthomap, keep='max')
     assert (expected_orthomap.values == filtered_orthomap.values).all()
 
 
@@ -57,7 +57,7 @@ def test_keep_min_max_case_min():
         .drop_duplicates('GeneID')
         .sort_values('Phylostrata', ascending=ascending['min'])
     )
-    filtered_orthomap = orthomap2tei.keep_min_max(my_orthomap, keep='min')
+    filtered_orthomap = orthomap2tei._keep_min_max(my_orthomap, keep='min')
     assert (expected_orthomap.values == filtered_orthomap.values).all()
 
 
@@ -85,9 +85,9 @@ def test_get_pstrata():
 
 def test_min_max_to_01():
     ndarray_example_one = [1 for _ in range(5)]
-    assert orthomap2tei.min_max_to_01(ndarray_example_one) == [0 for _ in range(5)]
+    assert orthomap2tei._min_max_to_01(ndarray_example_one) == [0 for _ in range(5)]
     ndarray_example_two = [1 for _ in range(5)] + [2]
-    assert orthomap2tei.min_max_to_01(ndarray_example_two) == [0 for _ in range(5)] + [1]
+    assert orthomap2tei._min_max_to_01(ndarray_example_two) == [0 for _ in range(5)] + [1]
 
 
 def test_get_rematrix():
