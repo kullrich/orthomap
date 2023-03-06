@@ -1,5 +1,6 @@
 Welcome to orthomap's documentation!
 ====================================
+|GitHub Workflow Status| |PyPI| |PyPI - Python Version| |PyPI - Wheel| |Licence| |ReadTheDocs|
 
 `orthomap` is a python package that can:
 
@@ -90,6 +91,7 @@ Table of Contents
 .. toctree::
    :maxdepth: 2
 
+
    tutorials/index.rst
    how-to/index.rst
    references/index.rst
@@ -100,3 +102,16 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+.. |GitHub Workflow Status| image:: https://img.shields.io/github/actions/workflow/status/kullrich/orthomap/build_check.yml?branch=main
+   :target: https://github.com/kullrich/orthomap/actions/workflows/build_check.yml
+.. |PyPI| image:: https://img.shields.io/pypi/v/orthomap?color=blue
+   :target: https://pypi.org/project/orthomap/
+.. |PyPI - Python Version| image:: https://img.shields.io/pypi/pyversions/orthomap
+   :target: https://pypi.org/project/orthomap/
+.. |PyPI - Wheel| image:: https://img.shields.io/pypi/wheel/orthomap
+   :target: https://pypi.org/project/orthomap/
+.. |Licence| image:: https://img.shields.io/badge/License-GPLv3-blue.svg
+   :target: https://www.gnu.org/licenses/gpl-3.0
+.. |ReadTheDocs| image:: https://readthedocs.org/projects/orthomap/badge/?version=latest
+   :target: https://orthomap.readthedocs.io/en/latest/?badge=latest
