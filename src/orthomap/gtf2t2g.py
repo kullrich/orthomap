@@ -22,6 +22,7 @@ def _define_parser():
     A helper function for using `gtf2t2g.py` via the terminal.
 
     :return: argparse.ArgumentParser
+    :rtype: argparse.ArgumentParser
     """
     gtf2t2g_example = '''gtf2t2g example:
     
@@ -49,6 +50,7 @@ def _add_argparse_args(parser: argparse.ArgumentParser):
     This function attaches individual argument specifications to the parser.
 
     :param parser: argparse.ArgumentParser
+    :type parser: argparse.ArgumentParser
     """
     parser.add_argument('-i', help='specify GTF input file')
     parser.add_argument('-o', help='specify output file [optional]')
@@ -64,13 +66,20 @@ def _add_argparse_args(parser: argparse.ArgumentParser):
 
 def _information_based_on_key(infosplit, key, q, lines, version=False):
     """
+    Internal function
 
     :param infosplit:
     :param key:
     :param q:
     :param lines:
     :param version:
+    :type infosplit:
+    :type key:
+    :type q:
+    :type lines:
+    :type version:
     :return:
+    :rtype:
 
     Example
     --------
@@ -97,27 +106,28 @@ def _information_based_on_key(infosplit, key, q, lines, version=False):
 def parse_gtf(gtf, g=False, b=False, p=False, v=False, s=False, output=None, q=False):
     """
 
-    :param gtf: str
-        File name of GTF file.
-    :param g: bool (default: False)
-        Specify if gene names should be appended if they exist.
-    :param b: bool (default: False)
-        Specify if gene biotype should be appended if they exist.
-    :param p: bool (default: False)
-        Specify if protein id should be appended if they exist.
-    :param v: bool (default: False)
-        Specify if gene/transcript/protein version should be appended.
-    :param s: bool (default: False)
-        Specify if summary should be printed.
-    :param output: Optional[file object] (default: None)
-        File object.
-    :param q: bool (default: False)
-        Specify if output should be quite.
+    :param gtf: File name of GTF file.
+    :param g: Specify if gene names should be appended if they exist.
+    :param b: Specify if gene biotype should be appended if they exist.
+    :param p: Specify if protein id should be appended if they exist.
+    :param v: Specify if gene/transcript/protein version should be appended.
+    :param s: Specify if summary should be printed.
+    :param output: File object.
+    :param q: Specify if output should be quite.
+    :type gtf: str
+    :type g: bool (default: False)
+    :type b: bool (default: False)
+    :type p: bool (default: False)
+    :type v: bool (default: False)
+    :type s: bool (default: False)
+    :type output: Optional[file object] (default: None)
+    :type q: bool (default: False)
     :return:
+    :rtype:
 
     Example
     --------
-    >>> from orthomap import gtf2t2g, datasets
+    >>> from orthomap import datasets, gtf2t2g
     >>> # get gene to transcript table for Danio rerio
     >>> # https://ftp.ensembl.org/pub/release-105/gtf/danio_rerio/Danio_rerio.GRCz11.105.gtf.gz
     >>> gtf_file = datasets.zebrafish_gtf(datapath='.')

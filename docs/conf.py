@@ -7,7 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'orthomap'
-copyright = '2022, Kristian K Ullrich'
+copyright = '2023, Kristian K Ullrich'
 author = 'Kristian K Ullrich'
 
 #-- Path setup -----------------------------------------------------

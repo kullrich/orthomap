@@ -11,7 +11,7 @@ License: GPL-3
 
 
 import argparse
-from orthomap import of2orthomap, qlin, ncbitax
+from orthomap import of2orthomap, ncbitax, qlin
 
 
 def define_parser():
@@ -24,7 +24,7 @@ def define_parser():
     of2orthomap -seqname -qt 10090 -sl -oc -og
     '''
     of2orthomap_parser = subparsers.add_parser(name='of2orthomap',
-                                               help='extract orthomap from orthofinder output for query species'
+                                               help='extract orthomap from OrthoFinder output for query species'
                                                     '<orthomap -h>',
                                                epilog=of2orthomap_example,
                                                formatter_class=argparse.RawDescriptionHelpFormatter)

@@ -25,7 +25,9 @@ def ensembl105(datapath='.'):
     https://doi.org/10.5281/zenodo.7242263
 
     :param datapath:
+    :type datapath: str
     :return:
+    :rtype:
 
     Example
     --------
@@ -53,7 +55,9 @@ def zebrafish_gtf(datapath='.'):
     https://ftp.ensembl.org/pub/release-105/gtf/danio_rerio/
 
     :param datapath:
+    :type datapath: str
     :return:
+    :rtype:
 
     Example
     --------
@@ -72,7 +76,9 @@ def mouse_gtf(datapath='.'):
     https://ftp.ensembl.org/pub/release-105/gtf/mus_musculus/
 
     :param datapath:
+    :type datapath: str
     :return:
+    :rtype:
 
     Example
     --------
@@ -95,7 +101,9 @@ def sun21_orthomap(datapath='.'):
     Genome research, 31(9), pp.1590-1601.
 
     :param datapath:
+    :type datapath: str
     :return:
+    :rtype:
 
     Example
     --------
@@ -118,7 +126,9 @@ def cazet22_orthomap(datapath='.'):
     bioRxiv, 2022.06.21.496857.
 
     :param datapath:
+    :type datapath: str
     :return:
+    :rtype:
 
     Example
     --------
@@ -144,7 +154,9 @@ def packer19(datapath='.'):
     https://doi.org/10.5281/zenodo.7245547
 
     :param datapath:
+    :type datapath: str
     :return:
+    :rtype:
 
     Example
     --------
@@ -171,7 +183,9 @@ def packer19_small(datapath='.'):
     https://doi.org/10.5281/zenodo.7245547
 
     :param datapath:
+    :type datapath: str
     :return:
+    :rtype:
 
     Example
     --------
@@ -198,7 +212,9 @@ def cazet22(datapath='.'):
     https://doi.org/10.5281/zenodo.7366178
 
     :param datapath:
+    :type datapath: str
     :return:
+    :rtype:
 
     Example
     --------
@@ -235,7 +251,9 @@ def qiu22_zebrafish(datapath='.'):
     https://doi.org/10.5281/zenodo.7243602
 
     :param datapath:
+    :type datapath: str
     :return:
+    :rtype:
 
     Example
     --------
@@ -268,7 +286,9 @@ def qiu22_frog(datapath='.'):
     https://doi.org/10.5281/zenodo.7244440
 
     :param datapath:
+    :type datapath: str
     :return:
+    :rtype:
 
     Example
     --------
@@ -317,7 +337,9 @@ def qiu22_mouse(datapath='.'):
     https://doi.org/10.5281/zenodo.7244567
 
     :param datapath:
+    :type datapath: str
     :return:
+    :rtype:
 
     Example
     --------

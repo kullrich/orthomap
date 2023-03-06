@@ -14,3 +14,4 @@ dependencies:
   - alive-progress
   - python-wget
   - pytest
+  - pip

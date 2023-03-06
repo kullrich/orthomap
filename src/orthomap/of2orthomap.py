@@ -61,7 +61,7 @@ def _add_argparse_args(parser: argparse.ArgumentParser):
 
 def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False, continuity=True, overwrite=True):
     """
-    :param seqname:
+    :param seqname: sequence name of the query species in orthofinder
     :param qt:
     :param sl:
     :param oc:
@@ -74,7 +74,16 @@ def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False, continuity=True
 
     Example
     --------
-    >>>
+    >>> from orthomap import datasets, of2orthomap, qlin
+    >>> datasets.ensembl105(datapath='.')
+    >>> query_orthomap = of2orthomap.get_orthomap(
+    >>>     seqname='Danio_rerio.GRCz11.cds.longest',
+    >>>     qt='7955',
+    >>>     sl='ensembl_105_orthofinder_species_list.tsv',
+    >>>     oc='ensembl_105_orthofinder_Orthogroups.GeneCount.tsv',
+    >>>     og='ensembl_105_orthofinder_Orthogroups.tsv',
+    >>>     out=None, quite=False, continuity=True, overwrite=True)
+    >>> query_orthomap
     """
     ncbi = NCBITaxa()
     qname, qtid, qlineage, qlineagenames_dict, qlineagezip, qlineagenames, qlineagerev, qk = \
@@ -201,7 +210,19 @@ def get_counts_per_ps(omap_df, psnum_col='PSnum', pstaxid_col='PStaxID', psname_
 
     Example
     --------
-    >>>
+    >>> from orthomap import datasets, of2orthomap, qlin
+    >>> datasets.ensembl105(datapath='.')
+    >>> query_orthomap = of2orthomap.get_orthomap(
+    >>>     seqname='Danio_rerio.GRCz11.cds.longest',
+    >>>     qt='7955',
+    >>>     sl='ensembl_105_orthofinder_species_list.tsv',
+    >>>     oc='ensembl_105_orthofinder_Orthogroups.GeneCount.tsv',
+    >>>     og='ensembl_105_orthofinder_Orthogroups.tsv',
+    >>>     out=None, quite=False, continuity=True, overwrite=True)
+    >>> of2orthomap.get_counts_per_ps(query_orthomap[0],
+    >>>     psnum_col='PSnum',
+    >>>     pstaxid_col='PStaxID',
+    >>>     psname_col='PSname')
     """
     counts_df = pd.DataFrame(omap_df.value_counts(psnum_col))
     counts_df.columns = ['counts']
@@ -224,7 +245,8 @@ def _get_youngest_common_counts(qlineage, species_list):
 
     Example
     --------
-    >>>
+    >>> from orthomap import datasets, of2orthomap, qlin
+    >>> datasets.ensembl105(datapath='.')
     """
     counts_df = pd.DataFrame(qlineage, columns=['lineage'])
     counts_df.set_index('lineage', inplace=True)

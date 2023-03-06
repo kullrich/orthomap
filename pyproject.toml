@@ -9,7 +9,7 @@ where = ["src"]
 [project]
 name = "orthomap"
 version = "0.0.1"
-description = "extract orthomap from orthofinder output for query species"
+description = "extract orthomap from OrthoFinder output for query species"
 authors = [
     {name = "Kristian K Ullrich", email="ullrich@evolbio.mpg.de"},
 ]
@@ -37,6 +37,7 @@ dependencies = [
     "alive-progress",
     "wget",
     "pytest",
+    "pip",
 ]
 
 [project.urls]
