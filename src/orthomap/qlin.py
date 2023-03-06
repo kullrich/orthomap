@@ -71,7 +71,9 @@ def get_qtid(ncbi, q=None, qt=None):
     Example
     --------
     >>> from orthomap import qlin
-    >>> qlin.get_qlin(q='Danio rerio')
+    >>> from ete3 import NCBITaxa
+    >>> ncbi = NCBITaxa()
+    >>> qlin.get_qtid(ncbi, q='Danio rerio')
     """
     if qt:
         taxid2name = ncbi.get_taxid_translator([int(qt)])
@@ -164,9 +166,9 @@ def get_youngest_common(ql, tl):
     --------
     >>> from orthomap import qlin
     >>> # get query species taxonomic lineage information
-    >>> query_lineage = qlin.get_qlin(q='Caenorhabditis elegans')
+    >>> _, _, query_lineage, _, _, _, _, _ = qlin.get_qlin(q='Caenorhabditis elegans')
     >>> # get target species taxonomic lineage information
-    >>> target_lineage = qlin.get_qlin(q='Mus musculus')
+    >>> _, _, target_lineage, _, _, _, _, _ = qlin.get_qlin(q='Mus musculus')
     >>> # get youngest common
     >>> get_youngest_common(query_lineage, target_lineage)
     """
@@ -184,9 +186,9 @@ def get_oldest_common(ql, tl):
     --------
     >>> from orthomap import qlin
     >>> # get query species taxonomic lineage information
-    >>> query_lineage = qlin.get_qlin(q='Caenorhabditis elegans')
+    >>> _, _, query_lineage, _, _, _, _, _ = qlin.get_qlin(q='Caenorhabditis elegans')
     >>> # get target species taxonomic lineage information
-    >>> target_lineage = qlin.get_qlin(q='Mus musculus')
+    >>> _, _, target_lineage, _, _, _, _, _ = qlin.get_qlin(q='Mus musculus')
     >>> # get oldest common
     >>> get_oldest_common(query_lineage, target_lineage)
     """
