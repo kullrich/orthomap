@@ -29,7 +29,7 @@ jobs:
             # mamba create env
             mamba env create -q --file environment.yml
             # activate orthomap env
-            conda activate orthomap
+            conda activate orthomap_env
             
             # Check pip
             echo pip_path
