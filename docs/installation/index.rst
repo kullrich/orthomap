@@ -1,4 +1,32 @@
-# Installation
+.. _install:
+
+Installation
+============
+
+Please follow the guide below to install orthomap and its dependent software.
+
+.. _require:
+
+Docker image
+------------
+
+- Pre-built docker image is available through `Docker Hub <https://hub.docker.com/repository/docker/kenjikamimoto126/celloracle_ubuntu>`_ .
+
+::
+
+    docker pull kenjikamimoto126/celloracle_ubuntu:latest
+
+
+- This docker image was built based on Ubuntu 20.04.
+- Python dependent packages and celloracle are installed in an anaconda environment, celloracle_env. This environment will be activated automatically when you log in.
+
+.. toctree::
+   :maxdepth: 1
+
+   docker_additional_information
+
+Install CellOracle
+------------------
 
 ## Anaconda
 

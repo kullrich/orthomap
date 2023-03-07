@@ -1,4 +1,4 @@
-name: orthomap
+name: orthomap_env
 channels:
   - conda-forge
   - bioconda

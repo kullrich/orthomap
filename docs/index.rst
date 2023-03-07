@@ -4,13 +4,13 @@ Welcome to orthomap's documentation!
 
 `orthomap` is a python package that can:
 
-- extract orthologous maps from [OrthoFinder](https://github.com/davidemms/OrthoFinder) results.
+- extract orthologous maps from `OrthoFinder <https://github.com/davidemms/OrthoFinder>`_ results.
 
-- extract orthologous maps from [eggnog_6.0](http://eggnog6.embl.de/download/eggnog_6.0/) results.
+- extract orthologous maps from `eggnog_6.0 <http://eggnog6.embl.de/download/eggnog_6.0/>`_ results.
 
-- show species lineage information from the [NCBI taxonomic](https://www.ncbi.nlm.nih.gov/taxonomy) database.
+- show species lineage information from the `NCBI taxonomy <https://www.ncbi.nlm.nih.gov/taxonomy>`_ database.
 
-- extract gene and transcript information from GTF files.
+- extract gene and transcript information from GTF files (`GTF File Format <https://www.ensembl.org/info/website/upload/gff.html>`_).
 
 - match gene and transcript IDs with scRNA data sets.
 
@@ -22,15 +22,15 @@ Welcome to orthomap's documentation!
 
 - show number of expressed genes per gene age class.
 
-Source code is available at [orthomap GitHub repository](https://github.com/kullrich/orthomap) and [PyPi]().
+Source code is available at `orthomap GitHub repository <https://github.com/kullrich/orthomap>`_ and at `PyPi] <>`_.
 
 Quick start
 -----------
 
 Detailed step-by-step examples are given in the tutorials section.
 
-You can extract an `orthomap` from [OrthoFinder](https://github.com/davidemms/OrthoFinder) results
-(for example for `Danio rerio` based on the ensembl release-105):
+You can extract an `orthomap` from `OrthoFinder <https://github.com/davidemms/OrthoFinder>`_ results
+(for example for zebrafish `Danio rerio` based on the ensembl release-105):
 
 OrthoFinder results for ensembl release-105 can be found here: https://doi.org/10.5281/zenodo.7242264
 
