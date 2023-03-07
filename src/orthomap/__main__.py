@@ -14,7 +14,7 @@ import argparse
 from orthomap import of2orthomap, ncbitax, qlin
 
 
-def define_parser():
+def _define_parser():
     parser = argparse.ArgumentParser(prog='orthomap', usage='%(prog)s <sub-command>',
                                      description='orthomap')
     subparsers = parser.add_subparsers(title='sub-commands', help='sub-commands help')
@@ -33,14 +33,14 @@ def define_parser():
     of2orthomap_parser.set_defaults(subcommand='of2orthomap')
     ncbitax_parser.set_defaults(subcommand='ncbitax')
     qlin_parser.set_defaults(subcommand='qlin')
-    of2orthomap.add_argparse_args(parser=of2orthomap_parser)
-    qlin.add_argparse_args(parser=qlin_parser)
-    ncbitax.add_argparse_args(parser=ncbitax_parser)
+    of2orthomap._add_argparse_args(parser=of2orthomap_parser)
+    qlin._add_argparse_args(parser=qlin_parser)
+    ncbitax._add_argparse_args(parser=ncbitax_parser)
     return parser
 
 
 def main():
-    parser = define_parser()
+    parser = _define_parser()
     args = parser.parse_args()
 
 
