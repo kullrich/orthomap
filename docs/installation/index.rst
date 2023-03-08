@@ -10,76 +10,78 @@ Please follow the guide below to install orthomap and its dependent software.
 Docker image
 ------------
 
-- Pre-built docker image is available through `Docker Hub <https://hub.docker.com/repository/docker/kenjikamimoto126/celloracle_ubuntu>`_ .
+- Pre-built docker image is available through `Docker Hub <https://hub.docker.com/repository/docker/kkuweb/orthomap_ubuntu>`_ .
 
 ::
 
-    docker pull kenjikamimoto126/celloracle_ubuntu:latest
+    docker pull kkuweb/orthomap_ubuntu:latest
 
 
-- This docker image was built based on Ubuntu 20.04.
-- Python dependent packages and celloracle are installed in an anaconda environment, celloracle_env. This environment will be activated automatically when you log in.
+- This docker image was built based on Ubuntu 22.04.
+- Python dependent packages and orthomap are installed in an anaconda environment, `orthomap_env`. This environment will be activated automatically when you log in.
 
 .. toctree::
    :maxdepth: 1
 
    docker_additional_information
 
-Install CellOracle
-------------------
+Install orthomap
+----------------
 
-## Anaconda
+Python Requirements
+^^^^^^^^^^^^^^^^^^^
 
-The environment is created with `conda create` in which orthomap is installed.
+- orthomap was developed using python 3.8. We do not support python 2.7x or python <=3.7.
 
-If you do not have a working installation of Python 3.8 (or later), consider
-installing [Miniconda] (see [Installing Miniconda]). Then run:
+orthomap installation using conda and pip
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-```shell
-conda env create --file environment.yml
-conda activate orthomap
-```
+  We recommend installing orthomap in an independent conda environment to avoid dependent software conflicts.
+  Please make a new python environment for orthomap and install dependent libraries in it.
 
-Install `orthomap`:
+  The environment is created with `conda create` in which orthomap is installed.
 
-```shell
-pip install orthomap
-```
+  If you do not have a working installation of Python 3.8 (or later), consider
+  installing `Anaconda <https://docs.anaconda.com/anaconda/install/>`_ or `Miniconda <https://docs.conda.io/en/latest/miniconda.html>`_. Then run:
 
-## PyPI
+  ::
+
+      git clone https://github.com/kullrich/orthomap.git
+      cd orthomap
+      conda env create --file environment.yml
+      conda activate orthomap_env
+
+  Install `orthomap` via `PyPI <https://pypi.org/project/orthomap>`_:
+
+  ::
+
+      pip install orthomap
+
+Development Version
+^^^^^^^^^^^^^^^^^^^
+
+To work with the latest version `on GitHub <https://github.com/kullrich/orthomap>`_: clone the repository and `cd` into its root directory.
+
+  ::
+
+  git clone kullrich/orthomap
+  cd orthomap
+
 
 Install `orthomap` into your current python environment:
 
-```shell
-pip install orthomap
-```
+  ::
 
-## Development Version
+  pip install .
 
-To work with the latest version [on GitHub]: clone the repository and `cd` into its root directory.
+Installing Miniconda
+^^^^^^^^^^^^^^^^^^^^
 
-```shell
-git clone kullrich/orthomap
-cd orthomap
-```
+After downloading `Miniconda <https://docs.conda.io/en/latest/miniconda.html>`_, in a unix shell (Linux, Mac), run
 
-Install `orthomap` into your current python environment:
+  ::
 
-```shell
-pip install .
-```
+  cd DOWNLOAD_DIR
+  chmod +x Miniconda3-latest-VERSION.sh
+  ./Miniconda3-latest-VERSION.sh
 
-## Installing Miniconda
-
-After downloading [Miniconda], in a unix shell (Linux, Mac), run
-
-```shell
-cd DOWNLOAD_DIR
-chmod +x Miniconda3-latest-VERSION.sh
-./Miniconda3-latest-VERSION.sh
-```
-
-[bioconda]: https://bioconda.github.io/
-[from pypi]: https://pypi.org/project/orthomap
-[miniconda]: http://conda.pydata.org/miniconda.html
-[on github]: https://github.com/kullrich/orthomap
