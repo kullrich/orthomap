@@ -63,8 +63,8 @@ Quick start - Docker - jupyter
     docker run -dit \
       --name orthomap_container \
       -p 8888:8888 \
-      -v $(pwd)/data_folder:/root/data_folder \
-      orthomap_ubuntu:latest
+      -v $(pwd)/data_folder:/mnt/data_folder \
+      kkuweb/orthomap_ubuntu:latest
 
 3. Enter the docker container.
 
@@ -76,8 +76,8 @@ Quick start - Docker - jupyter
 
 ::
 
-    cd
-    jupyter notebook --port=8888 --ip=0.0.0.0 --allow-root --no-browser
+    cd /mnt/data_folder
+    jupyter notebook --port=8888 --ip=0.0.0.0 --allow-root --no-browser --notebook-dir=/mnt/data_folder
 
 After starting jupyter, please open your browser and enter http://localhost:8888 to access jupyter notebook running in the docker container.
 You need to enter a token to access jupyter. The token can be found in your terminal running jupyter notebook.
