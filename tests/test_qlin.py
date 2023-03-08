@@ -8,7 +8,7 @@ from orthomap import qlin
 
 
 def test_define_parser():
-    parse = qlin._define_parser()
+    parse = qlin.define_parser()
     assert isinstance(parse, argparse.ArgumentParser)
 
 
