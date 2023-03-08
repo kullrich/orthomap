@@ -17,7 +17,7 @@ import gzip
 import pandas as pd
 
 
-def _define_parser():
+def define_parser():
     """
     A helper function for using `gtf2t2g.py` via the terminal.
 
@@ -32,7 +32,7 @@ def _define_parser():
     # on Mac:
     $ curl https://ftp.ensembl.org/pub/release-108/gtf/mus_musculus/Mus_musculus.GRCm39.108.chr.gtf.gz --remote-name
 
-    # create t2g from GTF
+    # create t2g from GTF:
     $ gtf2t2g -i Mus_musculus.GRCm39.108.chr.gtf.gz -o Mus_musculus.GRCm39.108.chr.gtf.t2g.tsv -g -b -p -v -s
     '''
     parser = argparse.ArgumentParser(
@@ -41,11 +41,11 @@ def _define_parser():
         description='extracts transcript to gene table from GTF',
         epilog=gtf2t2g_example,
         formatter_class=argparse.RawDescriptionHelpFormatter, )
-    _add_argparse_args(parser=parser)
+    add_argparse_args(parser=parser)
     return parser
 
 
-def _add_argparse_args(parser: argparse.ArgumentParser):
+def add_argparse_args(parser: argparse.ArgumentParser):
     """
     This function attaches individual argument specifications to the parser.
 
@@ -260,7 +260,7 @@ def main():
     """
     The main function that is being called when `gt2t2g.py` is used via the terminal.
     """
-    parser = _define_parser()
+    parser = define_parser()
     args = parser.parse_args()
     print(args)
     if not args.i:

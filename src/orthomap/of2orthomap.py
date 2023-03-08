@@ -19,7 +19,7 @@ from orthomap import qlin
 from ete3 import NCBITaxa
 
 
-def _define_parser():
+def define_parser():
     """
     A helper function for using `of2orthomap.py` via the terminal.
 
@@ -27,8 +27,16 @@ def _define_parser():
     """
     of2orthomap_example = '''of2orthomap example:
 
-    #
-    $ of2orthomap -seqname -qt 10090 -sl -oc -og
+    # download OrthoFinder example:
+    $ wget https://github.com/kullrich/orthomap/raw/main/examples/ensembl_105_orthofinder_Orthogroups.GeneCount.tsv.zip
+    $ wget https://github.com/kullrich/orthomap/raw/main/examples/ensembl_105_orthofinder_Orthogroups.tsv.zip
+    $ wget https://github.com/kullrich/orthomap/raw/main/examples/ensembl_105_orthofinder_species_list.tsv
+    
+    # extract orthomap:
+    $ of2orthomap -seqname Danio_rerio.GRCz11.cds.longest -qt 7955 \\
+      -sl ensembl_105_orthofinder_species_list.tsv \\
+      -oc ensembl_105_orthofinder_Orthogroups.GeneCount.tsv.zip \\
+      -og ensembl_105_orthofinder_Orthogroups.tsv.zip
     '''
     parser = argparse.ArgumentParser(
         prog='of2orthomap',
@@ -36,11 +44,11 @@ def _define_parser():
         description='extract orthomap from orthofinder output for query species',
         epilog=of2orthomap_example,
         formatter_class=argparse.RawDescriptionHelpFormatter)
-    _add_argparse_args(parser=parser)
+    add_argparse_args(parser=parser)
     return parser
 
 
-def _add_argparse_args(parser: argparse.ArgumentParser):
+def add_argparse_args(parser: argparse.ArgumentParser):
     """
     This function attaches individual argument specifications to the parser.
 
@@ -296,7 +304,7 @@ def main():
     """
     The main function that is being called when `of2orthomap.py` is used via the terminal.
     """
-    parser = _define_parser()
+    parser = define_parser()
     args = parser.parse_args()
     print(args)
     if not args.seqname:

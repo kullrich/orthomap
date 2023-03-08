@@ -16,7 +16,7 @@ import pandas as pd
 from ete3 import NCBITaxa, Tree
 
 
-def _define_parser():
+def define_parser():
     """
     A helper function for using `qlin.py` via the terminal.
 
@@ -27,6 +27,7 @@ def _define_parser():
     # get query lineage to be used with orthomap later on using query species taxid
     # Mus musculus; 10090
     $ qlin -qt 10090
+
     # using query species name
     $ qlin -q "Mus musculus"
     '''
@@ -36,11 +37,11 @@ def _define_parser():
         description='get query lineage based on ncbi taxonomy',
         epilog=qlin_example,
         formatter_class=argparse.RawDescriptionHelpFormatter)
-    _add_argparse_args(parser=parser)
+    add_argparse_args(parser=parser)
     return parser
 
 
-def _add_argparse_args(parser: argparse.ArgumentParser):
+def add_argparse_args(parser: argparse.ArgumentParser):
     """
     This function attaches individual argument specifications to the parser.
 
@@ -199,7 +200,7 @@ def main():
     """
     The main function that is being called when `qlin` is used via the terminal.
     """
-    parser = _define_parser()
+    parser = define_parser()
     args = parser.parse_args()
     print(args)
     if not args.q and not args.qt:

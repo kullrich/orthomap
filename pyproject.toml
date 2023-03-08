@@ -50,8 +50,8 @@ repository = "https://github.com/kullrich/orthomap"
 
 [project.scripts]
 orthomap = "orthomap.__main__:main"
-of2orthomap = "orthomap.of2orthomap:main"
 eggnog2orthomap = "orthomap.eggnog2orthomap:main"
-ncbitax = "orthomap.ncbitax:main"
-qlin = "orthomap.qlin:main"
 gtf2t2g = "orthomap.gtf2t2g:main"
+ncbitax = "orthomap.ncbitax:main"
+of2orthomap = "orthomap.of2orthomap:main"
+qlin = "orthomap.qlin:main"

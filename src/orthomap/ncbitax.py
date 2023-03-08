@@ -15,7 +15,7 @@ import argparse
 from ete3 import NCBITaxa
 
 
-def _define_parser():
+def define_parser():
     """
     A helper function for using `ncbitax.py` via the terminal.
 
@@ -24,19 +24,19 @@ def _define_parser():
     """
     ncbitax_example = '''ncbitax example:
 
-    #update ncbi taxonomy database
-    ncbitax
+    #update ncbi taxonomy database:
+    ncbitax -u
     '''
     parser = argparse.ArgumentParser(
         prog='ncbitax',
         usage='%(prog)s [options] [<arguments>...]',
         description='update local ncbi taxonomy database', epilog=ncbitax_example,
         formatter_class=argparse.RawDescriptionHelpFormatter)
-    _add_argparse_args(parser=parser)
+    add_argparse_args(parser=parser)
     return parser
 
 
-def _add_argparse_args(parser: argparse.ArgumentParser):
+def add_argparse_args(parser: argparse.ArgumentParser):
     """
     This function attaches individual argument specifications to the parser.
 
@@ -65,7 +65,7 @@ def main():
     """
     The main function that is being called when `ncbitax.py` is used via the terminal.
     """
-    parser = _define_parser()
+    parser = define_parser()
     args = parser.parse_args()
     print(args)
     if not args.u:
