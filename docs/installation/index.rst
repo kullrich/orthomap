@@ -16,7 +16,6 @@ Docker image
 
     docker pull kkuweb/orthomap_ubuntu:latest
 
-
 - This docker image was built based on Ubuntu 22.04.
 - Python dependent packages and orthomap are installed in an anaconda environment, `orthomap_env`. This environment will be activated automatically when you log in.
 
@@ -66,7 +65,6 @@ To work with the latest version `on GitHub <https://github.com/kullrich/orthomap
 
   git clone kullrich/orthomap
   cd orthomap
-
 
 Install `orthomap` into your current python environment:
 

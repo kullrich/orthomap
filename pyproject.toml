@@ -36,8 +36,11 @@ dependencies = [
     "scanpy>=1.9.3",
     "seaborn",
     "harmonypy>=0.0.9",
+    "louvain>=0.8.0",
+    "umap-learn>=0.5.3",
     "alive-progress",
     "wget",
+    "jupyter",
     "pytest",
     "pip",
 ]

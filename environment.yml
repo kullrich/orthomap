@@ -16,6 +16,9 @@ dependencies:
   - alive-progress
   - python-wget
   - pytest
+  - jupyter
   - pip
   - pip:
       - harmonypy>=0.0.9
+      - louvain>=0.8.0
+      - umap-learn>=0.5.3
