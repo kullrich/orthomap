@@ -48,7 +48,7 @@ RUN apt-get update \
  gcc \
  g++ \
  libz-dev \
- git \
+ git
 # Clone orthomap
 RUN cd \
  && git clone https://github.com/kullrich/orthomap.git
@@ -68,6 +68,7 @@ RUN . "$HOME/miniconda/etc/profile.d/conda.sh" \
  && mamba env create -q --file environment.yml \
  && conda activate orthomap_env \
  && pip install . --default-timeout=100 \
+ && ncbitax -u \
  && pytest \
  && cd \
  && rm -r orthomap \
