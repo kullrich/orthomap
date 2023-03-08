@@ -1,13 +1,17 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 
+
 import pandas as pd
-from orthomap import orthomap2tei, datasets
+from orthomap import datasets, orthomap2tei
+
+
+file = datasets.sun21_orthomap(datapath='/tmp')
 
 
 def test_read_orthomap():
     expected_columns = ['GeneID', 'Phylostratum']
-    query_orthomap = orthomap2tei.read_orthomap('examples/Sun2021_Orthomap.tsv')
+    query_orthomap = orthomap2tei.read_orthomap(file)
     assert isinstance(query_orthomap, pd.DataFrame)
     assert all(query_orthomap.columns == expected_columns)
 

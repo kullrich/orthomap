@@ -7,7 +7,7 @@ from ete3 import NCBITaxa, Tree
 from orthomap import qlin
 
 
-def test_define_parse():
+def test_define_parser():
     parse = qlin._define_parser()
     assert isinstance(parse, argparse.ArgumentParser)
 

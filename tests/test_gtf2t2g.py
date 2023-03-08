@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 
+import argparse
 import pandas as pd
 from orthomap import datasets, gtf2t2g
 
@@ -15,6 +16,11 @@ expected_columns = [
     'gene_type',
     'protein_id',
     'protein_id_version']
+
+
+def test_define_parser():
+    parse = gtf2t2g.define_parser()
+    assert isinstance(parse, argparse.ArgumentParser)
 
 
 def test_gtf2t2g_only_filename():

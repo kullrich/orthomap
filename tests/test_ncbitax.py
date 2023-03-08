@@ -1,13 +1,13 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 
-from orthomap import ncbitax
-import argparse
 import os
+import argparse
+from orthomap import ncbitax
 
 
-def test_define_parse():
-    parse = ncbitax._define_parser()
+def test_define_parser():
+    parse = ncbitax.define_parser()
     assert isinstance(parse, argparse.ArgumentParser)
 
 

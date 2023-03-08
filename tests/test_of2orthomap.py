@@ -1,12 +1,17 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 
+import argparse
 import pandas as pd
 from orthomap import datasets, of2orthomap
 
 
-ensembl105_oc, ensembl105_og, ensembl105_sl = datasets.ensembl105('/tmp')
+ensembl105_oc, ensembl105_og, ensembl105_sl = datasets.ensembl105(datapath='/tmp')
 
+
+def test_define_parser():
+    parse = of2orthomap.define_parser()
+    assert isinstance(parse, argparse.ArgumentParser)
 
 def test_of2orthomap_continuity_false():
     query_orthomap, orthofinder_species_list, of_species_abundance = of2orthomap.get_orthomap(
