@@ -16,7 +16,6 @@ dependencies:
   - alive-progress
   - python-wget
   - pytest
-  - jupyter
   - pip
   - pip:
       - harmonypy>=0.0.9

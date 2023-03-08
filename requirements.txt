@@ -13,4 +13,3 @@ alive-progress
 wget
 pytest
 pip
-jupyter

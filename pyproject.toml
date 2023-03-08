@@ -40,7 +40,6 @@ dependencies = [
     "umap-learn>=0.5.3",
     "alive-progress",
     "wget",
-    "jupyter",
     "pytest",
     "pip",
 ]

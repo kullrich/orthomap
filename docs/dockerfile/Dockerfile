@@ -50,27 +50,30 @@ RUN apt-get update \
  libz-dev \
  git
 # Clone orthomap
-RUN cd \
+RUN cd /home/docker \
  && git clone https://github.com/kullrich/orthomap.git
 # Install miniconda
 RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh \
- && bash miniconda.sh -b -p $HOME/miniconda \
+ && bash miniconda.sh -b -p /home/docker/miniconda \
  && rm miniconda.sh
 # Configure miniconda and install packages
-RUN . "$HOME/miniconda/etc/profile.d/conda.sh" \
+RUN . "/home/docker/miniconda/etc/profile.d/conda.sh" \
  && cd \
  && hash -r \
- && export PATH="$HOME/miniconda/bin:${PATH}" \
+ && export PATH="/home/docker/miniconda/bin:${PATH}" \
  && conda config --set always_yes yes --set changeps1 no \
  && conda activate \
  && conda install -c conda-forge mamba \
- && cd $HOME/orthomap \
+ && cd /home/docker/orthomap \
  && mamba env create -q --file environment.yml \
  && conda activate orthomap_env \
  && pip install . --default-timeout=100 \
  && ncbitax -u \
  && pytest \
- && cd \
+ && pip install jupyter \
+ && pip install ipykernel \
+ && python -m ipykernel install --user --name=orthomap_env \
+ && cd /home/docker \
  && rm -r orthomap \
  && conda clean --all \
  && conda init bash \

@@ -18,11 +18,30 @@ Docker image
 
 - This docker image was built based on Ubuntu 22.04.
 - Python dependent packages and orthomap are installed in an anaconda environment, `orthomap_env`. This environment will be activated automatically when you log in.
+- See additional information
 
 .. toctree::
    :maxdepth: 1
 
    docker_additional_information
+
+Singularity image
+------------
+
+- Pre-built docker image is available through `Docker Hub <https://hub.docker.com/repository/docker/kkuweb/orthomap_ubuntu>`_ .
+
+::
+
+    singularity pull kkuweb/orthomap_ubuntu:latest
+
+- This docker image was built based on Ubuntu 22.04.
+- Python dependent packages and orthomap are installed in an anaconda environment, `orthomap_env`. This environment needs to be activated when you log in.
+- See additional information
+
+.. toctree::
+   :maxdepth: 1
+
+   singularity_additional_information
 
 Install orthomap
 ----------------
@@ -63,14 +82,14 @@ To work with the latest version `on GitHub <https://github.com/kullrich/orthomap
 
   ::
 
-  git clone kullrich/orthomap
-  cd orthomap
+      git clone kullrich/orthomap
+      cd orthomap
 
 Install `orthomap` into your current python environment:
 
   ::
 
-  pip install .
+      pip install .
 
 Installing Miniconda
 ^^^^^^^^^^^^^^^^^^^^
@@ -79,7 +98,7 @@ After downloading `Miniconda <https://docs.conda.io/en/latest/miniconda.html>`_,
 
   ::
 
-  cd DOWNLOAD_DIR
-  chmod +x Miniconda3-latest-VERSION.sh
-  ./Miniconda3-latest-VERSION.sh
+      cd DOWNLOAD_DIR
+      chmod +x Miniconda3-latest-VERSION.sh
+      ./Miniconda3-latest-VERSION.sh
 
