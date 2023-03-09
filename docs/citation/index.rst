@@ -1,4 +1,4 @@
-.. _citing:
+.. _citation:
 
 Authors and citations
 =====================
@@ -7,7 +7,6 @@ Cite orthomap
 -------------
 
 If you use orthomap please cite:
-
 
 orthomap software development
 -----------------------------
