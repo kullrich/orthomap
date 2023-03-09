@@ -1,3 +1,11 @@
+orthomap
+========
+
+.. automodule:: orthomap
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Modules for dataset downloads
 =============================
 

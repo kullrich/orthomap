@@ -2,6 +2,5 @@ API
 ===
 
 .. toctree::
-  :maxdepth: 1
 
     orthomap
