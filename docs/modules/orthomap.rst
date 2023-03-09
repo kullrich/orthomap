@@ -13,8 +13,8 @@ Modules for dataset downloads
 
     orthomap.datasets
 
-Modules for eggnog database
-============================
+Modules for eggnog
+==================
 
  .. toctree::
 
