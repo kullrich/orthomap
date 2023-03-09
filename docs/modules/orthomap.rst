@@ -1,10 +1,20 @@
-orthomap
-========
+orthomap command line tools
+===========================
 
-.. automodule:: orthomap.__main__
-   :members:
-   :undoc-members:
-   :show-inheritance:
+::
+
+    orthomap -h
+
+    options:
+      -h, --help            show this help message and exit
+
+    sub-commands:
+      {gtf2t2g,ncbitax,of2orthomap,qlin}
+                            sub-commands help
+        gtf2t2g             extracts transcript to gene table from GTF <gtf2t2g -h>
+        ncbitax             update local ncbi taxonomy database <ncbitax -h>
+        of2orthomap         extract orthomap from OrthoFinder output for query species<orthomap -h>
+        qlin                get query lineage based on ncbi taxonomy <qlin -h>
 
 Modules for dataset downloads
 =============================
