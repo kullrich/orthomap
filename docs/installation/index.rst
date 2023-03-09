@@ -26,7 +26,7 @@ Docker image
    docker_additional_information
 
 Singularity image
-------------
+-----------------
 
 - Pre-built docker image is available through `Docker Hub <https://hub.docker.com/repository/docker/kkuweb/orthomap_ubuntu>`_ .
 
