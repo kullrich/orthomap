@@ -86,7 +86,7 @@ def _information_based_on_key(infosplit, key, q, lines, version=False):
     :rtype: list
 
     Example
-    --------
+    -------
     >>>
     """
     output = None
@@ -131,7 +131,7 @@ def parse_gtf(gtf, g=False, b=False, p=False, v=False, s=False, output=None, q=F
     :rtype: pandas.DataFrame
 
     Example
-    --------
+    -------
     >>> from orthomap import datasets, gtf2t2g
     >>> # get gene to transcript table for Danio rerio
     >>> # https://ftp.ensembl.org/pub/release-105/gtf/danio_rerio/Danio_rerio.GRCz11.105.gtf.gz

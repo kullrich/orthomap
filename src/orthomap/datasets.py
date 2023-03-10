@@ -31,7 +31,7 @@ def ensembl105(datapath='.'):
     :rtype: list of str
 
     Example
-    --------
+    -------
     >>> from orthomap import datasets
     >>> datasets.ensembl105(datapath='.')
     """
@@ -62,7 +62,7 @@ def zebrafish_gtf(datapath='.'):
     :rtype: str
 
     Example
-    --------
+    -------
     >>> from orthomap import datasets
     >>> datasets.zebrafish_gtf(datapath='.')
     """
@@ -84,7 +84,7 @@ def mouse_gtf(datapath='.'):
     :rtype: str
 
     Example
-    --------
+    -------
     >>> from orthomap import datasets
     >>> datasets.mouse_gtf(datapath='.')
     """
@@ -110,7 +110,7 @@ def sun21_orthomap(datapath='.'):
     :rtype: str
 
     Example
-    --------
+    -------
     >>> from orthomap import datasets
     >>> datasets.sun21_orthomap(datapath='.')
     """
@@ -136,7 +136,7 @@ def cazet22_orthomap(datapath='.'):
     :rtype: str
 
     Example
-    --------
+    -------
     >>> from orthomap import datasets
     >>> datasets.cazet22_orthomap(datapath='.')
     """
@@ -165,7 +165,7 @@ def packer19(datapath='.'):
     :rtype: AnnData
 
     Example
-    --------
+    -------
     >>> from orthomap import datasets
     >>> datasets.packer19(datapath='.')
     """
@@ -195,7 +195,7 @@ def packer19_small(datapath='.'):
     :rtype: AnnData
 
     Example
-    --------
+    -------
     >>> from orthomap import datasets
     >>> datasets.packer19_small(datapath='.')
     """
@@ -225,7 +225,7 @@ def cazet22(datapath='.'):
     :rtype: AnnData
 
     Example
-    --------
+    -------
     >>> from orthomap import datasets
     >>> datasets.cazet22(datapath='.')
     """
@@ -265,7 +265,7 @@ def qiu22_zebrafish(datapath='.'):
     :rtype: AnnData
 
     Example
-    --------
+    -------
     >>> from orthomap import datasets
     >>> datasets.qiu22_zebrafish(datapath='.')
     """
@@ -301,7 +301,7 @@ def qiu22_frog(datapath='.'):
     :rtype: AnnData
 
     Example
-    --------
+    -------
     >>> from orthomap import datasets
     >>> datasets.qiu22_frog(datapath='.')
     """
@@ -353,7 +353,7 @@ def qiu22_mouse(datapath='.'):
     :rtype: AnnData
 
     Example
-    --------
+    -------
     >>> from orthomap import datasets
     >>> datasets.qiu22_mouse(datapath='.')
     """

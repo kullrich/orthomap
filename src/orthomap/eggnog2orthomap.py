@@ -82,7 +82,7 @@ def get_eggnog_orthomap(qt, og, subset=None, out=None, quiet=False, continuity=T
     :rtype: list
 
     Example
-    --------
+    -------
     >>>
     """
     outhandle = None

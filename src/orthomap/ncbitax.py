@@ -55,7 +55,7 @@ def update_ncbi():
     directory: `~/.etetoolkit/taxa.sqlite`.
 
     Example
-    --------
+    -------
     >>> from orthomap import ncbitax
     >>> ncbitax.update_ncbi()
     """

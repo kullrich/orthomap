@@ -73,32 +73,33 @@ def add_argparse_args(parser: argparse.ArgumentParser):
 
 def get_orthomap(seqname, qt, sl, oc, og, out=None, quiet=False, continuity=True, overwrite=True):
     """
-    This function
+    This function return an orthomap for a given query species and OrthoFinder input data.
 
     :param seqname: Sequence name of the query species used for OrthoFinder comparison.
     :param qt: Query species taxID.
-    :param sl: Species list
-    :param oc:
-    :param og:
-    :param out:
-    :param quiet:
-    :param continuity:
-    :param overwrite:
-    :return:
+    :param sl: Path to species list file containing <OrthoFinder name><tab><species taxID>.
+    :param oc: Path to OrthoFinder result <Orthogroups.GeneCounts.tsv> file.
+    :param og: Path to OrthoFinder result <Orthogroups.tsv> file.
+    :param out: Path to output file.
+    :param quiet: Specify if output should be quiet.
+    :param continuity: Specify if continuity score should be calculated.
+    :param overwrite: Specify if output should be overwritten.
+    :return: A list of results such as:
+    orthomap, species_list, younges_common_counts
 
-    :type seqname: sequence name of the query species in orthofinder
-    :type qt:
-    :type sl:
-    :type oc:
-    :type og:
-    :type out:
-    :type quiet:
-    :type continuity:
-    :type overwrite:
-    :rtype:
+    :type seqname: str
+    :type qt: str
+    :type sl: str
+    :type oc: str
+    :type og: str
+    :type out: str
+    :type quiet: bool
+    :type continuity: bool
+    :type overwrite: bool
+    :rtype: list
 
     Example
-    --------
+    -------
     >>> from orthomap import datasets, of2orthomap, qlin
     >>> datasets.ensembl105(datapath='.')
     >>> query_orthomap = of2orthomap.get_orthomap(
@@ -240,12 +241,13 @@ def get_orthomap(seqname, qt, sl, oc, og, out=None, quiet=False, continuity=True
 
 def get_counts_per_ps(omap_df, psnum_col='PSnum', pstaxid_col='PStaxID', psname_col='PSname'):
     """
+    This function return counts per phylostratum.
 
-    :param omap_df:
-    :param psnum_col:
-    :param pstaxid_col:
-    :param psname_col:
-    :return:
+    :param omap_df: DataFrame with orthomap results.
+    :param psnum_col: Specify PSnum column name.
+    :param pstaxid_col: Specify PStaxID column name.
+    :param psname_col: Specify PSname column name.
+    :return: DataFrame with counts per phylostratum.
 
     :type omap_df: pandas.DataFrame
     :type psnum_col: str
@@ -254,7 +256,7 @@ def get_counts_per_ps(omap_df, psnum_col='PSnum', pstaxid_col='PStaxID', psname_
     :rtype: pandas.DataFrame
 
     Example
-    --------
+    -------
     >>> from orthomap import datasets, of2orthomap, qlin
     >>> datasets.ensembl105(datapath='.')
     >>> query_orthomap = of2orthomap.get_orthomap(
@@ -283,7 +285,7 @@ def get_counts_per_ps(omap_df, psnum_col='PSnum', pstaxid_col='PStaxID', psname_
 
 def get_youngest_common_counts(qlineage, species_list):
     """
-    This function
+    This function return LCA counts for a given query species lineage.
 
     :param qlineage: Query lineage information.
     :param species_list: Species list.
@@ -294,7 +296,7 @@ def get_youngest_common_counts(qlineage, species_list):
     :rtype: pandas.DataFrame
 
     Example
-    --------
+    -------
     >>> from orthomap import datasets, of2orthomap, qlin
     >>> datasets.ensembl105(datapath='.')
     """
@@ -309,7 +311,8 @@ def get_youngest_common_counts(qlineage, species_list):
 
 def get_continuity_score(og_name, youngest_common_counts_df):
     """
-    Internal function
+    This function calculates a continuity score for a given orthologous group
+    and its corresponding LCA counts.
 
     :param og_name: Orthologous group name.
     :param youngest_common_counts_df: DataFrame with LCA counts.
@@ -320,7 +323,7 @@ def get_continuity_score(og_name, youngest_common_counts_df):
     :rtype: float
 
     Example
-    --------
+    -------
     >>>
     """
     og_continuity_score = 0.0
@@ -343,15 +346,15 @@ def main():
     print(args)
     if not args.seqname:
         parser.print_help()
-        print('\nError <-seqname>: Please specify query species name in OrthoFinder and taxid')
+        print('\nError <-seqname>: Please specify query species name in OrthoFinder and taxID')
         sys.exit()
     if not args.qt:
         parser.print_help()
-        print('\nError <-qt>: Please specify query species taxid')
+        print('\nError <-qt>: Please specify query species taxID')
         sys.exit()
     if not args.sl:
         parser.print_help()
-        print('\nError <-sl>: Please specify species list as <OrthoFinder name><tab><species taxid>')
+        print('\nError <-sl>: Please specify species list as <OrthoFinder name><tab><species taxID>')
         sys.exit()
     if not args.oc:
         parser.print_help()
