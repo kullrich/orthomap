@@ -21,6 +21,7 @@ def define_parser():
     A helper function for using `qlin.py` via the terminal.
 
     :return: An argparse.ArgumentParser.
+
     :rtype: argparse.ArgumentParser
     """
     qlin_example = '''qlin example:
@@ -47,6 +48,7 @@ def add_argparse_args(parser: argparse.ArgumentParser):
     This function attaches individual argument specifications to the parser.
 
     :param parser: An argparse.ArgumentParser.
+
     :type parser: argparse.ArgumentParser
     """
     parser.add_argument('-q', help='query species name')
@@ -65,13 +67,14 @@ def get_qlin(ncbi=None, q=None, qt=None, quite=False):
     :param q: The name of the queried species.
     :param qt: The taxID of the queried species.
     :param quite: Specify if output should be quite.
+    :return: A list of information for the queried species such as:
+    query name, query taxID, query lineage, query lineage dictonary, query lineage zip,
+    query lineage names, reverse query lineage, query kingdom
+
     :type ncbi: ete3.NCBITaxa
     :type q: str
     :type qt: str
     :type quite: bool
-    :return: A list of information for the queried species such as:
-    query name, query taxID, query lineage, query lineage dictonary, query lineage zip,
-    query lineage names, reverse query lineage, query kingdom
     :rtype: list
 
     Example
@@ -123,8 +126,9 @@ def get_lineage_topo(qt):
     This function returns a species lineage as a tree object for a query species given as taxID.
 
     :param qt: The taxID of the queried species.
-    :type qt: str
     :return: The lineage of the queried species as an ete3.Tree.
+
+    :type qt: str
     :rtype: ete3.Tree
 
     Example
@@ -146,9 +150,10 @@ def get_youngest_common(ql, tl):
 
     :param ql: Query species lineage information.
     :param tl: Target species lineage information.
+    :return: lowest common ancestor (LCA).
+
     :type ql: list
     :type tl: list
-    :return: lowest common ancestor (LCA)
     :rtype: str
 
     Example
@@ -173,9 +178,10 @@ def get_oldest_common(ql, tl):
 
     :param ql: Query species lineage information.
     :param tl: Target species lineage information.
+    :return: oldest common ancestor (OCA).
+
     :type ql: list
     :type tl: list
-    :return: oldest common ancestor (OCA)
     :rtype: str
 
     Example

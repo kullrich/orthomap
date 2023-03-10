@@ -25,8 +25,9 @@ def ensembl105(datapath='.'):
     https://doi.org/10.5281/zenodo.7242263
 
     :param datapath: Path to safe dataset.
-    :type datapath: str
     :return: Path to Orthogroups.GeneCount file, OrthoGroups file and sepcies list file.
+
+    :type datapath: str
     :rtype: list of str
 
     Example
@@ -55,8 +56,9 @@ def zebrafish_gtf(datapath='.'):
     https://ftp.ensembl.org/pub/release-105/gtf/danio_rerio/
 
     :param datapath: Path to safe dataset.
-    :type datapath: str
     :return: Path to GTF file.
+
+    :type datapath: str
     :rtype: str
 
     Example
@@ -76,8 +78,9 @@ def mouse_gtf(datapath='.'):
     https://ftp.ensembl.org/pub/release-105/gtf/mus_musculus/
 
     :param datapath: Path to safe dataset.
-    :type datapath: str
     :return: Path to GTF file.
+
+    :type datapath: str
     :rtype: str
 
     Example
@@ -101,8 +104,9 @@ def sun21_orthomap(datapath='.'):
     Genome research, 31(9), pp.1590-1601.
 
     :param datapath: Path to safe dataset.
-    :type datapath: str
     :return: Path to Orthomap file.
+
+    :type datapath: str
     :rtype: str
 
     Example
@@ -126,8 +130,9 @@ def cazet22_orthomap(datapath='.'):
     bioRxiv, 2022.06.21.496857.
 
     :param datapath: Path to safe dataset.
-    :type datapath: str
     :return: Path to Orthomap file.
+
+    :type datapath: str
     :rtype: str
 
     Example
@@ -154,8 +159,9 @@ def packer19(datapath='.'):
     https://doi.org/10.5281/zenodo.7245547
 
     :param datapath: Path to safe dataset.
-    :type datapath: str
     :return: AnnData object.
+
+    :type datapath: str
     :rtype: AnnData
 
     Example
@@ -183,8 +189,9 @@ def packer19_small(datapath='.'):
     https://doi.org/10.5281/zenodo.7245547
 
     :param datapath: Path to safe dataset.
-    :type datapath: str
     :return: AnnData object.
+
+    :type datapath: str
     :rtype: AnnData
 
     Example
@@ -212,8 +219,9 @@ def cazet22(datapath='.'):
     https://doi.org/10.5281/zenodo.7366178
 
     :param datapath: Path to safe dataset.
-    :type datapath: str
     :return: AnnData object.
+
+    :type datapath: str
     :rtype: AnnData
 
     Example
@@ -251,8 +259,9 @@ def qiu22_zebrafish(datapath='.'):
     https://doi.org/10.5281/zenodo.7243602
 
     :param datapath: Path to safe dataset.
-    :type datapath: str
     :return: AnnData object.
+
+    :type datapath: str
     :rtype: AnnData
 
     Example
@@ -286,8 +295,9 @@ def qiu22_frog(datapath='.'):
     https://doi.org/10.5281/zenodo.7244440
 
     :param datapath: Path to safe dataset.
-    :type datapath: str
     :return: AnnData object.
+
+    :type datapath: str
     :rtype: AnnData
 
     Example
@@ -337,8 +347,9 @@ def qiu22_mouse(datapath='.'):
     https://doi.org/10.5281/zenodo.7244567
 
     :param datapath: Path to safe dataset.
-    :type datapath: str
     :return: AnnData object.
+
+    :type datapath: str
     :rtype: AnnData
 
     Example
