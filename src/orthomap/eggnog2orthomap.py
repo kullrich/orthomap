@@ -18,11 +18,12 @@ from orthomap import qlin, of2orthomap
 from ete3 import NCBITaxa
 
 
-def _define_parser():
+def define_parser():
     """
     A helper function for using `eggnog2orthomap.py` via the terminal.
 
-    :return: argparse.ArgumentParser
+    :return: An argparse.ArgumentParser.
+    :rtype: argparse.ArgumentParser
     """
     eggnog2orthomap_example = '''example:
 
@@ -35,15 +36,16 @@ def _define_parser():
         description='extract orthomap from eggnog output for query species',
         epilog=eggnog2orthomap_example,
         formatter_class=argparse.RawDescriptionHelpFormatter)
-    _add_argparse_args(parser=parser)
+    add_argparse_args(parser=parser)
     return parser
 
 
-def _add_argparse_args(parser: argparse.ArgumentParser):
+def add_argparse_args(parser: argparse.ArgumentParser):
     """
     This function attaches individual argument specifications to the parser.
 
-    :param parser: argparse.ArgumentParser
+    :param parser: An argparse.ArgumentParser.
+    :type parser: argparse.ArgumentParser
     """
     parser.add_argument('-qt', help='query species taxid (e.g. use <orthomap qlin -h> to get taxid)')
     parser.add_argument('-og', help='specify eggnog <e6.og2seqs_and_species.tsv>')
@@ -64,7 +66,16 @@ def get_eggnog_orthomap(qt, og, subset=None, out=None, quite=False, continuity=T
     :param out:
     :param quite:
     :param continuity:
+    :param overwrite:
+    :type qt:
+    :type og:
+    :type subset:
+    :type out:
+    :type quite:
+    :type continuity:
+    :type overwrite:
     :return:
+    :rtype:
 
     Example
     --------
@@ -187,9 +198,9 @@ def get_eggnog_orthomap(qt, og, subset=None, out=None, quite=False, continuity=T
 
 def main():
     """
-    The main function that is being called when `eggnog2orthomap.py` is used via the terminal.
+    The main function that is being called when `eggnog2orthomap` is used via the terminal.
     """
-    parser = _define_parser()
+    parser = define_parser()
     args = parser.parse_args()
     print(args)
     if not args.qt:
