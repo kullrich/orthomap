@@ -19,7 +19,8 @@ def define_parser():
     """
     A helper function for using `ncbitax.py` via the terminal.
 
-    :return: argparse.ArgumentParser
+    :return: An argparse.ArgumentParser.
+
     :rtype: argparse.ArgumentParser
     """
     ncbitax_example = '''ncbitax example:
@@ -40,7 +41,8 @@ def add_argparse_args(parser: argparse.ArgumentParser):
     """
     This function attaches individual argument specifications to the parser.
 
-    :param parser: argparse.ArgumentParser
+    :param parser: An argparse.ArgumentParser.
+
     :type parser: argparse.ArgumentParser
     """
     parser.add_argument('-u', help='update', action='store_true')
