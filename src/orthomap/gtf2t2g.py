@@ -21,7 +21,8 @@ def define_parser():
     """
     A helper function for using `gtf2t2g.py` via the terminal.
 
-    :return: argparse.ArgumentParser
+    :return: An argparse.ArgumentParser.
+
     :rtype: argparse.ArgumentParser
     """
     gtf2t2g_example = '''gtf2t2g example:
@@ -49,7 +50,8 @@ def add_argparse_args(parser: argparse.ArgumentParser):
     """
     This function attaches individual argument specifications to the parser.
 
-    :param parser: argparse.ArgumentParser
+    :param parser: An argparse.ArgumentParser.
+
     :type parser: argparse.ArgumentParser
     """
     parser.add_argument('-i', help='specify GTF input file')
@@ -68,18 +70,20 @@ def _information_based_on_key(infosplit, key, q, lines, version=False):
     """
     Internal function
 
-    :param infosplit:
-    :param key:
-    :param q:
-    :param lines:
-    :param version:
-    :type infosplit:
-    :type key:
-    :type q:
-    :type lines:
-    :type version:
-    :return:
-    :rtype:
+    :param infosplit: Split information column of GTF file.
+    :param key: Keyword.
+    :param q: Specify if output should be quiet.
+    :param lines: Line of GTF file.
+    :param version: Specify if gene/transcript/protein version should be appended.
+    :return: A list of parssed information from a GTF info field such as:
+    infos, output
+
+    :type infosplit: list
+    :type key: str
+    :type q: bool
+    :type lines: str
+    :type version: bool
+    :rtype: list
 
     Example
     --------
@@ -100,30 +104,31 @@ def _information_based_on_key(infosplit, key, q, lines, version=False):
     else:
         if not q:
             print(f'no {key} field:\t' + lines)
-    return infos, output
+    return [infos, output]
 
 
 def parse_gtf(gtf, g=False, b=False, p=False, v=False, s=False, output=None, q=False):
     """
 
-    :param gtf: File name of GTF file.
+    :param gtf: Path to GTF file.
     :param g: Specify if gene names should be appended if they exist.
     :param b: Specify if gene biotype should be appended if they exist.
     :param p: Specify if protein id should be appended if they exist.
     :param v: Specify if gene/transcript/protein version should be appended.
     :param s: Specify if summary should be printed.
     :param output: File object.
-    :param q: Specify if output should be quite.
+    :param q: Specify if output should be quiet.
+    :return: DataFrame with transcript and gene IDs.
+
     :type gtf: str
-    :type g: bool (default: False)
-    :type b: bool (default: False)
-    :type p: bool (default: False)
-    :type v: bool (default: False)
-    :type s: bool (default: False)
-    :type output: Optional[file object] (default: None)
-    :type q: bool (default: False)
-    :return:
-    :rtype:
+    :type g: bool
+    :type b: bool
+    :type p: bool
+    :type v: bool
+    :type s: bool
+    :type output: file object
+    :type q: bool
+    :rtype: pandas.DataFrame
 
     Example
     --------
@@ -258,7 +263,7 @@ def parse_gtf(gtf, g=False, b=False, p=False, v=False, s=False, output=None, q=F
 
 def main():
     """
-    The main function that is being called when `gt2t2g.py` is used via the terminal.
+    The main function that is being called when `gtf2t2g` is used via the terminal.
     """
     parser = define_parser()
     args = parser.parse_args()
