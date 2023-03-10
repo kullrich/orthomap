@@ -107,14 +107,14 @@ def get_orthomap(seqname, qt, sl, oc, og, out=None, quiet=False, continuity=True
     >>>     sl='ensembl_105_orthofinder_species_list.tsv',
     >>>     oc='ensembl_105_orthofinder_Orthogroups.GeneCount.tsv',
     >>>     og='ensembl_105_orthofinder_Orthogroups.tsv',
-    >>>     out=None, quite=False, continuity=True, overwrite=True)
+    >>>     out=None, quiet=False, continuity=True, overwrite=True)
     >>> query_orthomap
     """
     outhandle = None
     og_continuity_score = None
     ncbi = NCBITaxa()
     qname, qtid, qlineage, qlineagenames_dict, qlineagezip, qlineagenames, qlineagerev, qk = \
-        qlin.get_qlin(qt=qt, quite=True)
+        qlin.get_qlin(qt=qt, quiet=True)
     query_lineage_topo = qlin.get_lineage_topo(qt)
     species_list = pd.read_csv(sl, sep='\t', header=None)
     species_list.columns = ['species', 'taxID']
