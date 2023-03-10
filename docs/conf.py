@@ -23,7 +23,7 @@ from orthomap import *
 extensions = [
         "sphinx.ext.autodoc",
         "sphinx.ext.napoleon",
-        "sphinx.ext.pngmath",
+        "sphinx.ext.imgmath",
 ]
 
 templates_path = ['_templates']
