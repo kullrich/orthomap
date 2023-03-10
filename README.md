@@ -11,43 +11,44 @@
 
 [`orthomap`](https://github.com/kullrich/orthomap) is a python package to extract orthologous maps
 (in other words the evolutionary age of a given orthologous group) from OrthoFinder results.
-Orthomap results (gene ages per orthogroup) can be further used to calculate weighted expression data
+Orthomap results (gene ages per orthogroup) can be further used to calculate and visualize weighted expression data
 from scRNA sequencing objects.
-
-## Installing `orthomap`
-
-### Anaconda
-
-The environment is created with `conda create` in which `orthomap` is installed.
-
-If you do not have a working installation of Python 3.8 (or later), consider
-installing [Miniconda] (see [Installing Miniconda](#installing-miniconda)).
-Then run:
-
-```shell
-$ conda env create --file environment.yml
-$ conda activate orthomap
-```
-
-Install `orthomap`:
-
-```shell
-$ pip install orthomap
-```
-
-### PyPI
-
-Install `orthomap` into your current python environment:
-
-```shell
-$ pip install orthomap
-```
 
 ## Documentation
 
 Online documentation can be found [here](https://orthomap.readthedocs.io/en/latest/).
 
-## Quick use
+## Installing `orthomap`
+
+More installation options can be found [here](https://orthomap.readthedocs.io/en/latest/installation/index.html).
+
+### orthomap installation using conda and pip
+
+We recommend installing `orthomap` in an independent conda environment to avoid dependent software conflicts.
+Please make a new python environment for `orthomap` and install dependent libraries in it.
+
+The environment is created with conda create in which `orthomap` is installed.
+
+If you do not have a working installation of Python 3.8 (or later),
+consider installing [Anaconda](https://docs.anaconda.com/anaconda/install/) or
+[Miniconda](https://docs.conda.io/en/latest/miniconda.html). Then run:
+
+```shell
+$ git clone https://github.com/kullrich/orthomap.git
+$ cd orthomap
+$ conda env create --file environment.yml
+$ conda activate orthomap_env
+```
+
+Install `orthomap` via [PyPI](Install orthomap via PyPI:):
+
+```shell
+$ pip install orthomap
+```
+
+## Quick usage
+
+Detailed tutorials how to use `orthomap` can be found [here](https://orthomap.readthedocs.io/en/latest/tutorials/index.html).
 
 ### Update/download local ncbi taxonomic database:
 
@@ -60,10 +61,10 @@ NCBI's taxonomy database (~300MB). The database is saved at
 >>> ncbitax.update_ncbi()
 ```
 
-### Query species lineage information:
+### Step 1 - Get query species taxonomic lineage information:
 
 You can query a species lineage information based on its name or its
-taxid. For example `Danio rerio` with taxid `7955`:
+taxID. For example `Danio rerio` with taxID `7955`:
 
 ```python
 >>> from orthomap import qlin
@@ -72,7 +73,7 @@ taxid. For example `Danio rerio` with taxid `7955`:
 ```
 
 You can get the query species topology as a tree.
-For example for `Danio rerio` with taxid `7955`:
+For example for `Danio rerio` with taxID `7955`:
 
 ```python
 >>> from orthomap import qlin
@@ -80,92 +81,111 @@ For example for `Danio rerio` with taxid `7955`:
 >>> query_topology.write()
 ```
 
-### Extract orthomap from OrthoFinder result
+### Step 2 - Get query species orthomap from OrthoFinder results:
 
-The following code extracts the orthomap for `Danio rerio` based on the
+The following code extracts the `orthomap` for `Danio rerio` based on pre-calculated 
 OrthoFinder results and ensembl release-105:
 
-OrthoFinder results files have been archived and can be found
+OrthoFinder results (-S diamond_ultra_sens) using translated, longest-isoform coding sequences
+from ensembl release-105 have been archived and can be found
 [here](https://zenodo.org/record/7242264#.Y1p19i0Rowc).
 
 ```python
->>> from orthomap import of2orthomap
->>> query_orthomap, orthofinder_species_list, of_species_abundance =\
-... of2orthomap.get_orthomap(
+>>> from orthomap import datasets, of2orthomap
+>>> datasets.ensembl105(datapath='.')
+... query_orthomap = of2orthomap.get_orthomap(
 ...     seqname='Danio_rerio.GRCz11.cds.longest',
 ...     qt='7955',
 ...     sl='ensembl_105_orthofinder_species_list.tsv',
 ...     oc='ensembl_105_orthofinder_Orthogroups.GeneCount.tsv',
 ...     og='ensembl_105_orthofinder_Orthogroups.tsv',
-...     continuity=True)
+...     out=None, quiet=False, continuity=True, overwrite=True)
+>>> query_orthomap
 ```
 
-### Match gene and transript names to combine with scRNA data set
+### Step 3 - Map OrthoFinder gene names and scRNA gene/transcript names:
 
 The following code extracts the gene to transcript table for `Danio rerio`:
 
 GTF file obtained from [here](https://ftp.ensembl.org/pub/release-105/gtf/danio_rerio/Danio_rerio.GRCz11.105.gtf.gz).
 
 ```python
->>> from orthomap import gtf2t2g
+>>> from orthomap import datasets, gtf2t2g
+>>> gtf_file = datasets.zebrafish_gtf(datapath='.')
 >>> query_species_t2g = gtf2t2g.parse_gtf(
-...     gtf='Danio_rerio.GRCz11.105.gtf.gz',
+...     gtf=gtf_file,
 ...     g=True, b=True, p=True, v=True, s=True, q=True)
+... query_species_t2g
 ```
 
-### Convert a gene transfer file to a pandas DataFrame
+Import now, the scRNA dataset of the query species.
 
-```python
->>> from orthomap import gtf2t2g
->>> file = 'examples/Mus_musculus.GRCm39.108.chr.gtf.gz'
-
->>> df = gtf2t2g.parse_gtf(file, g=True, p=True, s=True, q=True, v=True)
->>> df.head()
-gene_id	gene_id_version	transcript_id	transcript_id_version	gene_name	gene_type	protein_id	protein_id_version
-0	ENSMUSG00000102628	ENSMUSG00000102628.2	ENSMUST00000193198	ENSMUST00000193198.2	Gm37671	None	None	None
-1	ENSMUSG00000100595	ENSMUSG00000100595.2	ENSMUST00000191430	ENSMUST00000191430.2	Gm19087	None	None	None
-```
-
-### Calculate transcriptome evolutionary index (TEI) for each cell of a scRNA data set:
-
-example: Danio rerio - [http://tome.gs.washington.edu](http://tome.gs.washington.edu)
+example: **Danio rerio** - [http://tome.gs.washington.edu](http://tome.gs.washington.edu)
 ([Qui et al. 2022](https://www.nature.com/articles/s41588-022-01018-x))
 
 `AnnData` file can be found [here](https://doi.org/10.5281/zenodo.7243602).
 
 ```python
->>> from orthomap import orthomap2tei
->>> zebrafish_data = sc.read('zebrafish_data.h5ad')
+>>> import scanpy as sc
+>>> from orthomap import datasets, orthomap2tei
+>>> # download zebrafish scRNA data here: https://doi.org/10.5281/zenodo.7243602
+>>> # or download with datasets.qiu22_zebrafish(datapath='.')
+>>> zebrafish_data = datasets.qiu22_zebrafish(datapath='.')
+>>> zebrafish_data
+>>> # check overlap of transcript table <gene_id> and scRNA data <var_names>
+>>> orthomap2tei.geneset_overlap(zebrafish_data.var_names, query_species_t2g['gene_id'])
 ```
 
-Check overlap of orthomap and scRNA data set:
+The `replace_by` helper function can be used to add a new column to the `orthomap` dataframe by matching e.g.
+gene isoform names and their corresponding gene names.
 
 ```python
-orthomap2tei.geneset_overlap(zebrafish_data.var_names, query_orthomap['seqID'])
-```
-
-Convert orthomap transcript IDs into GeneIDs and add them to orthomap:
-
-```python
+>>> # convert orthomap transcript IDs into GeneIDs and add them to orthomap
 >>> query_orthomap['geneID'] = orthomap2tei.replace_by(
-...     x_orig = query_orthomap['seqID'],
-...     xmatch = query_species_t2g['transcript_id_version'],
-...     xreplace = query_species_t2g['gene_id'])
+...    x_orig = query_orthomap['seqID'],
+...    xmatch = query_species_t2g['transcript_id_version'],
+...    xreplace = query_species_t2g['gene_id'])
+>>> # check overlap of orthomap <geneID> and scRNA data
+>>> orthomap2tei.geneset_overlap(zebrafish_data.var_names, query_orthomap['geneID'])
 ```
 
-Add TEI values to existing adata object:
+### Step 4 - Get transcriptome evolutionary index (TEI) values and add them to scRNA dataset:
+
+Since now the gene names correspond to each other in the `orthomap` and the scRNA adata object,
+one can calculate the transcriptome evolutionary index (TEI) and add them to the scRNA dataset (adata object).
 
 ```python
->>> tei_df = orthomap2tei.get_tei(adata=zebrafish_data,
-...     gene_id=query_orthomap['geneID'],
-...     gene_age=query_orthomap['PSnum'],
-...     add=True)
+>>> # add TEI values to existing adata object
+>>> orthomap2tei.get_tei(adata=zebrafish_data,
+...    gene_id=query_orthomap['geneID'],
+...    gene_age=query_orthomap['PSnum'],
+...    keep='min',
+...    layer=None,
+...    add=True,
+...    obs_name='tei',
+...    boot=False,
+...    bt=10,
+...    normalize_total=False,
+...    log1p=False,
+...    target_sum=1e6)
 ```
 
-Boxplot TEI per stage:
+### Step 5 - Downstream analysis
+
+Once the gene age data has been added to the scRNA dataset,
+one can e.g. plot the corresponding transcriptome evolutionary index (TEI) values
+by any given observation pre-defined in the scRNA dataset.
+
+#### Boxplot TEI per stage:
 
 ```python
-sc.pl.violin(zebrafish_data, ['tei'], groupby='stage')
+>>>sc.pl.violin(adata=zebrafish_data,
+...             keys=['tei'],
+...             groupby='stage',
+...             rotation=90,
+...             palette='Paired',
+...             stripplot=False,
+...             inner='box')
 ```
 
 ## orthomap via Command Line
@@ -174,18 +194,13 @@ sc.pl.violin(zebrafish_data, ['tei'], groupby='stage')
 the lineage information for `Danio rerio` run the following command:
 
 ```shell
-$ python src/orthomap/qlin.py -q "Danio rerio"
-```
-
-To retrieve the gene to transcript table for `Danio rerio` run the following command:
-
-```shell
-$ python src/orthomap/gtf2t2g.py -g -s -q -i "Danio_rerio.GRCz11.105.gtf.gz"
+$ orthomap qlin -q "Danio rerio"
 ```
 
 ## Development Version
 
-To work with the latest version [on GitHub]: clone the repository and `cd` into its root directory.
+To work with the latest version [on GitHub](https://github.com/kullrich/orthomap):
+clone the repository and `cd` into its root directory.
 
 ```shell
 $ git clone kullrich/orthomap
@@ -196,16 +211,6 @@ Install `orthomap` into your current python environment:
 
 ```shell
 $ pip install -e .
-```
-
-## Installing Miniconda
-
-After downloading [Miniconda], in a unix shell (Linux, Mac), run
-
-```shell
-$ cd DOWNLOAD_DIR
-$ chmod +x Miniconda3-latest-VERSION.sh
-$ ./Miniconda3-latest-VERSION.sh
 ```
 
 ## Contributing Code
