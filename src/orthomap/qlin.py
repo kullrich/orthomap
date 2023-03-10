@@ -55,7 +55,7 @@ def add_argparse_args(parser: argparse.ArgumentParser):
     parser.add_argument('-qt', help='query species taxID')
 
 
-def get_qlin(ncbi=None, q=None, qt=None, quite=False):
+def get_qlin(ncbi=None, q=None, qt=None, quiet=False):
     """
     This function searches the NCBI taxonomic database for results matching the
     query name or query taxID.
@@ -66,7 +66,7 @@ def get_qlin(ncbi=None, q=None, qt=None, quite=False):
     :param ncbi: The NCBI taxonomic database.
     :param q: The name of the queried species.
     :param qt: The taxID of the queried species.
-    :param quite: Specify if output should be quite.
+    :param quiet: Specify if output should be quiet.
     :return: A list of information for the queried species such as:
     query name, query taxID, query lineage, query lineage dictonary, query lineage zip,
     query lineage names, reverse query lineage, query kingdom
@@ -74,7 +74,7 @@ def get_qlin(ncbi=None, q=None, qt=None, quite=False):
     :type ncbi: ete3.NCBITaxa
     :type q: str
     :type qt: str
-    :type quite: bool
+    :type quiet: bool
     :rtype: list
 
     Example
@@ -110,7 +110,7 @@ def get_qlin(ncbi=None, q=None, qt=None, quite=False):
         qk = 'Archea'
     if qlineage[2] == 2759:
         qk = 'Eukaryota'
-    if not quite:
+    if not quiet:
         print('query name: %s' % qname)
         print('query taxID: %s' % str(qtid))
         print('query kingdom: %s' % qk)
@@ -136,7 +136,7 @@ def get_lineage_topo(qt):
     >>> from orthomap import qlin
     >>> lineage_tree = qlin.get_lineage_topo(qt='10090')
     """
-    _, _, _, _, _, qlineagenames, _, _ = get_qlin(qt=qt, quite=True)
+    _, _, _, _, _, qlineagenames, _, _ = get_qlin(qt=qt, quiet=True)
     qln = list(qlineagenames[['PSnum', 'PStaxID', 'PSname']].apply(lambda x: '/'.join(x), axis=1))
     qln = [x.replace('(', '_').replace(')', '_').replace(':', '_') for x in qln]
     tree = Tree('(' * len(qln) + ''.join([str(x) + '),' for x in qln[1::][::-1]])+str(qln[0])+');')
@@ -212,7 +212,7 @@ def main():
         parser.print_help()
         print('\nWarning: Since both query species name and taxID are given taxID is used')
         sys.exit()
-    get_qlin(q=args.q, qt=args.qt, quite=False)
+    get_qlin(q=args.q, qt=args.qt, quiet=False)
 
 
 if __name__ == '__main__':
