@@ -23,7 +23,9 @@ def define_parser():
     """
     A helper function for using `of2orthomap.py` via the terminal.
 
-    :return: argparse.ArgumentParser
+    :return: An argparse.ArgumentParser.
+
+    :rtype: argparse.ArgumentParser
     """
     of2orthomap_example = '''of2orthomap example:
 
@@ -52,33 +54,48 @@ def add_argparse_args(parser: argparse.ArgumentParser):
     """
     This function attaches individual argument specifications to the parser.
 
-    :param parser: argparse.ArgumentParser
+    :param parser: An argparse.ArgumentParser.
+
+    :type parser: argparse.ArgumentParser
     """
-    parser.add_argument('-seqname', help='sequence name of the query species in orthofinder'
+    parser.add_argument('-seqname', help='sequence name of the query species in OrthoFinder'
                                          '(see column names of  <Orthogroups.tsv>)')
-    parser.add_argument('-qt', help='query species taxid (e.g. use <orthomap qlin -h> to get taxid)')
-    parser.add_argument('-sl', help='species list as <orthofinder name><tab><species taxid> '
+    parser.add_argument('-qt', help='query species taxID (e.g. use <orthomap qlin -h> to get taxID)')
+    parser.add_argument('-sl', help='species list as <OrthoFinder name><tab><species taxID> '
                                     '(only samples in this list will be processed)')
-    parser.add_argument('-oc', help='specify orthofinder <Orthogroups.GeneCounts.tsv> (see Orthogroups directory)')
-    parser.add_argument('-og', help='specify orthofinder <Orthogroups.tsv> (see Orthogroups directory)')
+    parser.add_argument('-oc', help='specify OrthoFinder <Orthogroups.GeneCounts.tsv> (see Orthogroups directory)')
+    parser.add_argument('-og', help='specify OrthoFinder <Orthogroups.tsv> (see Orthogroups directory)')
     parser.add_argument('-out', help='specify output file <orthomap.tsv> (default: orthomap.tsv)',
                         default='orthomap.tsv')
     parser.add_argument('-overwrite', help='specify if existing output file should be overwritten (default: True)',
                         default=True, type=bool)
 
 
-def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False, continuity=True, overwrite=True):
+def get_orthomap(seqname, qt, sl, oc, og, out=None, quiet=False, continuity=True, overwrite=True):
     """
-    :param seqname: sequence name of the query species in orthofinder
-    :param qt:
-    :param sl:
+    This function
+
+    :param seqname: Sequence name of the query species used for OrthoFinder comparison.
+    :param qt: Query species taxID.
+    :param sl: Species list
     :param oc:
     :param og:
     :param out:
-    :param quite:
+    :param quiet:
     :param continuity:
     :param overwrite:
     :return:
+
+    :type seqname: sequence name of the query species in orthofinder
+    :type qt:
+    :type sl:
+    :type oc:
+    :type og:
+    :type out:
+    :type quiet:
+    :type continuity:
+    :type overwrite:
+    :rtype:
 
     Example
     --------
@@ -93,6 +110,8 @@ def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False, continuity=True
     >>>     out=None, quite=False, continuity=True, overwrite=True)
     >>> query_orthomap
     """
+    outhandle = None
+    og_continuity_score = None
     ncbi = NCBITaxa()
     qname, qtid, qlineage, qlineagenames_dict, qlineagezip, qlineagenames, qlineagerev, qk = \
         qlin.get_qlin(qt=qt, quite=True)
@@ -103,12 +122,12 @@ def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False, continuity=True
     species_list['youngest_common'] = [qlin.get_youngest_common(qlineage, x) for x in species_list.lineage]
     species_list['youngest_name'] = [list(x.values())[0] for x in [ncbi.get_taxid_translator([x])
                                                                    for x in list(species_list.youngest_common)]]
-    if not quite:
+    if not quiet:
         print(seqname)
         print(qname)
         print(qt)
         print(species_list)
-    youngest_common_counts_df = _get_youngest_common_counts(qlineage, species_list)
+    youngest_common_counts_df = get_youngest_common_counts(qlineage, species_list)
     for node in query_lineage_topo.traverse('postorder'):
         nsplit = node.name.split('/')
         if len(nsplit) == 3:
@@ -151,10 +170,8 @@ def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False, continuity=True
                 oc_og_oldest_common = qlin.get_oldest_common(qlineage, oc_og_hits_youngest_common)
                 oc_og_dict[oc_og[0]] = oc_og_oldest_common
                 if continuity:
-                    continuity_dict[oc_og[0]] =\
-                        _get_youngest_common_counts(qlineage,
-                                                    pd.DataFrame(oc_og_hits_youngest_common,
-                                                                 columns=['youngest_common'])).counts
+                    continuity_dict[oc_og[0]] = get_youngest_common_counts(
+                        qlineage, pd.DataFrame(oc_og_hits_youngest_common, columns=['youngest_common'])).counts
     oc_lines.close()
     if continuity:
         youngest_common_counts_df = youngest_common_counts_df.join(pd.DataFrame.from_dict(continuity_dict))
@@ -195,7 +212,7 @@ def get_orthomap(seqname, qt, sl, oc, og, out=None, quite=False, continuity=True
                                   str(oc_og_dict[og_og[0]])].values.tolist()[0]
             og_ps_join = '\t'.join(og_ps)
             if continuity:
-                og_continuity_score = _get_continuity_score(og_og[0], youngest_common_counts_df)
+                og_continuity_score = get_continuity_score(og_og[0], youngest_common_counts_df)
             if out:
                 if continuity:
                     [outhandle.write(x.replace(' ', '') + '\t' + og_og[0] + '\t' + og_ps_join + '\t' +
@@ -230,6 +247,12 @@ def get_counts_per_ps(omap_df, psnum_col='PSnum', pstaxid_col='PStaxID', psname_
     :param psname_col:
     :return:
 
+    :type omap_df: pandas.DataFrame
+    :type psnum_col: str
+    :type pstaxid_col: str
+    :type psname_col: str
+    :rtype: pandas.DataFrame
+
     Example
     --------
     >>> from orthomap import datasets, of2orthomap, qlin
@@ -240,7 +263,7 @@ def get_counts_per_ps(omap_df, psnum_col='PSnum', pstaxid_col='PStaxID', psname_
     >>>     sl='ensembl_105_orthofinder_species_list.tsv',
     >>>     oc='ensembl_105_orthofinder_Orthogroups.GeneCount.tsv',
     >>>     og='ensembl_105_orthofinder_Orthogroups.tsv',
-    >>>     out=None, quite=False, continuity=True, overwrite=True)
+    >>>     out=None, quiet=False, continuity=True, overwrite=True)
     >>> of2orthomap.get_counts_per_ps(query_orthomap[0],
     >>>     psnum_col='PSnum',
     >>>     pstaxid_col='PStaxID',
@@ -258,12 +281,17 @@ def get_counts_per_ps(omap_df, psnum_col='PSnum', pstaxid_col='PStaxID', psname_
     return counts_df
 
 
-def _get_youngest_common_counts(qlineage, species_list):
+def get_youngest_common_counts(qlineage, species_list):
     """
+    This function
 
-    :param qlineage:
-    :param species_list:
-    :return:
+    :param qlineage: Query lineage information.
+    :param species_list: Species list.
+    :return: DataFrame with LCA counts.
+
+    :type qlineage: list
+    :type species_list: pandas.DataFrame
+    :rtype: pandas.DataFrame
 
     Example
     --------
@@ -279,12 +307,17 @@ def _get_youngest_common_counts(qlineage, species_list):
     return counts_df
 
 
-def _get_continuity_score(og_name, youngest_common_counts_df):
+def get_continuity_score(og_name, youngest_common_counts_df):
     """
+    Internal function
 
-    :param og_name:
-    :param youngest_common_counts_df:
-    :return:
+    :param og_name: Orthologous group name.
+    :param youngest_common_counts_df: DataFrame with LCA counts.
+    :return: Continuity score.
+
+    :type og_name: str
+    :type youngest_common_counts_df: pandas.DataFrame
+    :rtype: float
 
     Example
     --------
@@ -300,16 +333,17 @@ def _get_continuity_score(og_name, youngest_common_counts_df):
         og_continuity_score = og_lca_df_counts[False] / len(og_lca_df)
     return og_continuity_score
 
+
 def main():
     """
-    The main function that is being called when `of2orthomap.py` is used via the terminal.
+    The main function that is being called when `of2orthomap` is used via the terminal.
     """
     parser = define_parser()
     args = parser.parse_args()
     print(args)
     if not args.seqname:
         parser.print_help()
-        print('\nError <-seqname>: Please specify query species name in orthofinder and taxid')
+        print('\nError <-seqname>: Please specify query species name in OrthoFinder and taxid')
         sys.exit()
     if not args.qt:
         parser.print_help()
@@ -317,17 +351,17 @@ def main():
         sys.exit()
     if not args.sl:
         parser.print_help()
-        print('\nError <-sl>: Please specify species list as <orthofinder name><tab><species taxid>')
+        print('\nError <-sl>: Please specify species list as <OrthoFinder name><tab><species taxid>')
         sys.exit()
     if not args.oc:
         parser.print_help()
-        print('\nError <-oc>: Please specify orthofinder <Orthogroups.GeneCounts.tsv> (see Orthogroups directory)')
+        print('\nError <-oc>: Please specify OrthoFinder <Orthogroups.GeneCounts.tsv> (see Orthogroups directory)')
         sys.exit()
     if not args.og:
         parser.print_help()
-        print('\nError <-og>: Please specify orthofinder <Orthogroups.tsv> (see Orthogroups directory)')
+        print('\nError <-og>: Please specify OrthoFinder <Orthogroups.tsv> (see Orthogroups directory)')
         sys.exit()
-    get_orthomap(seqname=args.seqname, qt=args.qt, sl=args.sl, oc=args.oc, og=args.og, out=args.out, quite=False,
+    get_orthomap(seqname=args.seqname, qt=args.qt, sl=args.sl, oc=args.oc, og=args.og, out=args.out, quiet=False,
                  continuity=True, overwrite=args.overwrite)
 
 

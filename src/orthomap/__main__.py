@@ -17,6 +17,13 @@ from orthomap import gtf2t2g, ncbitax, of2orthomap, qlin
 
 
 def define_parser():
+    """
+    A helper function for using `orthomap` via the terminal.
+
+    :return: An argparse.ArgumentParser.
+
+    :rtype: argparse.ArgumentParser
+    """
     parser = argparse.ArgumentParser(prog='orthomap', usage='%(prog)s <sub-command>',
                                      description='orthomap')
     subparsers = parser.add_subparsers(dest='subcommand', title='sub-commands', help='sub-commands help')
@@ -83,6 +90,9 @@ def define_parser():
 
 
 def main():
+    """
+    The main function that is being called when `orthomap` is used via the terminal.
+    """
     parser = define_parser()
     args = parser.parse_args()
     if args.subcommand is None:
