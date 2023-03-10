@@ -237,9 +237,16 @@ By contributing to this project, you agree to abide by the Code of Conduct terms
 
 ## Bug reports
 
-Please report any errors or requests regarding [`orthomap`](https://github.com/kullrich/orthomap) to Kristian Ullrich (ullrich@evolbio.mpg.de)
+Please post troubles or questions on the GitHub repository [issue tracker](https://github.com/kullrich/orthomap/issues).
+Also, please look at the closed issue pages. This might give an answer to your question.
 
-or use the [issue tracker](https://github.com/kullrich/orthomap/issues).
+## Inquiry for collabolation or discussion
+
+Please send e-mail to us if you want a discussion with us.
+
+Principal code developer: Kristian Ullrich
+
+E-mail address can be found [here](https://www.evolbio.mpg.de).
 
 ## Code of Conduct - Participation guidelines
 
@@ -258,8 +265,3 @@ Huerta-Cepas, J., Serra, F. and Bork, P. (2016). **ETE 3: reconstruction, analys
 Wolf, F.A., Angerer, P. and Theis, F.J. (2018). **SCANPY: large-scale single-cell gene expression data analysis.** *Genome biology*, **19(1)**. [https://doi.org/10.1186/s13059-017-1382-0](https://doi.org/10.1186/s13059-017-1382-0)
 
 Qiu, C., Cao, J., Martin, B.K., Li, T., Welsh, I.C., Srivatsan, S., Huang, X., Calderon, D., Noble, W.S., Disteche, C.M. and Murray, S.A. (2022). **Systematic reconstruction of cellular trajectories across mouse embryogenesis.** *Nature genetics*, **54(3)**. [https://doi.org/10.1038/s41588-022-01018-x](https://doi.org/10.1038/s41588-022-01018-x)
-
-[bioconda]: https://bioconda.github.io/
-[from pypi]: https://pypi.org/project/orthomap
-[miniconda]: http://conda.pydata.org/miniconda.html
-[on github]: https://github.com/kullrich/orthomap

@@ -6,8 +6,8 @@ Contact
 orthomap code issues
 --------------------
 
-Please post troubles or questions on `the Github repository issue page <https://github.com/kullrich/orthomap/issues>`_ .
-Also, please look at `the closed issue pages <https://github.com/kullrich/orthomap/issues?q=is%3Aissue+is%3Aclosed>`_ . This might give an answer to your question.
+Please post troubles or questions on `the Github repository issue page <https://github.com/kullrich/orthomap/issues>`_.
+Also, please look at `the closed issue pages <https://github.com/kullrich/orthomap/issues?q=is%3Aissue+is%3Aclosed>`_. This might give an answer to your question.
 
 Inquiry for collabolation or discussion
 ---------------------------------------
