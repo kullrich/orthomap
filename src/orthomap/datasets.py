@@ -24,10 +24,10 @@ def ensembl105(datapath='.'):
     All files can be obtained from here:
     https://doi.org/10.5281/zenodo.7242263
 
-    :param datapath:
+    :param datapath: path to safe dataset
     :type datapath: str
-    :return:
-    :rtype:
+    :return: path to Orthogroups.GeneCount file, OrthoGroups file and sepcies list file
+    :rtype: list of str
 
     Example
     --------
@@ -54,10 +54,10 @@ def zebrafish_gtf(datapath='.'):
     Download GTF for species Danio rerio from ensembl release-105
     https://ftp.ensembl.org/pub/release-105/gtf/danio_rerio/
 
-    :param datapath:
+    :param datapath: path to safe dataset
     :type datapath: str
-    :return:
-    :rtype:
+    :return: path to GTF file
+    :rtype: str
 
     Example
     --------
@@ -75,10 +75,10 @@ def mouse_gtf(datapath='.'):
     Download GTF for species Mus musculus from ensembl release-105
     https://ftp.ensembl.org/pub/release-105/gtf/mus_musculus/
 
-    :param datapath:
+    :param datapath: path to safe dataset
     :type datapath: str
-    :return:
-    :rtype:
+    :return: path to GTF file
+    :rtype: str
 
     Example
     --------
@@ -100,10 +100,10 @@ def sun21_orthomap(datapath='.'):
     conservation across nematodes.
     Genome research, 31(9), pp.1590-1601.
 
-    :param datapath:
+    :param datapath: path to safe dataset
     :type datapath: str
-    :return:
-    :rtype:
+    :return: path to Orthomap file
+    :rtype: str
 
     Example
     --------
@@ -125,10 +125,10 @@ def cazet22_orthomap(datapath='.'):
     New Hydra genomes reveal conserved principles of hydrozoan transcriptional regulation.,
     bioRxiv, 2022.06.21.496857.
 
-    :param datapath:
+    :param datapath: path to safe dataset
     :type datapath: str
-    :return:
-    :rtype:
+    :return: path to Orthomap file
+    :rtype: str
 
     Example
     --------
@@ -153,10 +153,10 @@ def packer19(datapath='.'):
     All files can be obtained from here:
     https://doi.org/10.5281/zenodo.7245547
 
-    :param datapath:
+    :param datapath: path to safe dataset
     :type datapath: str
-    :return:
-    :rtype:
+    :return: adata object
+    :rtype: AnnData
 
     Example
     --------
@@ -182,10 +182,10 @@ def packer19_small(datapath='.'):
     All files can be obtained from here:
     https://doi.org/10.5281/zenodo.7245547
 
-    :param datapath:
+    :param datapath: path to safe dataset
     :type datapath: str
-    :return:
-    :rtype:
+    :return: adata object
+    :rtype: AnnData
 
     Example
     --------
@@ -211,10 +211,10 @@ def cazet22(datapath='.'):
     All files can be obtained from here:
     https://doi.org/10.5281/zenodo.7366178
 
-    :param datapath:
+    :param datapath: path to safe dataset
     :type datapath: str
-    :return:
-    :rtype:
+    :return: adata object
+    :rtype: AnnData
 
     Example
     --------
@@ -250,10 +250,10 @@ def qiu22_zebrafish(datapath='.'):
     All files can be obtained from here:
     https://doi.org/10.5281/zenodo.7243602
 
-    :param datapath:
+    :param datapath: path to safe dataset
     :type datapath: str
-    :return:
-    :rtype:
+    :return: adata object
+    :rtype: AnnData
 
     Example
     --------
@@ -285,10 +285,10 @@ def qiu22_frog(datapath='.'):
     All files can be obtained from here:
     https://doi.org/10.5281/zenodo.7244440
 
-    :param datapath:
+    :param datapath: path to safe dataset
     :type datapath: str
-    :return:
-    :rtype:
+    :return: adata object
+    :rtype: AnnData
 
     Example
     --------
@@ -336,10 +336,10 @@ def qiu22_mouse(datapath='.'):
     All files can be obtained from here:
     https://doi.org/10.5281/zenodo.7244567
 
-    :param datapath:
+    :param datapath: path to safe dataset
     :type datapath: str
-    :return:
-    :rtype:
+    :return: adata object
+    :rtype: AnnData
 
     Example
     --------
