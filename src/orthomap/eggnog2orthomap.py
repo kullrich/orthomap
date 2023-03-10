@@ -9,12 +9,11 @@ email: ullrich@evolbio.mpg.de
 License: GPL-3
 """
 
-
 import os
 import sys
 import argparse
 import pandas as pd
-from orthomap import qlin, of2orthomap
+from orthomap import of2orthomap, qlin
 from ete3 import NCBITaxa
 
 
@@ -23,6 +22,7 @@ def define_parser():
     A helper function for using `eggnog2orthomap.py` via the terminal.
 
     :return: An argparse.ArgumentParser.
+
     :rtype: argparse.ArgumentParser
     """
     eggnog2orthomap_example = '''example:
@@ -45,9 +45,10 @@ def add_argparse_args(parser: argparse.ArgumentParser):
     This function attaches individual argument specifications to the parser.
 
     :param parser: An argparse.ArgumentParser.
+
     :type parser: argparse.ArgumentParser
     """
-    parser.add_argument('-qt', help='query species taxid (e.g. use <orthomap qlin -h> to get taxid)')
+    parser.add_argument('-qt', help='query species taxID (e.g. use <orthomap qlin -h> to get taxID)')
     parser.add_argument('-og', help='specify eggnog <e6.og2seqs_and_species.tsv>')
     parser.add_argument('-subset', help='specify file of orthologous groups to include'
                                         '<e6.og2parents_and_children.new.tsv>')
@@ -57,32 +58,39 @@ def add_argparse_args(parser: argparse.ArgumentParser):
                         default=True, type=bool)
 
 
-def get_eggnog_orthomap(qt, og, subset=None, out=None, quite=False, continuity=True, overwrite=True):
+def get_eggnog_orthomap(qt, og, subset=None, out=None, quiet=False, continuity=True, overwrite=True):
     """
+    This function return an orthomap for a given query species and eggnog input data.
 
-    :param qt:
-    :param og:
-    :param subset:
-    :param out:
-    :param quite:
-    :param continuity:
-    :param overwrite:
-    :type qt:
-    :type og:
-    :type subset:
-    :type out:
-    :type quite:
-    :type continuity:
-    :type overwrite:
-    :return:
-    :rtype:
+    :param qt: Query species taxID.
+    :param og: Path to eggnog <e6.og2seqs_and_species.tsv> file.
+    :param subset: Path to file containing orthologous groups to include.
+    :param out: Path to output file.
+    :param quiet: Specify if output should be quiet.
+    :param continuity: Specify if continuity score should be calculated.
+    :param overwrite: Specify if output should be overwritten.
+    :return: A list of results such as:
+    orthomap, species_list, younges_common_counts
+
+    :type qt: str
+    :type og: str
+    :type subset: str
+    :type out: str
+    :type quiet: bool
+    :type continuity: bool
+    :type overwrite: bool
+    :rtype: list
 
     Example
     --------
     >>>
     """
+    outhandle = None
+    subset_dict = None
+    og_continuity_score = None
     ncbi = NCBITaxa()
-    qname, qtid, qlineage, qlineagenames_dict, qlineagezip, qlineagenames, qlineagerev, qk = qlin.get_qlin(qt=qt, quite=True)
+    qname, qtid, qlineage, qlineagenames_dict, qlineagezip, qlineagenames, qlineagerev, qk = \
+        qlin.get_qlin(qt=qt, quiet=True)
     query_lineage_topo = qlin.get_lineage_topo(qt)
     if subset is not None:
         subset_dict = {}
@@ -94,7 +102,7 @@ def get_eggnog_orthomap(qt, og, subset=None, out=None, quite=False, continuity=T
     species_list = []
     with open(og, 'r') as ogs:
         for og_line in ogs:
-            col1_taxonomic_level, col2_og_name, col3_number_of_species, col4_number_of_members,\
+            col1_taxonomic_level, col2_og_name, col3_number_of_species, col4_number_of_members, \
             col5_comma_separated_list_of_species, col6_comma_separated_list_of_members = og_line.strip().split('\t')
             col5_comma_separated_list_of_species = col5_comma_separated_list_of_species.split(',')
             if subset is not None:
@@ -123,7 +131,7 @@ def get_eggnog_orthomap(qt, og, subset=None, out=None, quite=False, continuity=T
     species_list_df['youngest_common'] = [qlin.get_youngest_common(qlineage, x) for x in species_list_df.lineage]
     species_list_df['youngest_name'] = [list(x.values())[0] for x in [ncbi.get_taxid_translator([x])
                                                                       for x in list(species_list_df.youngest_common)]]
-    if not quite:
+    if not quiet:
         print(qname)
         print(qt)
         print(species_list_df)
@@ -141,7 +149,7 @@ def get_eggnog_orthomap(qt, og, subset=None, out=None, quite=False, continuity=T
         og_hits = [int(x) for x in og_tmp[1]]
         # get list of the youngest common between query and all other species
         og_hits_youngest_common = list(species_list_df.youngest_common[
-                                            [x for x, y in enumerate(species_list_df.taxID)
+                                           [x for x, y in enumerate(species_list_df.taxID)
                                             if y in og_hits]])
         # evaluate all youngest common nodes to retain the oldest of them and assign as the orthogroup
         # ancestral state (gene age)
@@ -149,7 +157,7 @@ def get_eggnog_orthomap(qt, og, subset=None, out=None, quite=False, continuity=T
             og_oldest_common = qlin.get_oldest_common(qlineage, og_hits_youngest_common)
             og_dict[og_tmp[0]] = og_oldest_common
             if continuity:
-                continuity_dict[og_tmp[0]] =\
+                continuity_dict[og_tmp[0]] = \
                     of2orthomap.get_youngest_common_counts(qlineage,
                                                            pd.DataFrame(og_hits_youngest_common,
                                                                         columns=['youngest_common'])).counts
@@ -168,7 +176,7 @@ def get_eggnog_orthomap(qt, og, subset=None, out=None, quite=False, continuity=T
     for og in ogs_dict.keys():
         og_tmp = ogs_dict[og]
         og_ps = qlineagenames[qlineagenames['PStaxID'] ==
-                                str(og_dict[og_tmp[0]])].values.tolist()[0]
+                              str(og_dict[og_tmp[0]])].values.tolist()[0]
         og_ps_join = '\t'.join(og_ps)
         if continuity:
             og_continuity_score = of2orthomap.get_continuity_score(og_tmp[0], youngest_common_counts_df)
@@ -205,7 +213,7 @@ def main():
     print(args)
     if not args.qt:
         parser.print_help()
-        print('\nError <-qt>: Please specify query species taxid')
+        print('\nError <-qt>: Please specify query species taxID')
         sys.exit()
     if not args.og:
         parser.print_help()

@@ -21,7 +21,7 @@ def test_of2orthomap_continuity_false():
         og=ensembl105_og,
         sl=ensembl105_sl,
         continuity=False,
-        quite=True)
+        quiet=True)
     assert isinstance(query_orthomap, pd.DataFrame)
     assert (query_orthomap.columns == ['seqID', 'Orthogroup', 'PSnum', 'PStaxID', 'PSname']).all()
     assert isinstance(orthofinder_species_list, pd.DataFrame)
@@ -38,7 +38,7 @@ def test_of2orthomap_continuity_true():
         og=ensembl105_og,
         sl=ensembl105_sl,
         continuity=True,
-        quite=True)
+        quiet=True)
     assert isinstance(query_orthomap, pd.DataFrame)
     assert (query_orthomap.columns == ['seqID', 'Orthogroup', 'PSnum', 'PStaxID', 'PSname', 'PScontinuity']).all()
     assert isinstance(orthofinder_species_list, pd.DataFrame)
