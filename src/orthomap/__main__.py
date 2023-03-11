@@ -13,7 +13,7 @@ License: GPL-3
 import os
 import sys
 import argparse
-from orthomap import gtf2t2g, ncbitax, of2orthomap, qlin
+from orthomap import cds2aa, gtf2t2g, ncbitax, of2orthomap, qlin
 
 
 def define_parser():
@@ -27,6 +27,19 @@ def define_parser():
     parser = argparse.ArgumentParser(prog='orthomap', usage='%(prog)s <sub-command>',
                                      description='orthomap')
     subparsers = parser.add_subparsers(dest='subcommand', title='sub-commands', help='sub-commands help')
+    cds2aa_example = '''cds2aa example:
+
+    # to get CDS from Danio rerio on Linux run:
+    $ wget https://ftp.ensembl.org/pub/release-105/fasta/danio_rerio/cds/Danio_rerio.GRCz11.cds.all.fa.gz
+    $ gunzip Danio_rerio.GRCz11.cds.all.fa.gz
+
+    # on Mac:
+    $ curl https://ftp.ensembl.org/pub/release-105/fasta/danio_rerio/cds/Danio_rerio.GRCz11.cds.all.fa.gz --remote-name
+    $ gunzip Danio_rerio.GRCz11.cds.all.fa.gz
+    
+    # translate and retain longest isoform from CDS fasta file:
+    $ cds2aa -i Danio_rerio.GRCz11.cds.all.fa -r ENSEMBL -o Danio_rerio.GRCz11.aa.all.longest.fa
+    '''
     gtf2t2g_example = '''gtf2t2g example:
 
     # to get GTF from Mus musculus on Linux run:
@@ -65,6 +78,10 @@ def define_parser():
     # using query species name
     $ qlin -q "Mus musculus"
     '''
+    cds2aa_parser = subparsers.add_parser(name='cds2aa',
+                                          help='translate CDS to AA and optional retain longest isoform <cds2aa -h>',
+                                          epilog=cds2aa_example,
+                                          formatter_class=argparse.RawDescriptionHelpFormatter)
     gtf2t2g_parser = subparsers.add_parser(name='gtf2t2g',
                                            help='extracts transcript to gene table from GTF <gtf2t2g -h>',
                                            epilog=gtf2t2g_example,
@@ -82,6 +99,7 @@ def define_parser():
                                         help='get query lineage based on ncbi taxonomy <qlin -h>',
                                         epilog=qlin_example,
                                         formatter_class=argparse.RawDescriptionHelpFormatter)
+    cds2aa.add_argparse_args(parser=cds2aa_parser)
     gtf2t2g.add_argparse_args(parser=gtf2t2g_parser)
     ncbitax.add_argparse_args(parser=ncbitax_parser)
     of2orthomap.add_argparse_args(parser=of2orthomap_parser)
@@ -99,6 +117,12 @@ def main():
         parser.print_help()
         sys.exit()
     print(args)
+    if args.subcommand == 'cds2aa':
+        if args.o is None:
+            sys.stderr.write(str(args))
+        else:
+            print(args)
+        cds2aa.cds2aa_fasta(args, parser)
     if args.subcommand == 'gtf2t2g':
         if not args.i:
             parser.print_help()
@@ -142,7 +166,7 @@ def main():
             print('\nError <-og>: Please specify orthofinder <Orthogroups.tsv> (see Orthogroups directory)')
             sys.exit()
         of2orthomap.get_orthomap(seqname=args.seqname, qt=args.qt, sl=args.sl, oc=args.oc, og=args.og, out=args.out,
-                                 quite=False, continuity=True, overwrite=args.overwrite)
+                                 quiet=False, continuity=True, overwrite=args.overwrite)
     if args.subcommand == 'qlin':
         if not args.q and not args.qt:
             parser.print_help()
@@ -152,7 +176,7 @@ def main():
             parser.print_help()
             print('\nWarning: Since both query species name and taxid are given taxid is used')
             sys.exit()
-        qlin.get_qlin(q=args.q, qt=args.qt, quite=False)
+        qlin.get_qlin(q=args.q, qt=args.qt, quiet=False)
 
 
 if __name__ == '__main__':

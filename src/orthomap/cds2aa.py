@@ -26,14 +26,16 @@ def define_parser():
     """
     cds2aa_example = '''cds2aa example:
 
-    # to get CDS from Mus musculus on Linux run:
-    $ wget https://ftp.ensembl.org/pub/release-108/gtf/mus_musculus/Mus_musculus.GRCm39.108.chr.gtf.gz
+    # to get CDS from Danio rerio on Linux run:
+    $ wget https://ftp.ensembl.org/pub/release-105/fasta/danio_rerio/cds/Danio_rerio.GRCz11.cds.all.fa.gz
+    $ gunzip Danio_rerio.GRCz11.cds.all.fa.gz
 
     # on Mac:
-    $ curl https://ftp.ensembl.org/pub/release-108/gtf/mus_musculus/Mus_musculus.GRCm39.108.chr.gtf.gz --remote-name
+    $ curl https://ftp.ensembl.org/pub/release-105/fasta/danio_rerio/cds/Danio_rerio.GRCz11.cds.all.fa.gz --remote-name
+    $ gunzip Danio_rerio.GRCz11.cds.all.fa.gz
 
-    # convert CDS to AA and retain longest isoform:
-    $ cds2aa
+    # translate and retain longest isoform from CDS fasta file:
+    $ cds2aa -i Danio_rerio.GRCz11.cds.all.fa -r ENSEMBL -o Danio_rerio.GRCz11.aa.all.longest.fa
     '''
     parser = argparse.ArgumentParser(
         prog='cds2aa',
@@ -186,7 +188,6 @@ def main():
     """
     parser = define_parser()
     args = parser.parse_args()
-    print(args)
     if args.o is None:
         sys.stderr.write(str(args))
     else:
