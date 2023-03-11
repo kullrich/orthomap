@@ -1,7 +1,7 @@
 .. _docker_additional_information:
 
 orthomap docker image quick start and additional notes
-========================================================
+======================================================
 
 In this documentation, we provide example commands for our orthomap docker image below. But we are not aiming to provide detailed information about general docker usage.
 We highly recommend learning about docker if you are not familiar with it, and make sure you have adequate knowledge about docker prior to start orthomap analysis with docker.
