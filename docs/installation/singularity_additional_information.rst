@@ -1,7 +1,7 @@
 .. _singularity_additional_information:
 
 orthomap singularity quick start and additional notes
-========================================================
+=====================================================
 
 In this documentation, we provide example commands for our orthomap docker image to be used with singularity below. But we are not aiming to provide detailed information about general singularity usage on docker images.
 We highly recommend learning about docker and singularity if you are not familiar with it, and make sure you have adequate knowledge about docker and singularity prior to start orthomap analysis with singularity.
