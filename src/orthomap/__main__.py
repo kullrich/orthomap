@@ -116,7 +116,6 @@ def main():
     if args.subcommand is None:
         parser.print_help()
         sys.exit()
-    print(args)
     if args.subcommand == 'cds2aa':
         if args.o is None:
             sys.stderr.write(str(args))
@@ -124,6 +123,7 @@ def main():
             print(args)
         cds2aa.cds2aa_fasta(args, parser)
     if args.subcommand == 'gtf2t2g':
+        print(args)
         if not args.i:
             parser.print_help()
             print('\nError <-i>: Please specify GTF input file')
@@ -138,6 +138,7 @@ def main():
         gtf2t2g.parse_gtf(gtf=args.i, g=args.g, b=args.b, p=args.p, v=args.v, s=args.s, output=output, q=args.q)
         output.close()
     if args.subcommand == 'ncbitax':
+        print(args)
         if not args.u:
             parser.print_help()
             print('\nError <-u>: Please specify if you like to update <-u>')
@@ -145,6 +146,7 @@ def main():
         if args.u:
             ncbitax.update_ncbi()
     if args.subcommand == 'of2orthomap':
+        print(args)
         if not args.seqname:
             parser.print_help()
             print('\nError <-seqname>: Please specify query species name in orthofinder and taxid')
@@ -168,6 +170,7 @@ def main():
         of2orthomap.get_orthomap(seqname=args.seqname, qt=args.qt, sl=args.sl, oc=args.oc, og=args.og, out=args.out,
                                  quiet=False, continuity=True, overwrite=args.overwrite)
     if args.subcommand == 'qlin':
+        print(args)
         if not args.q and not args.qt:
             parser.print_help()
             print('\nError <-q> <-qt>: Please specify query species name or taxid')
