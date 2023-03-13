@@ -18,7 +18,7 @@ from alive_progress import alive_bar
 
 def read_orthomap(orthomapfile):
     """
-    This function reads an pre-calculated orthomap file <GeneID><tab><Phylostratum>.
+    This function reads a pre-calculated orthomap file <GeneID><tab><Phylostratum>.
 
     :param orthomapfile: File name of pre-calculated orthomap file.
     :return: Orthomap.
@@ -35,6 +35,7 @@ def read_orthomap(orthomapfile):
     >>> query_orthomap = orthomap2tei.read_orthomap(orthomapfile=sun21_orthomap_file)
     >>> query_orthomap
     """
+    orthomap = None
     if os.path.exists(orthomapfile):
         orthomap = pd.read_csv(orthomapfile, delimiter='\t')
     return orthomap
@@ -100,7 +101,7 @@ def replace_by(x_orig, xmatch, xreplace):
     return x_new
 
 
-def _keep_min_max(df, keep='min', dup_col=['GeneID'], sort_col=['Phylostrata']):
+def _keep_min_max(df, keep='min', dup_col='GeneID', sort_col='Phylostrata'):
     """
     A helper function to keep either the minimal or maximal value based on a duplication column.
 
@@ -128,11 +129,12 @@ def _keep_min_max(df, keep='min', dup_col=['GeneID'], sort_col=['Phylostrata']):
     >>> # keep max value
     >>> orthomap2tei._keep_min_max(my_orthomap, keep='max')
     """
+    df_sorted = None
     if keep == 'min':
-        df_sorted = df.sort_values(by=sort_col, ascending=True)
+        df_sorted = df.sort_values(by=[sort_col], ascending=True)
     if keep == 'max':
-        df_sorted = df.sort_values(by=sort_col, ascending=False)
-    keep_idx = ~df_sorted.duplicated(dup_col)
+        df_sorted = df.sort_values(by=[sort_col], ascending=False)
+    keep_idx = ~df_sorted.duplicated([dup_col])
     df_out = df_sorted[keep_idx]
     return df_out
 
@@ -160,12 +162,12 @@ def _split_gene_id_by_gene_age(gene_id, gene_age, keep='min', adata=None):
     >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
     >>> # load query species orthomap
     >>> query_orthomap = orthomap2tei.read_orthomap(orthomapfile=sun21_orthomap_file)
-    >>> orthomap2te._split_gene_id_by_gene_age(gene_id=query_orthomap['GeneID'],\
+    >>> orthomap2tei._split_gene_id_by_gene_age(gene_id=query_orthomap['GeneID'],\
     >>> gene_age=query_orthomap['Phylostrata'], keep='min')
     """
     id_age_df = pd.DataFrame(data={'GeneID': gene_id, 'Phylostrata': gene_age})
     # check and drop duplicated GeneID
-    id_age_df_keep = _keep_min_max(id_age_df, keep=keep, dup_col=['GeneID'], sort_col=['Phylostrata'])
+    id_age_df_keep = _keep_min_max(id_age_df, keep=keep, dup_col='GeneID', sort_col='Phylostrata')
     # get overlap
     if adata is not None:
         gene_intersection = pd.Index(id_age_df_keep['GeneID']).intersection(adata.var_names)
@@ -225,7 +227,7 @@ def _get_psd(adata, gene_id, gene_age, keep='min', layer=None, normalize_total=F
     """
     id_age_df = pd.DataFrame(data={'GeneID': gene_id, 'Phylostrata': gene_age})
     # check and drop duplicated GeneID
-    id_age_df_keep = _keep_min_max(id_age_df, keep=keep, dup_col=['GeneID'], sort_col=['Phylostrata'])
+    id_age_df_keep = _keep_min_max(id_age_df, keep=keep, dup_col='GeneID', sort_col='Phylostrata')
     # get overlap with var_names before NaN removal
     var_names_df = pd.merge(left=pd.DataFrame(adata.var_names, columns=['GeneID']),
                             right=id_age_df_keep, how='left', on='GeneID')
@@ -303,7 +305,7 @@ def add_gene_age2adata_var(adata, gene_id, gene_age, keep='min', var_name='Phylo
     """
     id_age_df = pd.DataFrame(data={'GeneID': gene_id, 'Phylostrata': gene_age})
     # check and drop duplicated GeneID
-    id_age_df_keep = _keep_min_max(id_age_df, keep=keep, dup_col=['GeneID'], sort_col=['Phylostrata'])
+    id_age_df_keep = _keep_min_max(id_age_df, keep=keep, dup_col='GeneID', sort_col='Phylostrata')
     # get overlap with var_names
     var_names_df = pd.merge(left=pd.DataFrame(adata.var_names, columns=['GeneID']),
                             right=id_age_df_keep, how='left', on='GeneID')
@@ -511,7 +513,7 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', layer=None, cumsum=False,
                 group_by_obs=None, obs_type='mean', standard_scale=None,
                 normalize_total=False, log1p=False, target_sum=1e6):
     """
-    This function computes the partial transcriptome evolutionary index (TEI) values combined for each strata.
+    This function computes the partial transcriptome evolutionary index (TEI) values combined for each stratum.
 
     The resulting values can be combined per observation group e.g.: pre-defined cell types (default: None),
     according to the selected observation type (default:'mean') and further scaled between 0 and 1 (default: None)
@@ -528,7 +530,7 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', layer=None, cumsum=False,
     \eqn{TEI_is} values are combined per \eqn{ps}.
 
     The partial TEI values combined per strata give an overall impression
-    of the contribution of each strata to the global TEI pattern.
+    of the contribution of each stratum to the global TEI pattern.
 
     :param adata: AnnData object of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
     :param gene_id: Expects GeneID column from orthomap DataFrame.
@@ -956,7 +958,7 @@ def _get_min_max_expr_number(ndarray, min_expr=1, max_expr=None):
 
 def _get_quantile_expr_number(ndarray, quantile=[0, 5, 25, 50, 75, 95], min_expr=1, max_expr=None):
     """
-    A helper function to 
+    A helper function to
 
     :param ndarray:
     :param quantile:
