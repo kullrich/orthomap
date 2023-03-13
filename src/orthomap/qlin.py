@@ -78,7 +78,7 @@ def get_qlin(ncbi=None, q=None, qt=None, quiet=False):
     :rtype: list
 
     Example
-    --------
+    -------
     >>> from orthomap import qlin
     >>> from ete3 import NCBITaxa
     >>> qlin.get_qlin(q='Danio rerio')
@@ -132,7 +132,7 @@ def get_lineage_topo(qt):
     :rtype: ete3.Tree
 
     Example
-    --------
+    -------
     >>> from orthomap import qlin
     >>> lineage_tree = qlin.get_lineage_topo(qt='10090')
     """
@@ -157,7 +157,7 @@ def get_youngest_common(ql, tl):
     :rtype: str
 
     Example
-    --------
+    -------
     >>> from orthomap import qlin
     >>> # get query species taxonomic lineage information
     >>> _, _, query_lineage, _, _, _, _, _ = qlin.get_qlin(q='Caenorhabditis elegans')
@@ -185,7 +185,7 @@ def get_oldest_common(ql, tl):
     :rtype: str
 
     Example
-    --------
+    -------
     >>> from orthomap import qlin
     >>> # get query species taxonomic lineage information
     >>> _, _, query_lineage, _, _, _, _, _ = qlin.get_qlin(q='Caenorhabditis elegans')

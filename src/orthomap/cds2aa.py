@@ -98,10 +98,15 @@ transtable = {'std': CodonTable.CodonTable(forward_table={
 
 def get_gene(description, source):
     """
+    This function extracts the gene ID from a sequence description based on a given source.
 
-    :param description:
-    :param source:
-    :return:
+    :param description: Sequence description.
+    :param source: Sequence source.
+    :return: GeneID.
+
+    :type description: str
+    :type source: str
+    :rtype: str
     """
     gene = None
     if source == 'NCBI':
@@ -115,10 +120,15 @@ def get_gene(description, source):
 
 def get_gene_len_dict(record_iter, source):
     """
+    This function creates a sequence length dictionary.
 
-    :param record_iter:
-    :param source:
-    :return:
+    :param record_iter: Sequence iterable.
+    :param source: Sequence source.
+    :return: Sequence length dictionary.
+
+    :type record_iter: Bio.SeqIO.FastaIO.FastaIterator
+    :type source: str
+    :rtype: dictionary
     """
     record_dict = {}
     for record in record_iter:
@@ -133,18 +143,18 @@ def get_gene_len_dict(record_iter, source):
 
 def cds2aa_record(record_iter, args):
     """
-    Translates nucleotide to amino acids assuming that cds is in frame 0.
+    This function translates nucleotide to amino acids assuming that cds is in frame 0.
 
     This is a generator function, the records argument should
     be a list or iterator returning SeqRecord objects.
 
-    :param record_iter:
-    :param args:
-    :return:
+    :param record_iter: Sequence iterable.
+    :param args: An argparse.Namespace.
+    :return: Sequence object.
 
-    :type record_iter:
-    :type args:
-    :rtype:
+    :type record_iter: Bio.SeqIO.FastaIO.FastaIterator
+    :type args: argparse.Namespace
+    :rtype: Bio.SeqIO.SeqRecord
     """
     for record in record_iter:
         aa = SeqIO.SeqRecord(record.seq.translate(transtable[args.t]), name=record.name, id=record.name,
@@ -154,6 +164,7 @@ def cds2aa_record(record_iter, args):
 
 def cds2aa_fasta(args, parser):
     """
+    This function
 
     :param args:
     :param parser:

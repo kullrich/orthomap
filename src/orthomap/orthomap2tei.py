@@ -1,6 +1,6 @@
 """
 Author: Kristian K Ullrich
-date: January 2023
+date: March 2023
 email: ullrich@evolbio.mpg.de
 License: GPL-3
 """
@@ -18,13 +18,16 @@ from alive_progress import alive_bar
 
 def read_orthomap(orthomapfile):
     """
+    This function reads an pre-calculated orthomap file <GeneID><tab><Phylostratum>.
 
-    :param orthomapfile: str
-        File name of pre-calculated orthomap file.
-    :return:
+    :param orthomapfile: File name of pre-calculated orthomap file.
+    :return: Orthomap.
+
+    :type orthomapfile: str
+    :rtype: pandas.DataFrame
 
     Example
-    --------
+    -------
     >>> from orthomap import orthomap2tei, datasets
     >>> # download pre-calculated orthomap
     >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
@@ -39,15 +42,19 @@ def read_orthomap(orthomapfile):
 
 def geneset_overlap(geneset1, geneset2):
     """
+    This function shows the overlap of two lists. To check e.g. <GeneID> from an orthomap and <adata.var_names>
+    from an AnnData object.
 
-    :param geneset1: list
-        List of gene or transcript names set 1.
-    :param geneset2: list
-        List of gene or transcript names set 2.
-    :return:
+    :param geneset1: List of gene or transcript names set 1.
+    :param geneset2: List of gene or transcript names set 2.
+    :return: Overlap.
+
+    :type geneset1: list
+    :type geneset2: list
+    :rtype: pandas.DataFrame
 
     Example
-    --------
+    -------
     >>> from orthomap import orthomap2tei
     >>> geneset1 = ['g1.1', 'g1.2', 'g2.1', 'g3.1', 'g3.2']
     >>> geneset2 = ['g1.1', 'g2.1', 'g3.1']
@@ -65,38 +72,52 @@ def geneset_overlap(geneset1, geneset2):
 
 def replace_by(x_orig, xmatch, xreplace):
     """
+    This function assumes that <x_orig> and <xmatch> match and will return <xreplace> sorted by <x_orig>.
+    It is mandatory that <xmatch> and <xreplace> have the same length and reflect pairs:
+    <xmatch[0]> is the original value and <xreplace[0]> is the corresponding new value.
 
-    :param x_orig:
-    :param xmatch:
-    :param xreplace:
-    :return:
+    :param x_orig: List of original values to be used for sorting.
+    :param xmatch: List of matches to the original values. Each xmatch position pairs with xrepalce position.
+    :param xreplace: List of replace values. Each xreplace positon pairs with xmatch position.
+    :return: Replacement ordered by the original values.
+
+    :type x_orig: list
+    :type xmatch: list
+    :type xreplace: list
+    :rtype: list
 
     Example
-    --------
-    >>>
+    -------
+    >>> geneset1 = ['g1.1', 'g1.2', 'g2.1', 'g3.1', 'g3.2']
+    >>> geneset2 = ['g1.1', 'g2.1', 'g3.1', 'g5.1']
+    >>> transcriptset2 = ['t1.1', 't2.1', 't3.1', 't5.1']
+    >>> replace_by(x_orig=geneset1, xmatch=geneset2, xreplace=transcriptset2)
     """
     replace_dict = {}
     for i, j in enumerate(xmatch):
         replace_dict[j] = xreplace[i]
-    x_new = [replace_dict[x] for x in x_orig]
+    x_new = [replace_dict[x] if x in replace_dict else np.nan for x in x_orig]
     return x_new
 
 
 def _keep_min_max(df, keep='min', dup_col=['GeneID'], sort_col=['Phylostrata']):
     """
+    A helper function to keep either the minimal or maximal value based on a duplication column.
 
-    :param df: DataFrame
-        Expects orthomap DataFrame, but can be any if dup_col and sort_col are present.
-    :param keep: str (default: min)
-        Either define 'min' (ascending pre-sorting) or 'max' (non-ascending pre-sorting) to keep duplicates.
-    :param dup_col: [str] (default: GeneID)
-        Column name(s) to be searched for duplicates.
-    :param sort_col: [str] (default: Phylostrata)
-        Column names(s) to sort DataFrame.
-    :return:
+    :param df: Expects orthomap DataFrame, but can be any if dup_col and sort_col are present.
+    :param keep: Either define 'min' (ascending pre-sorting) or 'max' (non-ascending pre-sorting) to keep duplicates.
+    :param dup_col: Column name(s) to be searched for duplicates.
+    :param sort_col: Column names(s) to sort DataFrame.
+    :return: Reduced DataFrame.
+
+    :type df: pandas.DataFrame
+    :type keep: str
+    :type dup_col: str
+    :type sort_col: str
+    :rtype: pandas.DataFrame
 
     Example
-    --------
+    -------
     >>> import pandas as pd
     >>> from orthomap import orthomap2tei
     >>> # create artificial DataFrame
@@ -118,20 +139,29 @@ def _keep_min_max(df, keep='min', dup_col=['GeneID'], sort_col=['Phylostrata']):
 
 def _split_gene_id_by_gene_age(gene_id, gene_age, keep='min', adata=None):
     """
+    A helper function to group <GeneID> by <Phylostrata>.
 
-    :param gene_id: list
-        Expects GeneID column from orthomap DataFrame.
-    :param gene_age: list
-        Expects Phylostratum column from orthomap DataFrame.
-    :param keep: str (default: min)
-        In case of duplicated GeneIDs with different Phylostrata assignments, either keep 'min' or 'max' value.
-    :param adata: AnnData (default: None)
-        The annotated data matrix of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
-    :return:
+    :param gene_id: Expects GeneID column from orthomap DataFrame.
+    :param gene_age: Expects Phylostratum column from orthomap DataFrame.
+    :param keep: In case of duplicated GeneIDs with different Phylostrata assignments, either keep 'min' or 'max' value.
+    :param adata: AnnData object of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
+    :return: Dictonary with gene_age as keys and gene_id as values.
+
+    :type gene_id: list
+    :type gene_age: list
+    :type keep: str
+    :type adata: AnnData
+    :rtype: dictonary
 
     Example
-    --------
-    >>>
+    -------
+    >>> from orthomap import orthomap2tei, datasets
+    >>> # download pre-calculated orthomap
+    >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
+    >>> # load query species orthomap
+    >>> query_orthomap = orthomap2tei.read_orthomap(orthomapfile=sun21_orthomap_file)
+    >>> orthomap2te._split_gene_id_by_gene_age(gene_id=query_orthomap['GeneID'],\
+    >>> gene_age=query_orthomap['Phylostrata'], keep='min')
     """
     id_age_df = pd.DataFrame(data={'GeneID': gene_id, 'Phylostrata': gene_age})
     # check and drop duplicated GeneID
@@ -152,27 +182,31 @@ def _split_gene_id_by_gene_age(gene_id, gene_age, keep='min', adata=None):
 
 def _get_psd(adata, gene_id, gene_age, keep='min', layer=None, normalize_total=False, log1p=False, target_sum=1e6):
     """
+    A helper function to pre-process AnnData.
 
-    :param adata: AnnData
-        The annotated data matrix of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
-    :param gene_id: list
-        Expects GeneID column from orthomap DataFrame.
-    :param gene_age:
-        Expects Phylostratum column from orthomap DataFrame.
-    :param keep: str (default: min)
-        In case of duplicated GeneIDs with different Phylostrata assignments, either keep 'min' or 'max' value.
-    :param layer: Optional[str] (default: None)
-        Layer to work on instead of X. If None, X is used.
-    :param normalize_total: bool (default: False)
-        Normalize counts per cell prior TEI calculation.
-    :param log1p: bool (default: False)
-        Logarithmize the data matrix prior TEI calculation.
-    :param target_sum: Optional[float] (default: 1e6)
-        After normalization, each observation (cell) has a total count equal to target_sum.
-    :return:
+    :param adata: AnnData object of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
+    :param gene_id: Expects GeneID column from orthomap DataFrame.
+    :param gene_age: Expects Phylostratum column from orthomap DataFrame.
+    :param keep: In case of duplicated GeneIDs with different Phylostrata assignments, either keep 'min' or 'max' value.
+    :param layer: Layer to work on instead of X. If None, X is used.
+    :param normalize_total: Normalize counts per cell prior TEI calculation.
+    :param log1p: Logarithmize the data matrix prior TEI calculation.
+    :param target_sum: After normalization, each observation (cell) has a total count equal to target_sum.
+    :return: A list of results such as:
+    var_names_df, id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd
+
+    :type adata: AnnData
+    :type gene_id: list
+    :type gene_age: list
+    :type keep: str
+    :type layer: str
+    :type normalize_total: bool
+    :type log1p: bool
+    :type target_sum: float
+    :rtype: list
 
     Example
-    --------
+    -------
     >>> import scanpy as sc
     >>> from orthomap import orthomap2tei, datasets
     >>> # download pre-calculated orthomap
@@ -234,37 +268,39 @@ def _get_psd(adata, gene_id, gene_age, keep='min', layer=None, normalize_total=F
 
 def add_gene_age2adata_var(adata, gene_id, gene_age, keep='min', var_name='Phylostrata'):
     """
-        This function add gene age to an existing adata object.
+    This function add gene age to an existing AnnData object.
 
-        :param adata: AnnData
-            The annotated data matrix of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
-        :param gene_id: list
-            Expects GeneID column from orthomap DataFrame.
-        :param gene_age: list
-            Expects GeneID column from orthomap DataFrame.
-        :param keep: str (default: min)
-            In case of duplicated GeneIDs with different Phylostrata assignments, either keep 'min' or 'max' value.
-        :param var_name: str (default: Phylostrata)
-            Variable name to be used for gene age values in existing adata object.
-        :return:
+    :param adata: AnnData object of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
+    :param gene_id: Expects GeneID column from orthomap DataFrame.
+    :param gene_age: Expects GeneID column from orthomap DataFrame.
+    :param keep: In case of duplicated GeneIDs with different Phylostrata assignments, either keep 'min' or 'max' value.
+    :param var_name: Variable name to be used for gene age values in existing AnnData object.
+    :return: Altered AnnData.
 
-        Example
-        --------
-        >>> import scanpy as sc
-        >>> from orthomap import orthomap2tei, datasets
-        >>> # download pre-calculated orthomap
-        >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
-        >>> # load query species orthomap
-        >>> query_orthomap = orthomap2tei.read_orthomap(orthomapfile=sun21_orthomap_file)
-        >>> # download and load scRNA data
-        >>> #packer19_small = sc.read('packer19_small.h5ad')
-        >>> packer19_small = datasets.packer19_small(datapath='.')
-        >>> # add gene age values to existing adata object
-        >>> orthomap2tei.add_gene_age2adata_var(adata=packer19_small,\
-        >>> gene_id=query_orthomap['GeneID'],\
-        >>> gene_age=query_orthomap['Phylostratum'])
-        >>> packer19_small.var
-        """
+    :type adata: AnnData
+    :type gene_id: list
+    :type gene_age: list
+    :type keep: str
+    :type var_name: str
+    :rtype: AnnData
+
+    Example
+    -------
+    >>> import scanpy as sc
+    >>> from orthomap import datasets, orthomap2tei
+    >>> # download pre-calculated orthomap
+    >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
+    >>> # load query species orthomap
+    >>> query_orthomap = orthomap2tei.read_orthomap(orthomapfile=sun21_orthomap_file)
+    >>> # download and load scRNA data
+    >>> #packer19_small = sc.read('packer19_small.h5ad')
+    >>> packer19_small = datasets.packer19_small(datapath='.')
+    >>> # add gene age values to existing adata object
+    >>> orthomap2tei.add_gene_age2adata_var(adata=packer19_small,\
+    >>> gene_id=query_orthomap['GeneID'],\
+    >>> gene_age=query_orthomap['Phylostratum'])
+    >>> packer19_small.var
+    """
     id_age_df = pd.DataFrame(data={'GeneID': gene_id, 'Phylostrata': gene_age})
     # check and drop duplicated GeneID
     id_age_df_keep = _keep_min_max(id_age_df, keep=keep, dup_col=['GeneID'], sort_col=['Phylostrata'])
@@ -275,7 +311,8 @@ def add_gene_age2adata_var(adata, gene_id, gene_age, keep='min', var_name='Phylo
     adata.var[var_name] = list(var_names_df['Phylostrata'])
 
 
-def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True, obs_name='tei', boot=False, bt=10,
+def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True,
+            obs_name='tei', boot=False, bt=10,
             normalize_total=False, log1p=False, target_sum=1e6):
     """
     This function computes the phylogenetically based transcriptome evolutionary
@@ -285,7 +322,8 @@ def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True, obs_name
      (expression levels as weights for the phylostratum value) over all
      evolutionary age categories denoted as _phylostra_.
 
-     \deqn{TEI_s = sum (e_is * ps_i) / sum e_is}
+     :: math::
+         \deqn{TEI_s = sum (e_is * ps_i) / sum e_is}
 
      where \eqn{TEI_s} denotes the TEI value in developmental stage \eqn{s, e_is}
      denotes the gene expression level of gene \eqn{i} in stage \eqn{s}, and \eqn{ps_i}
@@ -296,38 +334,40 @@ def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True, obs_name
     the strata values are sampled and the global TEI
     is calculated bt times.
 
-    :param adata: AnnData
-        The annotated data matrix of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
-    :param gene_id: list
-        Expects GeneID column from orthomap DataFrame.
-    :param gene_age: list
-        Expects GeneID column from orthomap DataFrame.
-    :param keep: str (default: min)
-        In case of duplicated GeneIDs with different Phylostrata assignments, either keep 'min' or 'max' value.
-    :param layer: Optional[str] (default: None)
-        Layer to work on instead of X. If None, X is used.
-    :param add: bool (default: True)
-        Add TEI values as observation to existing adata object using obs_name.
-    :param obs_name: str (default: tei)
-        Observation name to be used for TEI values in existing adata object.
-    :param boot: bool (default: False)
-       Specify if bootstrap TEI values should be calculated and returned as DataFrame.
-    :param bt: int (default: 10)
-        Number of bootstrap to calculate.
-    :param normalize_total: bool (default: False)
-        Normalize counts per cell prior TEI calculation.
-    :param log1p: bool (default: False)
-        Logarithmize the data matrix prior TEI calculation.
-    :param target_sum: Optional[float] (default: 1e6)
-        After normalization, each observation (cell) has a total count equal to target_sum.
+    :param adata: AnnData object of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
+    :param gene_id: Expects GeneID column from orthomap DataFrame.
+    :param gene_age: Expects GeneID column from orthomap DataFrame.
+    :param keep: str In case of duplicated GeneIDs with different Phylostrata assignments, either keep 'min' or 'max' value.
+    :param layer: Layer to work on instead of X. If None, X is used.
+    :param add: Add TEI values as observation to existing AnnData object using obs_name.
+    :param obs_name: Observation name to be used for TEI values in existing AnnData object.
+    :param boot: Specify if bootstrap TEI values should be calculated and returned as DataFrame.
+    :param bt: Number of bootstrap to calculate.
+    :param normalize_total: Normalize counts per cell prior TEI calculation.
+    :param log1p: Logarithmize the data matrix prior TEI calculation.
+    :param target_sum: After normalization, each observation (cell) has a total count equal to target_sum.
     :return:
 
+    :type adata: AnnData
+    :type gene_id: list
+    :type gene_age: list
+    :type keep: str
+    :type layer: str
+    :type add: bool
+    :type obs_name: str
+    :type boot: bool
+    :type bt: int
+    :type normalize_total: bool
+    :type log1p: bool
+    :type target_sum: float
+    :rtype: pandas.DataFrame
+
     Example
-    --------
+    -------
     >>> import scanpy as sc
     >>> import matplotlib.pyplot as plt
     >>> import seaborn as sns
-    >>> from orthomap import orthomap2tei, datasets
+    >>> from orthomap import datasets, orthomap2tei
     >>> # download pre-calculated orthomap
     >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
     >>> # load query species orthomap
@@ -386,10 +426,14 @@ def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True, obs_name
     return tei_df
 
 
-def get_pmatrix(adata, gene_id, gene_age, keep='min', layer=None, layer_name='pmatrix', add_obs=True,
-                add_var=True, normalize_total=False, log1p=False, target_sum=1e6):
+def get_pmatrix(adata, gene_id, gene_age, keep='min', layer=None, layer_name='pmatrix',
+                add_obs=True, add_var=True,
+                normalize_total=False, log1p=False, target_sum=1e6):
     """
     This function computes the partial transcriptome evolutionary index (TEI) values for each single gene.
+
+    Prior TEI calculation, counts can be normalized (default: False) to a total count number (default: 1e6) and
+    log transformed (default: False).
 
     In detail, each gene gets a TEI contribution profile as follows:
     \deqn{TEI_is = f_is * ps_i}
@@ -400,31 +444,34 @@ def get_pmatrix(adata, gene_id, gene_age, keep='min', layer=None, layer_name='pm
     analyses and also gives an overall impression of the contribution of each
     gene to the global TEI pattern.
 
-    :param adata: AnnData The annotated data matrix of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
-    :param gene_id: list
-        Expects GeneID column from orthomap DataFrame.
-    :param gene_age: list
-        Expects Phylostratum column from orthomap DataFrame.
-    :param keep: str (default: min)
-        Either define 'min' (ascending pre-sorting) or 'max' (non-ascending pre-sorting) to keep duplicates.
-    :param layer: Optional[str] (default: None)
-        Layer to work on instead of X. If None, X is used.
-    :param layer_name: str (default: pmatrix)
-        Layer to add to existing adata object.
-    :param add_obs: bool (default: True)
-        Add original observations to new adata object.
-    :param add_var: bool (default: True)
-        Add original variables to new adata object.
-    :param normalize_total: bool (default: False)
-        Normalize counts per cell prior TEI calculation.
-    :param log1p: bool (default: False)
-        Logarithmize the data matrix prior TEI calculation.
-    :param target_sum: Optional[float] (default: 1e6)
-        After normalization, each observation (cell) has a total count equal to target_sum.
-    :return:
+    :param adata: AnnData object of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
+    :param gene_id: Expects GeneID column from orthomap DataFrame.
+    :param gene_age: Expects Phylostratum column from orthomap DataFrame.
+    :param keep: Either define 'min' (ascending pre-sorting) or 'max' (non-ascending pre-sorting) to keep duplicates.
+    :param layer: Layer to work on instead of X. If None, X is used.
+    :param layer_name: Layer to add to existing AnnData object.
+    :param add_obs: Add original observations to new AnnData object.
+    :param add_var: Add original variables to new AnnData object.
+    :param normalize_total: Normalize counts per cell prior TEI calculation.
+    :param log1p: Logarithmize the data matrix prior TEI calculation.
+    :param target_sum: After normalization, each observation (cell) has a total count equal to target_sum.
+    :return: Partial transcriptome evolutionary index (TEI) values.
+
+    :type adata: AnnData
+    :type gene_id: list
+    :type gene_age: list
+    :type keep: str
+    :type layer: str
+    :type layer_name: str
+    :type add_obs: bool
+    :type add_var: bool
+    :type normalize_total: bool
+    :type log1p: bool
+    :type target_sum: float
+    :rtype: AnnData
 
     Example
-    --------
+    -------
     >>> import scanpy as sc
     >>> from orthomap import orthomap2tei, datasets
     >>> # download pre-calculated orthomap
@@ -454,21 +501,24 @@ def get_pmatrix(adata, gene_id, gene_age, keep='min', layer=None, layer_name='pm
         for kv in adata.var.keys():
             adata_pmatrix.var[kv] = pd.merge(left=adata_pmatrix.var,
                                              right=adata.var[kv][adata.var_names.isin(id_age_df_keep_subset['GeneID'])],
-                                             left_index=True,right_index=True)[kv]
+                                             left_index=True, right_index=True)[kv]
     adata_pmatrix.var['Phylostrata'] = list(pd.merge(left=pd.DataFrame(adata_pmatrix.var_names, columns=['GeneID']),
                                                      right=var_names_df, how='left', on='GeneID')['Phylostrata'])
     return adata_pmatrix
 
 
-def plot_pmatrix(adata, group_by_var='Phylostrata', group_by_obs=None):
-    var_groups = adata.var[group_by_var].value_counts().sort_index()
-
-
-
-def get_pstrata(adata, gene_id, gene_age, keep='min', layer=None, cumsum=False, standard_scale=None, group_by=None,
+def get_pstrata(adata, gene_id, gene_age, keep='min', layer=None, cumsum=False,
+                group_by_obs=None, obs_type='mean', standard_scale=None,
                 normalize_total=False, log1p=False, target_sum=1e6):
     """
     This function computes the partial transcriptome evolutionary index (TEI) values combined for each strata.
+
+    The resulting values can be combined per observation group e.g.: pre-defined cell types (default: None),
+    according to the selected observation type (default:'mean') and further scaled between 0 and 1 (default: None)
+    either per var (standard_scale=0) or per obs (standard_scale=1).
+
+    Prior TEI calculation, counts can be normalized (default: False) to a total count number (default: 1e6) and
+    log transformed (default: False).
 
     In detail, each gene gets a TEI contribution profile as follows:
     \deqn{TEI_is = f_is * ps_i}
@@ -480,31 +530,38 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', layer=None, cumsum=False, 
     The partial TEI values combined per strata give an overall impression
     of the contribution of each strata to the global TEI pattern.
 
-    :param adata: AnnData The annotated data matrix of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
-    :param gene_id: list
-        Expects GeneID column from orthomap DataFrame.
-    :param gene_age: list
-        Expects Phylostratum column from orthomap DataFrame.
-    :param keep: str (default: min)
-        Either define 'min' (ascending pre-sorting) or 'max' (non-ascending pre-sorting) to keep duplicates.
-    :param layer: Optional[str] (default: None)
-        Layer to work on instead of X. If None, X is used.
-    :param cumsum: bool (default: False)
-        Return cumsum 
-    :param standard_scale: int (default: None)
-        Wether or not to standardize the given axis (0: colums, 1: rows) between 0 and 1,
-        meaning for each variable or group, subtract the minimum and divide each by its maximum.
-    :param group_by:
-    :param normalize_total: bool (default: False)
-        Normalize counts per cell prior TEI calculation.
-    :param log1p: bool (default: False)
-        Logarithmize the data matrix prior TEI calculation.
-    :param target_sum: Optional[float] (default: 1e6)
-        After normalization, each observation (cell) has a total count equal to target_sum.
+    :param adata: AnnData object of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
+    :param gene_id: Expects GeneID column from orthomap DataFrame.
+    :param gene_age: Expects Phylostratum column from orthomap DataFrame.
+    :param keep: Either define 'min' (ascending pre-sorting) or 'max' (non-ascending pre-sorting) to keep duplicates.
+    :param layer: Layer to work on instead of X. If None, X is used.
+    :param cumsum: Return cumsum.
+    :param group_by_obs: AnnData observation to be used as a group to combine partial transcriptome evolutionary index
+    (TEI) values.
+    :param obs_type: Specify how values should be combined per observation group.
+    :param standard_scale: Wether or not to standardize the given axis (0: colums, 1: rows) between 0 and 1,
+    meaning for each variable or group, subtract the minimum and divide each by its maximum.
+    :param normalize_total: Normalize counts per cell prior TEI calculation.
+    :param log1p: Logarithmize the data matrix prior TEI calculation.
+    :param target_sum: After normalization, each observation (cell) has a total count equal to target_sum.
     :return:
 
+    :type adata: AnnData
+    :type gene_id: list
+    :type gene_age: list
+    :type keep: str
+    :type layer: str
+    :type cumsum: bool
+    :type group_by_obs: str
+    :type obs_type: str
+    :type standard_scale: int
+    :type normalize_total: bool
+    :type log1p: bool
+    :type target_sum: float
+    :rtype: AnnData
+
     Example
-    --------
+    -------
     >>> import scanpy as sc
     >>> import matplotlib.pyplot as plt
     >>> import seaborn as sns
@@ -529,7 +586,7 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', layer=None, cumsum=False, 
     >>> packer19_small_pstrata_grouped = orthomap2tei.get_pstrata(adata=packer19_small,\
     >>> gene_id=query_orthomap['GeneID'],\
     >>> gene_age=query_orthomap['Phylostratum'],\
-    >>> group_by='embryo.time.bin')
+    >>> group_by_obs='embryo.time.bin')
     >>> # plot heatmap using partial TEI values
     >>> sns.heatmap(packer19_small_pstrata_grouped[0], cmap='viridis')
     >>> plt.show()
@@ -561,11 +618,32 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', layer=None, cumsum=False, 
     if cumsum:
         pstrata_norm_by_sumx_df = pstrata_norm_by_sumx_df.cumsum(0)
         pstrata_norm_by_pmatrix_sum_df = pstrata_norm_by_pmatrix_sum_df.cumsum(0)
-    if group_by is not None:
-        pstrata_norm_by_sumx_df =\
-            pstrata_norm_by_sumx_df.transpose().groupby(adata.obs[group_by]).mean().transpose()
-        pstrata_norm_by_pmatrix_sum_df =\
-            pstrata_norm_by_pmatrix_sum_df.transpose().groupby(adata.obs[group_by]).mean().transpose()
+    if group_by_obs is not None:
+        if obs_type == 'mean':
+            pstrata_norm_by_sumx_df =\
+                pstrata_norm_by_sumx_df.transpose().groupby(adata.obs[group_by_obs]).mean().transpose()
+            pstrata_norm_by_pmatrix_sum_df =\
+                pstrata_norm_by_pmatrix_sum_df.transpose().groupby(adata.obs[group_by_obs]).mean().transpose()
+        if obs_type == 'median':
+            pstrata_norm_by_sumx_df =\
+                pstrata_norm_by_sumx_df.transpose().groupby(adata.obs[group_by_obs]).median().transpose()
+            pstrata_norm_by_pmatrix_sum_df =\
+                pstrata_norm_by_pmatrix_sum_df.transpose().groupby(adata.obs[group_by_obs]).median().transpose()
+        if obs_type == 'sum':
+            pstrata_norm_by_sumx_df =\
+                pstrata_norm_by_sumx_df.transpose().groupby(adata.obs[group_by_obs]).sum().transpose()
+            pstrata_norm_by_pmatrix_sum_df =\
+                pstrata_norm_by_pmatrix_sum_df.transpose().groupby(adata.obs[group_by_obs]).sum().transpose()
+        if obs_type == 'min':
+            pstrata_norm_by_sumx_df =\
+                pstrata_norm_by_sumx_df.transpose().groupby(adata.obs[group_by_obs]).min().transpose()
+            pstrata_norm_by_pmatrix_sum_df =\
+                pstrata_norm_by_pmatrix_sum_df.transpose().groupby(adata.obs[group_by_obs]).min().transpose()
+        if obs_type == 'max':
+            pstrata_norm_by_sumx_df =\
+                pstrata_norm_by_sumx_df.transpose().groupby(adata.obs[group_by_obs]).max().transpose()
+            pstrata_norm_by_pmatrix_sum_df =\
+                pstrata_norm_by_pmatrix_sum_df.transpose().groupby(adata.obs[group_by_obs]).max().transpose()
     if standard_scale is not None:
         if standard_scale == 0:
             pstrata_norm_by_sumx_df = pstrata_norm_by_sumx_df.apply(_min_max_to_01, axis=1, raw=True)
@@ -578,12 +656,17 @@ def get_pstrata(adata, gene_id, gene_age, keep='min', layer=None, cumsum=False, 
 
 def _min_max_to_01(ndarray):
     """
+    A helper function to standardize data between 0 and 1,
+    meaning for each variable, subtract the minimum and divide each by its maximum.
 
-    :param ndarray:
-    :return:
+    :param ndarray: Data to be standardized.
+    :return: Standardized Data.
+
+    :type ndarray: numpy.ndarray
+    :rtype:
 
     Example
-    --------
+    -------
     >>> import numpy as np
     >>> random_array = np.random.rand(10)
     >>> min_max_to_01(random_array)
@@ -597,25 +680,83 @@ def _min_max_to_01(ndarray):
     return ndarray_min_max
 
 
-def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col_type='mean',
-                 standard_scale=None, group_by=None, group_type='mean', normalize_total=False, log1p=False,
-                 target_sum=1e6):
+def get_ematrix(adata, keep='min', layer=None, group_by_var=None, var_type='mean',
+                standard_scale=None, group_by_obs=None, obs_type='mean', normalize_total=False, log1p=False,
+                target_sum=1e6):
     """
-    This function computes relative expression profiles.
+    This function computes expression profiles for all genes or group of genes 'group_by_var' (default: None).
 
-    In detail, if axis is set to None, the mean/median/sum expression is being computed over cells
-    and, if group_by is not None, combined per given group by mean/median/sum.
+    The expression values are first combined per var type 'var_type' (default: mean).
 
-    In detail, if axis is set to 0, the mean/median/sum relative expression profile is being computed over cells
-    and, if group_by is not None, combined per given group by mean/median/sum as follows:
+    The resulting values can be combined per observation group 'group_by_obs' e.g.: pre-defined cell types
+    (default: None), according to the selected observation type 'obst_type' (default:'mean') and further scaled between
+    0 and 1 (default: None) either per var (standard_scale=0) or per obs (standard_scale=1).
+
+
+
+    In detail, if standard_scale axis is set to None, the var_type mean/median/sum expression is being computed over
+    cells and, if group_by_obs is not None, combined per given obs group by mean/median/sum.
+
+    In detail, if standard_scale axis is set to 0, the mean/median/sum relative expression profile is being computed
+    over cells and, if group_by_obs is not None, combined per given obs group by mean/median/sum as follows:
 
     f_c = (e_c - e_min)/(e_max - e_min)
 
     where e_min and e_max denote either the minimum/maximum mean/median/sum
     expression level over cells c.
 
-    In detail, if axis is set to 1, the mean/median/sum relative expression profile is being computed over gene
-    age classes (phylostrata) and, if group_by is not None, combined per given group by mean/median/sum as follows:
+    In detail, if standard_scale axis is set to 1, the mean/median/sum relative expression profile is being computed
+    over gene age classes (phylostrata) and, if group_by_obs is not None, combined per given obs group by
+    mean/median/sum as follows:
+
+    f_ps = (e_ps - e_min)/(e_max - e_min)
+
+    where e_min and e_max denote either the minimum/maximum mean/median/sum
+    expression level over gene age class (phylostrata ps).
+
+    This linear transformation corresponds to a shift by e_min -
+    e_max. As a result, the relative expression level f_c of cell c or f_ps
+    of phylotstratum ps with minimum e_c or e_ps is 0,
+    whereas the relative expression level f_c of cell c or f_ps of phylotstratum ps
+    with maximum e_c or e_ps is 1, and the relative
+    expression levels of all other cells c or
+    phylostrata ps range between 0 and 1.
+
+    :param adata:
+    :param keep:
+    :param layer:
+    :param group_by_var:
+    :param var_type:
+    :param standard_scale:
+    :param group_by_obs:
+    :param obs_type:
+    :param normalize_total:
+    :param log1p:
+    :param target_sum:
+    :return:
+    """
+
+
+def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, var_type='mean',
+                 group_by_obs=None, obs_type='mean', standard_scale=None,
+                 normalize_total=False, log1p=False, target_sum=1e6):
+    """
+    This function computes relative expression profiles.
+
+    In detail, if standard_scale axis is set to None, the mean/median/sum expression is being computed over cells
+    and, if group_by_obs is not None, combined per given obs group by mean/median/sum.
+
+    In detail, if standard_scale axis is set to 0, the mean/median/sum relative expression profile is being computed
+    over cells and, if group_by_obs is not None, combined per given obs group by mean/median/sum as follows:
+
+    f_c = (e_c - e_min)/(e_max - e_min)
+
+    where e_min and e_max denote either the minimum/maximum mean/median/sum
+    expression level over cells c.
+
+    In detail, if standard_scale axis is set to 1, the mean/median/sum relative expression profile is being computed
+    over gene age classes (phylostrata) and, if group_by_obs is not None, combined per given obs group by
+    mean/median/sum as follows:
 
     f_ps = (e_ps - e_min)/(e_max - e_min)
 
@@ -644,13 +785,13 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
         Specify if counts from adata.X (default if None) should be combined per age group to calculate
         the relative expression or if the corresponding 'pmatrix' or 'teimatrix' should be used.
         If layer is not None adata.X refers to adata.layers[layer].
-    :param col_type: str (default: mean)
+    :param var_type: str (default: mean)
         Specify how the counts should be combined, either by 'mean', 'median', 'sum', 'min' or 'max'.
     :param standard_scale: int (default: None)
         Wether or not to standardize the given axis (0: rows, gene age class, 1: columns, cells or group) between 0 and 1,
         meaning for each variable or group, subtract the minimum and divide each by its maximum.
-    :param group_by:
-    :param group_type: str (default: mean)
+    :param group_by_obs:
+    :param obs_type: str (default: mean)
         Specify how the counts should be combined per group, either by 'mean', 'median', 'sum', 'min' or 'max'.
     :param normalize_total: bool (default: False)
         Normalize counts per cell prior TEI calculation.
@@ -681,7 +822,7 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
     >>> packer19_small_rematrix_grouped = orthomap2tei.get_rematrix(adata=packer19_small,\
     >>> gene_id=query_orthomap['GeneID'],\
     >>> gene_age=query_orthomap['Phylostratum'],\
-    >>> group_by='embryo.time.bin')
+    >>> group_by_obs='embryo.time.bin')
     >>> # plot heatmap using partial TEI values
     >>> sns.heatmap(packer19_small_rematrix_grouped, cmap='viridis')
     >>> plt.show()
@@ -689,7 +830,7 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
     >>> packer19_small_rematrix_grouped_rows = orthomap2tei.get_rematrix(adata=packer19_small,\
     >>> gene_id=query_orthomap['GeneID'],\
     >>> gene_age=query_orthomap['Phylostratum'],\
-    >>> group_by='embryo.time.bin',\
+    >>> group_by_obs='embryo.time.bin',\
     >>> standard_scale=0)
     >>> # plot heatmap using partial TEI values
     >>> sns.heatmap(packer19_small_rematrix_grouped_rows, cmap='viridis')
@@ -698,7 +839,7 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
     >>> packer19_small_rematrix_grouped_columns = orthomap2tei.get_rematrix(adata=packer19_small,\
     >>> gene_id=query_orthomap['GeneID'],\
     >>> gene_age=query_orthomap['Phylostratum'],\
-    >>> group_by='embryo.time.bin',\
+    >>> group_by_obs='embryo.time.bin',\
     >>> standard_scale=1)
     >>> # plot heatmap using partial TEI values
     >>> sns.heatmap(packer19_small_rematrix_grouped_columns, cmap='viridis')
@@ -713,75 +854,75 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
     rematrix = np.zeros((len(phylostrata), adata_counts.shape[0]))
     if use == 'pmatrix':
         for pk_idx, pk in enumerate(phylostrata):
-            if col_type == 'mean':
+            if var_type == 'mean':
                 rematrix[pk_idx, ] = np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .mean(1)).flatten()
-            if col_type == 'median':
+            if var_type == 'median':
                 rematrix[pk_idx, ] = np.apply_along_axis(
                     np.median, 1, pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])].toarray()).flatten()
-            if col_type == 'sum':
+            if var_type == 'sum':
                 rematrix[pk_idx, ] = np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .sum(1)).flatten()
-            if col_type == 'min':
+            if var_type == 'min':
                 rematrix[pk_idx, ] = np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .min(1).toarray()).flatten()
-            if col_type == 'max':
+            if var_type == 'max':
                 rematrix[pk_idx, ] = np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .max(1).toarray()).flatten()
     if use == 'teimatrix':
         for pk_idx, pk in enumerate(phylostrata):
-            if col_type == 'mean':
+            if var_type == 'mean':
                 rematrix[pk_idx, ] = np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .mean(1)).flatten()
-            if col_type == 'median':
+            if var_type == 'median':
                 rematrix[pk_idx, ] = np.apply_along_axis(
                     np.median, 1, teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])].toarray()).flatten()
-            if col_type == 'sum':
+            if var_type == 'sum':
                 rematrix[pk_idx, ] = np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .sum(1)).flatten()
-            if col_type == 'min':
+            if var_type == 'min':
                 rematrix[pk_idx, ] = np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .min(1).toarray()).flatten()
-            if col_type == 'max':
+            if var_type == 'max':
                 rematrix[pk_idx, ] = np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .max(1).toarray()).flatten()
     else:
         for pk_idx, pk in enumerate(phylostrata):
-            if col_type == 'mean':
+            if var_type == 'mean':
                 rematrix[pk_idx, ] = np.array(adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .mean(1)).flatten()
-            if col_type == 'median':
+            if var_type == 'median':
                 rematrix[pk_idx, ] = np.apply_along_axis(
                     np.median, 1, adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])].toarray()).flatten()
-            if col_type == 'sum':
+            if var_type == 'sum':
                 rematrix[pk_idx, ] = np.array(adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .sum(1)).flatten()
-            if col_type == 'min':
+            if var_type == 'min':
                 rematrix[pk_idx, ] = np.array(adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .min(1).toarray()).flatten()
-            if col_type == 'max':
+            if var_type == 'max':
                 rematrix[pk_idx, ] = np.array(adata_counts[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .max(1).toarray()).flatten()
     rematrix_df = pd.DataFrame(rematrix)
     rematrix_df['ps'] = phylostrata
     rematrix_df.set_index('ps', inplace=True)
     rematrix_df.columns = adata.obs_names
-    if group_by is not None:
-        if group_type == 'mean':
+    if group_by_obs is not None:
+        if obs_type == 'mean':
             rematrix_df = \
-                rematrix_df.transpose().groupby(adata.obs[group_by]).mean().transpose()
-        if group_type == 'median':
+                rematrix_df.transpose().groupby(adata.obs[obs_by]).mean().transpose()
+        if obs_type == 'median':
             rematrix_df = \
-                rematrix_df.transpose().groupby(adata.obs[group_by]).median().transpose()
-        if group_type == 'sum':
+                rematrix_df.transpose().groupby(adata.obs[obs_by]).median().transpose()
+        if obs_type == 'sum':
             rematrix_df = \
-                rematrix_df.transpose().groupby(adata.obs[group_by]).sum().transpose()
-        if group_type == 'min':
+                rematrix_df.transpose().groupby(adata.obs[obs_by]).sum().transpose()
+        if obs_type == 'min':
             rematrix_df = \
-                rematrix_df.transpose().groupby(adata.obs[group_by]).min().transpose()
-        if group_type == 'max':
+                rematrix_df.transpose().groupby(adata.obs[obs_by]).min().transpose()
+        if obs_type == 'max':
             rematrix_df = \
-                rematrix_df.transpose().groupby(adata.obs[group_by]).max().transpose()
+                rematrix_df.transpose().groupby(adata.obs[obs_by]).max().transpose()
     if standard_scale is not None:
         if standard_scale == 0:
             rematrix_df = rematrix_df.apply(_min_max_to_01, axis=1, raw=True)
@@ -792,6 +933,7 @@ def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, col
 
 def _get_min_max_expr_number(ndarray, min_expr=1, max_expr=None):
     """
+    A helper function to
 
     :param ndarray:
     :param min_expr:
@@ -814,6 +956,7 @@ def _get_min_max_expr_number(ndarray, min_expr=1, max_expr=None):
 
 def _get_quantile_expr_number(ndarray, quantile=[0, 5, 25, 50, 75, 95], min_expr=1, max_expr=None):
     """
+    A helper function to 
 
     :param ndarray:
     :param quantile:
