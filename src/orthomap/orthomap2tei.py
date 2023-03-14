@@ -178,8 +178,57 @@ def _split_gene_id_by_gene_age(gene_id, gene_age, keep='min', adata=None):
     phylostrata = list(set(id_age_df_keep_subset['Phylostrata']))
     gene_id_gene_age_dict = {}
     for pk_idx, pk in enumerate(phylostrata):
-        gene_id_gene_age_dict[str(pk)] = list(id_age_df_keep_subset[id_age_df_keep_subset['Phylostrata'] == pk]['GeneID'])
+        gene_id_gene_age_dict[str(pk)] = list(
+            id_age_df_keep_subset[id_age_df_keep_subset['Phylostrata'] == pk]['GeneID'])
     return gene_id_gene_age_dict
+
+
+def _get_counts(adata, layer=None, normalize_total=False, log1p=False, target_sum=1e6):
+    """
+    A helper function to pre-process AnnData counts.
+
+    :param adata: AnnData object of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
+    :param layer: Layer to work on instead of X. If None, X is used.
+    :param normalize_total: Normalize counts per cell prior TEI calculation.
+    :param log1p: Logarithmize the data matrix prior TEI calculation.
+    :param target_sum: After normalization, each observation (cell) has a total count equal to target_sum.
+    :return: Processed AnnData counts.
+
+    :type adata: AnnData
+    :type layer: str
+    :type normalize_total: bool
+    :type log1p: bool
+    :type target_sum: float
+    :rtype: scipy.sparse._csr.csr_matrix
+
+    Example
+    -------
+    >>> import scanpy as sc
+    >>> from orthomap import orthomap2tei, datasets
+    >>> # download and load scRNA data
+    >>> #packer19_small = sc.read('packer19_small.h5ad')
+    >>> packer19_small = datasets.packer19_small(datapath='.')
+    """
+    adata_counts = adata.X
+    if layer is not None:
+        adata_counts = adata.layers[layer]
+    if normalize_total and log1p:
+        adata_norm = sc.pp.normalize_total(adata, target_sum=target_sum, layer=layer, copy=True)
+        sc.pp.log1p(adata_norm, layer=layer)
+        adata_counts = adata_norm.X
+        if layer is not None:
+            adata_counts = adata_norm.layers[layer]
+    if normalize_total and not log1p:
+        adata_norm = sc.pp.normalize_total(adata, target_sum=target_sum, layer=layer, copy=True)
+        adata_counts = adata_norm.X
+        if layer is not None:
+            adata_counts = adata_norm.layers[layer]
+    if not normalize_total and log1p:
+        adata_log1p = sc.pp.log1p(adata, layer=layer, copy=True)
+        adata_counts = adata_log1p.X
+        if layer is not None:
+            adata_counts = adata_log1p.layers[layer]
+    return adata_counts
 
 
 def _get_psd(adata, gene_id, gene_age, keep='min', layer=None, normalize_total=False, log1p=False, target_sum=1e6):
@@ -237,25 +286,8 @@ def _get_psd(adata, gene_id, gene_age, keep='min', layer=None, normalize_total=F
     gene_intersection = pd.Index(id_age_df_keep['GeneID']).intersection(adata.var_names)
     id_age_df_keep_subset = id_age_df_keep.loc[id_age_df_keep['GeneID'].isin(gene_intersection)]
     id_age_df_keep_subset = id_age_df_keep_subset.sort_values('GeneID')
-    adata_counts = adata.X
-    if layer is not None:
-        adata_counts = adata.layers[layer]
-    if normalize_total and log1p:
-        adata_norm = sc.pp.normalize_total(adata, target_sum=target_sum, layer=layer, copy=True)
-        sc.pp.log1p(adata_norm, layer=layer)
-        adata_counts = adata_norm.X
-        if layer is not None:
-            adata_counts = adata_norm.layers[layer]
-    if normalize_total and not log1p:
-        adata_norm = sc.pp.normalize_total(adata, target_sum=target_sum, layer=layer, copy=True)
-        adata_counts = adata_norm.X
-        if layer is not None:
-            adata_counts = adata_norm.layers[layer]
-    if not normalize_total and log1p:
-        adata_log1p = sc.pp.log1p(adata, layer=layer, copy=True)
-        adata_counts = adata_log1p.X
-        if layer is not None:
-            adata_counts = adata_log1p.layers[layer]
+    adata_counts = _get_counts(adata=adata, layer=layer, normalize_total=normalize_total, log1p=log1p,
+                               target_sum=target_sum)
     adata_counts = adata_counts[:, adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
     var_names_subset = adata.var_names[adata.var_names.isin(id_age_df_keep_subset['GeneID'])]
     var_names_subset, var_names_subset_idx = var_names_subset.sort_values(return_indexer=True)
@@ -339,7 +371,7 @@ def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True,
     :param adata: AnnData object of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
     :param gene_id: Expects GeneID column from orthomap DataFrame.
     :param gene_age: Expects GeneID column from orthomap DataFrame.
-    :param keep: str In case of duplicated GeneIDs with different Phylostrata assignments, either keep 'min' or 'max' value.
+    :param keep: In case of duplicated GeneIDs with different Phylostrata assignments, either keep 'min' or 'max' value.
     :param layer: Layer to work on instead of X. If None, X is used.
     :param add: Add TEI values as observation to existing AnnData object using obs_name.
     :param obs_name: Observation name to be used for TEI values in existing AnnData object.
@@ -348,7 +380,7 @@ def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True,
     :param normalize_total: Normalize counts per cell prior TEI calculation.
     :param log1p: Logarithmize the data matrix prior TEI calculation.
     :param target_sum: After normalization, each observation (cell) has a total count equal to target_sum.
-    :return:
+    :return: Transcriptome evolutionary index (TEI) values.
 
     :type adata: AnnData
     :type gene_id: list
@@ -665,7 +697,7 @@ def _min_max_to_01(ndarray):
     :return: Standardized Data.
 
     :type ndarray: numpy.ndarray
-    :rtype:
+    :rtype: numpy.ndarray
 
     Example
     -------
@@ -682,8 +714,11 @@ def _min_max_to_01(ndarray):
     return ndarray_min_max
 
 
-def get_ematrix(adata, keep='min', layer=None, group_by_var=None, var_type='mean',
-                standard_scale=None, group_by_obs=None, obs_type='mean', normalize_total=False, log1p=False,
+def get_ematrix(adata, layer=None,
+                group_by_var=None, var_type='mean', var_fillna='NaN',
+                group_by_obs=None, obs_type='mean', obs_fillna='NaN',
+                standard_scale=None,
+                normalize_total=False, log1p=False,
                 target_sum=1e6):
     """
     This function computes expression profiles for all genes or group of genes 'group_by_var' (default: None).
@@ -693,8 +728,6 @@ def get_ematrix(adata, keep='min', layer=None, group_by_var=None, var_type='mean
     The resulting values can be combined per observation group 'group_by_obs' e.g.: pre-defined cell types
     (default: None), according to the selected observation type 'obst_type' (default:'mean') and further scaled between
     0 and 1 (default: None) either per var (standard_scale=0) or per obs (standard_scale=1).
-
-
 
     In detail, if standard_scale axis is set to None, the var_type mean/median/sum expression is being computed over
     cells and, if group_by_obs is not None, combined per given obs group by mean/median/sum.
@@ -724,19 +757,122 @@ def get_ematrix(adata, keep='min', layer=None, group_by_var=None, var_type='mean
     expression levels of all other cells c or
     phylostrata ps range between 0 and 1.
 
-    :param adata:
-    :param keep:
-    :param layer:
-    :param group_by_var:
-    :param var_type:
-    :param standard_scale:
-    :param group_by_obs:
-    :param obs_type:
-    :param normalize_total:
-    :param log1p:
-    :param target_sum:
-    :return:
+    :param adata: AnnData object of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
+    :param layer: Layer to work on instead of X. If None, X is used.
+    :param group_by_var: AnnData variation to be used as a group to combine count values.
+    :param var_type: Specify how values should be combined per variation group.
+    :param var_fillna: Specify how NaN values should be named for variation.
+    :param group_by_obs: AnnData observation to be used as a group to combine count values.
+    :param obs_type: Specify how values should be combined per observation group.
+    :param obs_fillna: Specify how NaN values should be named for observation.
+    :param standard_scale: Wether or not to standardize the given axis (0: colums, 1: rows) between 0 and 1,
+    meaning for each variable or group, subtract the minimum and divide each by its maximum.
+    :param normalize_total: Normalize counts per cell prior TEI calculation.
+    :param log1p: Logarithmize the data matrix prior TEI calculation.
+    :param target_sum: After normalization, each observation (cell) has a total count equal to target_sum.
+    :return: Expression profile DataFrame.
+
+    :type adata: AnnData
+    :type layer: str
+    :type group_by_var: str
+    :type var_type: str
+    :type var_fillna: str
+    :type group_by_obs: str
+    :type obs_type: str
+    :type obs_fillna: str
+    :type standard_scale: int
+    :type normalize_total: bool
+    :type log1p: bool
+    :type target_sum: float
+    :rtype: pandas.DataFrame
+
+    Example
+    -------
+    >>> import scanpy as sc
+    >>> import matplotlib.pyplot as plt
+    >>> import seaborn as sns
+    >>> from orthomap import orthomap2tei, datasets
+    >>> # download pre-calculated orthomap
+    >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
+    >>> # load query species orthomap
+    >>> query_orthomap = orthomap2tei.read_orthomap(orthomapfile=sun21_orthomap_file)
+    >>> # download and load scRNA data
+    >>> #packer19_small = sc.read('packer19_small.h5ad')
+    >>> packer19_small = datasets.packer19_small(datapath='.')
+    >>> # add gene age values to existing adata object
+    >>> orthomap2tei.add_gene_age2adata_var(adata=packer19_small,\
+    >>> gene_id=query_orthomap['GeneID'],\
+    >>> gene_age=query_orthomap['Phylostratum'])
+    >>> packer19_small_ematrix_grouped = get_ematrix(\
+    >>> adata=packer19_small, group_by_var='Phylostrata', group_by_obs='cell.type')
+    >>> # normalize counts
+    >>> packer19_small_ematrix_grouped = get_ematrix(\
+    >>> adata=packer19_small, group_by_var='Phylostrata', group_by_obs='cell.type', normalize_total=True)
+    >>> sns.heatmap(packer19_small_ematrix_grouped, annot=True, cmap='viridis')
     """
+    adata_counts = _get_counts(adata=adata, layer=layer, normalize_total=normalize_total, log1p=log1p,
+                               target_sum=target_sum)
+    if group_by_var is not None:
+        var_groups = list(set(adata.var[group_by_var].fillna(var_fillna)))
+        ematrix = np.zeros((len(var_groups), adata_counts.shape[0]))
+        for var_group_idx, var_group in enumerate(var_groups):
+            if var_type == 'mean':
+                ematrix[var_group_idx, ] = np.array(adata_counts[:, adata.var[group_by_var].fillna(var_fillna)
+                                                    .isin([var_group])].mean(1)).flatten()
+            if var_type == 'median':
+                ematrix[var_group_idx, ] = np.apply_along_axis(
+                    np.median, 1, adata_counts[:, adata.var[group_by_var].fillna(var_fillna)
+                                                  .isin([var_group])].toarray()).flatten()
+            if var_type == 'sum':
+                ematrix[var_group_idx, ] = np.array(adata_counts[:, adata.var[group_by_var].fillna(var_fillna)
+                                                    .isin([var_group])].sum(1)).flatten()
+            if var_type == 'min':
+                ematrix[var_group_idx, ] = np.array(adata_counts[:, adata.var[group_by_var].fillna(var_fillna)
+                                                    .isin([var_group])].min(1).toarray()).flatten()
+            if var_type == 'max':
+                ematrix[var_group_idx, ] = np.array(adata_counts[:, adata.var[group_by_var].fillna(var_fillna)
+                                                    .isin([var_group])].max(1).toarray()).flatten()
+        ematrix_df = pd.DataFrame(ematrix)
+        ematrix_df['var_groups'] = var_groups
+        ematrix_df.set_index('var_groups', inplace=True)
+        ematrix_df.columns = adata.obs_names
+    else:
+        if var_type == 'mean':
+            ematrix = np.array(adata_counts.mean(1)).flatten()
+        if var_type == 'median':
+            ematrix = np.apply_along_axis(
+                np.median, 1, adata_counts.toarray()).flatten()
+        if var_type == 'sum':
+            ematrix = np.array(adata_counts.sum(1)).flatten()
+        if var_type == 'min':
+            ematrix = np.array(adata_counts.min(1).toarray()).flatten()
+        if var_type == 'max':
+            ematrix = np.array(adata_counts.max(1).toarray()).flatten()
+        ematrix_df = pd.DataFrame(ematrix).transpose()
+        ematrix_df.columns = adata.obs_names
+    if group_by_obs is not None:
+        if obs_type == 'mean':
+            ematrix_df =\
+                ematrix_df.transpose().groupby(adata.obs[group_by_obs].fillna(obs_fillna)).mean().transpose()
+        if obs_type == 'median':
+            ematrix_df =\
+                ematrix_df.transpose().groupby(adata.obs[group_by_obs].fillna(obs_fillna)).median().transpose()
+        if obs_type == 'sum':
+            ematrix_df =\
+                ematrix_df.transpose().groupby(adata.obs[group_by_obs].fillna(obs_fillna)).sum().transpose()
+        if obs_type == 'min':
+            ematrix_df =\
+                ematrix_df.transpose().groupby(adata.obs[group_by_obs].fillna(obs_fillna)).min().transpose()
+        if obs_type == 'max':
+            ematrix_df =\
+                ematrix_df.transpose().groupby(adata.obs[group_by_obs].fillna(obs_fillna)).max().transpose()
+    if standard_scale is not None:
+        if standard_scale == 0:
+            ematrix_df = ematrix_df.apply(_min_max_to_01, axis=1, raw=True)
+        if standard_scale == 1:
+            ematrix_df = ematrix_df.apply(_min_max_to_01, axis=0, raw=True)
+    return ematrix_df
+
 
 
 def get_rematrix(adata, gene_id, gene_age, keep='min', layer=None, use=None, var_type='mean',
