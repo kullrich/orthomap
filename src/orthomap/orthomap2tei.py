@@ -41,7 +41,8 @@ def read_orthomap(orthomapfile):
     return orthomap
 
 
-def geneset_overlap(geneset1, geneset2):
+def geneset_overlap(geneset1,
+                    geneset2):
     """
     This function shows the overlap of two lists. To check e.g. <GeneID> from an orthomap and <adata.var_names>
     from an AnnData object.
@@ -71,7 +72,9 @@ def geneset_overlap(geneset1, geneset2):
     return df
 
 
-def replace_by(x_orig, xmatch, xreplace):
+def replace_by(x_orig,
+               xmatch,
+               xreplace):
     """
     This function assumes that <x_orig> and <xmatch> match and will return <xreplace> sorted by <x_orig>.
     It is mandatory that <xmatch> and <xreplace> have the same length and reflect pairs:
@@ -101,7 +104,10 @@ def replace_by(x_orig, xmatch, xreplace):
     return x_new
 
 
-def _keep_min_max(df, keep='min', dup_col='GeneID', sort_col='Phylostrata'):
+def _keep_min_max(df,
+                  keep='min',
+                  dup_col='GeneID',
+                  sort_col='Phylostrata'):
     """
     A helper function to keep either the minimal or maximal value based on a duplication column.
 
@@ -139,7 +145,10 @@ def _keep_min_max(df, keep='min', dup_col='GeneID', sort_col='Phylostrata'):
     return df_out
 
 
-def _split_gene_id_by_gene_age(gene_id, gene_age, keep='min', adata=None):
+def _split_gene_id_by_gene_age(gene_id,
+                               gene_age,
+                               keep='min',
+                               adata=None):
     """
     A helper function to group <GeneID> by <Phylostrata>.
 
@@ -183,7 +192,11 @@ def _split_gene_id_by_gene_age(gene_id, gene_age, keep='min', adata=None):
     return gene_id_gene_age_dict
 
 
-def _get_counts(adata, layer=None, normalize_total=False, log1p=False, target_sum=1e6):
+def _get_counts(adata,
+                layer=None,
+                normalize_total=False,
+                log1p=False,
+                target_sum=1e6):
     """
     A helper function to pre-process AnnData counts.
 
@@ -231,7 +244,14 @@ def _get_counts(adata, layer=None, normalize_total=False, log1p=False, target_su
     return adata_counts
 
 
-def _get_psd(adata, gene_id, gene_age, keep='min', layer=None, normalize_total=False, log1p=False, target_sum=1e6):
+def _get_psd(adata,
+             gene_id,
+             gene_age,
+             keep='min',
+             layer=None,
+             normalize_total=False,
+             log1p=False,
+             target_sum=1e6):
     """
     A helper function to pre-process AnnData.
 
@@ -300,7 +320,11 @@ def _get_psd(adata, gene_id, gene_age, keep='min', layer=None, normalize_total=F
     return [var_names_df, id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd]
 
 
-def add_gene_age2adata_var(adata, gene_id, gene_age, keep='min', var_name='Phylostrata'):
+def add_gene_age2adata_var(adata,
+                           gene_id,
+                           gene_age,
+                           keep='min',
+                           var_name='Phylostrata'):
     """
     This function add gene age to an existing AnnData object.
 
@@ -345,24 +369,35 @@ def add_gene_age2adata_var(adata, gene_id, gene_age, keep='min', var_name='Phylo
     adata.var[var_name] = list(var_names_df['Phylostrata'])
 
 
-def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True,
-            obs_name='tei', boot=False, bt=10,
-            normalize_total=False, log1p=False, target_sum=1e6):
+def get_tei(adata,
+            gene_id,
+            gene_age,
+            keep='min',
+            layer=None,
+            add_var=True,
+            var_name='Phylostrata',
+            add_obs=True,
+            obs_name='tei',
+            boot=False,
+            bt=10,
+            normalize_total=False,
+            log1p=False,
+            target_sum=1e6):
     """
     This function computes the phylogenetically based transcriptome evolutionary
     index (TEI) similar to Domazet-Loso & Tautz, 2010.
 
-     The TEI measure represents the weighted arithmetic mean
-     (expression levels as weights for the phylostratum value) over all
-     evolutionary age categories denoted as _phylostra_.
+    The TEI measure represents the weighted arithmetic mean
+    (expression levels as weights for the phylostratum value) over all
+    evolutionary age categories denoted as _phylostra_.
 
-     :: math::
-         \deqn{TEI_s = sum (e_is * ps_i) / sum e_is}
+    :: math::
+        \deqn{TEI_s = sum (e_is * ps_i) / sum e_is}
 
-     where \eqn{TEI_s} denotes the TEI value in developmental stage \eqn{s, e_is}
-     denotes the gene expression level of gene \eqn{i} in stage \eqn{s}, and \eqn{ps_i}
-     denotes the corresponding phylostratum of gene \eqn{i, i = 1,...,N} and
-     \eqn{N = total number of genes}.
+    where \eqn{TEI_s} denotes the TEI value in developmental stage \eqn{s, e_is}
+    denotes the gene expression level of gene \eqn{i} in stage \eqn{s}, and \eqn{ps_i}
+    denotes the corresponding phylostratum of gene \eqn{i, i = 1,...,N} and
+    \eqn{N = total number of genes}.
 
     If the parameter boot is set to true,
     the strata values are sampled and the global TEI
@@ -373,8 +408,10 @@ def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True,
     :param gene_age: Expects GeneID column from orthomap DataFrame.
     :param keep: In case of duplicated GeneIDs with different Phylostrata assignments, either keep 'min' or 'max' value.
     :param layer: Layer to work on instead of X. If None, X is used.
-    :param add: Add TEI values as observation to existing AnnData object using obs_name.
+    :param add_obs: Add TEI values as observation to existing AnnData object using obs_name.
     :param obs_name: Observation name to be used for TEI values in existing AnnData object.
+    :param add_var: Add gene age values as variable to existing AnnData object using var_name.
+    :param var_name: Variable name to be used for gene age values in existing AnnData object.
     :param boot: Specify if bootstrap TEI values should be calculated and returned as DataFrame.
     :param bt: Number of bootstrap to calculate.
     :param normalize_total: Normalize counts per cell prior TEI calculation.
@@ -387,7 +424,9 @@ def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True,
     :type gene_age: list
     :type keep: str
     :type layer: str
-    :type add: bool
+    :type add_var: bool
+    :type var_name: str
+    :type add_obs: bool
     :type obs_name: str
     :type boot: bool
     :type bt: int
@@ -413,7 +452,8 @@ def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True,
     >>> orthomap2tei.get_tei(adata=packer19_small,\
     >>> gene_id=query_orthomap['GeneID'],\
     >>> gene_age=query_orthomap['Phylostratum'],\
-    >>> add=True)
+    >>> add_var=True,\
+    >>> add_obs=True)
     >>> # plot tei boxplot grouped by embryo.time.bin observation
     >>> sns.boxplot(x='embryo.time.bin', y='tei', data=packer19_small.obs)
     >>> plt.show()
@@ -447,7 +487,9 @@ def get_tei(adata, gene_id, gene_age, keep='min', layer=None, add=True,
     tei = pmatrix.sum(1)
     tei_df = pd.DataFrame(tei, columns=['tei'])
     tei_df.index = adata.obs_names
-    if add:
+    if add_var:
+        add_gene_age2adata_var(adata=adata, gene_id=gene_id, gene_age=gene_age, keep=keep, var_name=var_name)
+    if add_obs:
         adata.obs[obs_name] = tei_df
     if boot:
         with alive_bar(bt) as bar:
@@ -759,9 +801,9 @@ def get_ematrix(adata, layer=None,
 
     :param adata: AnnData object of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
     :param layer: Layer to work on instead of X. If None, X is used.
-    :param group_by_var: AnnData variation to be used as a group to combine count values.
-    :param var_type: Specify how values should be combined per variation group.
-    :param var_fillna: Specify how NaN values should be named for variation.
+    :param group_by_var: AnnData variable to be used as a group to combine count values.
+    :param var_type: Specify how values should be combined per variable group.
+    :param var_fillna: Specify how NaN values should be named for variable.
     :param group_by_obs: AnnData observation to be used as a group to combine count values.
     :param obs_type: Specify how values should be combined per observation group.
     :param obs_fillna: Specify how NaN values should be named for observation.
