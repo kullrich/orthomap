@@ -96,7 +96,8 @@ transtable = {'std': CodonTable.CodonTable(forward_table={
     start_codons=['TTG', 'CTG', 'ATG', ])}
 
 
-def get_gene(description, source):
+def get_gene(description,
+             source):
     """
     This function extracts the gene ID from a sequence description based on a given source.
 
@@ -118,7 +119,8 @@ def get_gene(description, source):
     return gene
 
 
-def get_gene_len_dict(record_iter, source):
+def get_gene_len_dict(record_iter,
+                      source):
     """
     This function creates a sequence length dictionary.
 
@@ -141,7 +143,8 @@ def get_gene_len_dict(record_iter, source):
     return record_dict
 
 
-def cds2aa_record(record_iter, args):
+def cds2aa_record(record_iter,
+                  args):
     """
     This function translates nucleotide to amino acids assuming that cds is in frame 0.
 
@@ -162,7 +165,8 @@ def cds2aa_record(record_iter, args):
         yield aa
 
 
-def cds2aa_fasta(args, parser):
+def cds2aa_fasta(args,
+                 parser):
     """
     This function
 

@@ -66,7 +66,11 @@ def add_argparse_args(parser: argparse.ArgumentParser):
                         default=True, type=bool)
 
 
-def _information_based_on_key(infosplit, key, q, lines, version=False):
+def _information_based_on_key(infosplit,
+                              key,
+                              q,
+                              lines,
+                              version=False):
     """
     A helper function to split the information column of GTF file.
 
@@ -107,7 +111,14 @@ def _information_based_on_key(infosplit, key, q, lines, version=False):
     return [infos, output]
 
 
-def parse_gtf(gtf, g=False, b=False, p=False, v=False, s=False, output=None, q=False):
+def parse_gtf(gtf,
+              g=False,
+              b=False,
+              p=False,
+              v=False,
+              s=False,
+              output=None,
+              q=False):
     """
     This function parses a GTF file to extract transcript and gene IDs.
 

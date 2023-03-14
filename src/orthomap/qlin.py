@@ -55,7 +55,10 @@ def add_argparse_args(parser: argparse.ArgumentParser):
     parser.add_argument('-qt', help='query species taxID')
 
 
-def get_qlin(ncbi=None, q=None, qt=None, quiet=False):
+def get_qlin(ncbi=None,
+             q=None,
+             qt=None,
+             quiet=False):
     """
     This function searches the NCBI taxonomic database for results matching the
     query name or query taxID.
@@ -143,7 +146,8 @@ def get_lineage_topo(qt):
     return tree
 
 
-def get_youngest_common(ql, tl):
+def get_youngest_common(ql,
+                        tl):
     """
     This function returns the lowest common ancestor (LCA) by comparing the lineage information
     of a query and a target species.
@@ -169,7 +173,8 @@ def get_youngest_common(ql, tl):
     return [x for x in tl if x in ql][-1]
 
 
-def get_oldest_common(ql, tl):
+def get_oldest_common(ql,
+                      tl):
     """
     This function returns the oldest common ancestor (OCA) by comparing the lineage information
     of a query species and a target species.

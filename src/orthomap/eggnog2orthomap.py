@@ -58,7 +58,13 @@ def add_argparse_args(parser: argparse.ArgumentParser):
                         default=True, type=bool)
 
 
-def get_eggnog_orthomap(qt, og, subset=None, out=None, quiet=False, continuity=True, overwrite=True):
+def get_eggnog_orthomap(qt,
+                        og,
+                        subset=None,
+                        out=None,
+                        quiet=False,
+                        continuity=True,
+                        overwrite=True):
     """
     This function return an orthomap for a given query species and eggnog input data.
 

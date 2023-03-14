@@ -71,7 +71,15 @@ def add_argparse_args(parser: argparse.ArgumentParser):
                         default=True, type=bool)
 
 
-def get_orthomap(seqname, qt, sl, oc, og, out=None, quiet=False, continuity=True, overwrite=True):
+def get_orthomap(seqname,
+                 qt,
+                 sl,
+                 oc,
+                 og,
+                 out=None,
+                 quiet=False,
+                 continuity=True,
+                 overwrite=True):
     """
     This function return an orthomap for a given query species and OrthoFinder input data.
 
@@ -239,7 +247,10 @@ def get_orthomap(seqname, qt, sl, oc, og, out=None, quiet=False, continuity=True
     return [omap_df, species_list, youngest_common_counts_df]
 
 
-def get_counts_per_ps(omap_df, psnum_col='PSnum', pstaxid_col='PStaxID', psname_col='PSname'):
+def get_counts_per_ps(omap_df,
+                      psnum_col='PSnum',
+                      pstaxid_col='PStaxID',
+                      psname_col='PSname'):
     """
     This function return counts per phylostratum.
 
@@ -283,7 +294,8 @@ def get_counts_per_ps(omap_df, psnum_col='PSnum', pstaxid_col='PStaxID', psname_
     return counts_df
 
 
-def get_youngest_common_counts(qlineage, species_list):
+def get_youngest_common_counts(qlineage,
+                               species_list):
     """
     This function return LCA counts for a given query species lineage.
 
@@ -309,7 +321,8 @@ def get_youngest_common_counts(qlineage, species_list):
     return counts_df
 
 
-def get_continuity_score(og_name, youngest_common_counts_df):
+def get_continuity_score(og_name,
+                         youngest_common_counts_df):
     """
     This function calculates a continuity score for a given orthologous group
     and its corresponding LCA counts.
