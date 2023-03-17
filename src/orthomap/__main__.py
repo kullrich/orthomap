@@ -95,7 +95,7 @@ def define_parser():
                                            formatter_class=argparse.RawDescriptionHelpFormatter)
     of2orthomap_parser = subparsers.add_parser(name='of2orthomap',
                                                help='extract orthomap from OrthoFinder output for query species '
-                                                    '<orthomap -h>',
+                                                    '<of2orthomap -h>',
                                                epilog=of2orthomap_example,
                                                formatter_class=argparse.RawDescriptionHelpFormatter)
     qlin_parser = subparsers.add_parser(name='qlin',

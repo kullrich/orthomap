@@ -43,7 +43,7 @@ def define_parser():
     parser = argparse.ArgumentParser(
         prog='of2orthomap',
         usage='%(prog)s [options] [<arguments>...]',
-        description='extract orthomap from orthofinder output for query species',
+        description='extract orthomap from OrthoFinder output for query species',
         epilog=of2orthomap_example,
         formatter_class=argparse.RawDescriptionHelpFormatter)
     add_argparse_args(parser=parser)
