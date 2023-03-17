@@ -39,7 +39,7 @@ def define_parser():
     parser = argparse.ArgumentParser(
         prog='gtf2t2g',
         usage='%(prog)s [options] [<arguments>...]',
-        description='extracts transcript to gene table from GTF',
+        description='extract transcript to gene table from GTF',
         epilog=gtf2t2g_example,
         formatter_class=argparse.RawDescriptionHelpFormatter)
     add_argparse_args(parser=parser)

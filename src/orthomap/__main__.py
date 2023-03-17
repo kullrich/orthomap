@@ -86,7 +86,7 @@ def define_parser():
                                           epilog=cds2aa_example,
                                           formatter_class=argparse.RawDescriptionHelpFormatter)
     gtf2t2g_parser = subparsers.add_parser(name='gtf2t2g',
-                                           help='extracts transcript to gene table from GTF <gtf2t2g -h>',
+                                           help='extract transcript to gene table from GTF <gtf2t2g -h>',
                                            epilog=gtf2t2g_example,
                                            formatter_class=argparse.RawDescriptionHelpFormatter)
     ncbitax_parser = subparsers.add_parser(name='ncbitax',
@@ -94,7 +94,7 @@ def define_parser():
                                            epilog=ncbitax_example,
                                            formatter_class=argparse.RawDescriptionHelpFormatter)
     of2orthomap_parser = subparsers.add_parser(name='of2orthomap',
-                                               help='extract orthomap from OrthoFinder output for query species'
+                                               help='extract orthomap from OrthoFinder output for query species '
                                                     '<orthomap -h>',
                                                epilog=of2orthomap_example,
                                                formatter_class=argparse.RawDescriptionHelpFormatter)

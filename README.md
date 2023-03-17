@@ -93,7 +93,7 @@ from ensembl release-105 have been archived and can be found
 ```python
 >>> from orthomap import datasets, of2orthomap
 >>> datasets.ensembl105(datapath='.')
-... query_orthomap = of2orthomap.get_orthomap(
+>>> query_orthomap = of2orthomap.get_orthomap(
 ...     seqname='Danio_rerio.GRCz11.cds.longest',
 ...     qt='7955',
 ...     sl='ensembl_105_orthofinder_species_list.tsv',
@@ -115,7 +115,7 @@ GTF file obtained from [here](https://ftp.ensembl.org/pub/release-105/gtf/danio_
 >>> query_species_t2g = gtf2t2g.parse_gtf(
 ...     gtf=gtf_file,
 ...     g=True, b=True, p=True, v=True, s=True, q=True)
-... query_species_t2g
+>>> query_species_t2g
 ```
 
 Import now, the scRNA dataset of the query species.
@@ -190,8 +190,36 @@ by any given observation pre-defined in the scRNA dataset.
 
 ## orthomap via Command Line
 
-`orthomap` can also be used via the command line. To retrieve
-the lineage information for `Danio rerio` run the following command:
+`orthomap` can also be used via the command line.
+
+Command line documentation can be found [here](https://orthomap.readthedocs.io/en/latest/modules/orthomap.html).
+
+```shell
+$ orthomap
+```
+
+```
+usage: orthomap <sub-command>
+
+orthomap
+
+optional arguments:
+  -h, --help            show this help message and exit
+
+sub-commands:
+  {cds2aa,gtf2t2g,ncbitax,of2orthomap,qlin}
+                        sub-commands help
+    cds2aa              translate CDS to AA and optional retain longest
+                        isoform <cds2aa -h>
+    gtf2t2g             extracts transcript to gene table from GTF <gtf2t2g
+                        -h>
+    ncbitax             update local ncbi taxonomy database <ncbitax -h>
+    of2orthomap         extract orthomap from OrthoFinder output for query
+                        species <orthomap -h>
+    qlin                get query lineage based on ncbi taxonomy <qlin -h>
+```
+
+To retrieve e.g. the lineage information for `Danio rerio` run the following command:
 
 ```shell
 $ orthomap qlin -q "Danio rerio"

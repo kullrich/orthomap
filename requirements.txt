@@ -10,7 +10,7 @@ harmonypy>=0.0.9
 louvain>=0.8.0
 umap-learn>=0.5.3
 alive-progress
-wget
+wget>=3.2
 biopython
 pytest
 pip

@@ -15,7 +15,7 @@ dependencies:
   - seaborn
   - alive-progress
   - biopython
-  - python-wget
+  - python-wget>=3.2
   - pytest
   - pip
   - pip:
