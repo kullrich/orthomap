@@ -151,6 +151,7 @@ def get_lineage_topo(qt):
     -------
     >>> from orthomap import qlin
     >>> lineage_tree = qlin.get_lineage_topo(qt='10090')
+    >>> lineage_tree
     """
     _, _, _, _, _, qlineagenames, _, _ = get_qlin(qt=qt,
                                                   quiet=True)

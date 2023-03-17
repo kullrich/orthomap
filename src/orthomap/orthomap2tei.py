@@ -93,10 +93,14 @@ def replace_by(x_orig,
 
     Example
     -------
+    >>> from orthomap import orthomap2tei
     >>> geneset1 = ['g1.1', 'g1.2', 'g2.1', 'g3.1', 'g3.2']
     >>> geneset2 = ['g1.1', 'g2.1', 'g3.1', 'g5.1']
     >>> transcriptset2 = ['t1.1', 't2.1', 't3.1', 't5.1']
-    >>> replace_by(x_orig=geneset1, xmatch=geneset2, xreplace=transcriptset2)
+    >>> orthomap2tei.replace_by(
+    >>>     x_orig=geneset1,
+    >>>     xmatch=geneset2,
+    >>>     xreplace=transcriptset2)
     """
     replace_dict = {}
     for i, j in enumerate(xmatch):
@@ -129,12 +133,17 @@ def _keep_min_max(df,
     >>> import pandas as pd
     >>> from orthomap import orthomap2tei
     >>> # create artificial DataFrame
-    >>> my_orthomap = pd.DataFrame.from_dict({'GeneID':['g1', 'g1', 'g2', 'g3', 'g3'],\
-    >>> 'Phylostrata':[3, 1, 2, 5, 7]})
+    >>> my_orthomap = pd.DataFrame.from_dict(
+    >>>     {'GeneID':['g1', 'g1', 'g2', 'g3', 'g3'],
+    >>>     'Phylostrata':[3, 1, 2, 5, 7]})
     >>> # keep min value
-    >>> orthomap2tei._keep_min_max(my_orthomap, keep='min')
+    >>> orthomap2tei._keep_min_max(
+    >>>     df=my_orthomap,
+    >>>     keep='min')
     >>> # keep max value
-    >>> orthomap2tei._keep_min_max(my_orthomap, keep='max')
+    >>> orthomap2tei._keep_min_max(
+    >>>     df=my_orthomap,
+    >>>     keep='max')
     """
     df_sorted = None
     if keep == 'min':
@@ -174,8 +183,10 @@ def _split_gene_id_by_gene_age(gene_id,
     >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
     >>> # load query species orthomap
     >>> query_orthomap = orthomap2tei.read_orthomap(orthomapfile=sun21_orthomap_file)
-    >>> orthomap2tei._split_gene_id_by_gene_age(gene_id=query_orthomap['GeneID'],\
-    >>> gene_age=query_orthomap['Phylostrata'], keep='min')
+    >>> orthomap2tei._split_gene_id_by_gene_age(
+    >>>     gene_id=query_orthomap['GeneID'],
+    >>>     gene_age=query_orthomap['Phylostrata'],
+    >>>     keep='min')
     """
     id_age_df = pd.DataFrame(data={'GeneID': gene_id,
                                    'Phylostrata': gene_age})
@@ -228,6 +239,7 @@ def _get_counts(adata,
     >>> # download and load scRNA data
     >>> #packer19_small = sc.read('packer19_small.h5ad')
     >>> packer19_small = datasets.packer19_small(datapath='.')
+    >>> orthomap2tei._get_counts(adata=packer19_small)
     """
     adata_counts = adata.X
     if layer is not None:
@@ -304,11 +316,17 @@ def _get_psd(adata,
     >>> #packer19_small = sc.read('packer19_small.h5ad')
     >>> packer19_small = datasets.packer19_small(datapath='.')
     >>> # get psd from existing adata object
-    >>> celegans_var_names_df, celegans_id_age_df_keep_subset, celegans_adata_counts, celegans_var_names_subset,\
-    >>> celegans_sumx, celegans_sumx_recd, celegans_ps, celegans_psd =\
-    >>> orthomap2tei._get_psd(adata=packer19_small,\
-    >>> gene_id=query_orthomap['GeneID'],\
-    >>> gene_age=query_orthomap['Phylostratum'])
+    >>> celegans_var_names_df,
+    >>>     celegans_id_age_df_keep_subset,
+    >>>     celegans_adata_counts,
+    >>>     celegans_var_names_subset,
+    >>>     celegans_sumx,
+    >>>     celegans_sumx_recd,
+    >>>     celegans_ps,
+    >>>     celegans_psd = orthomap2tei._get_psd(
+    >>>     adata=packer19_small,
+    >>>     gene_id=query_orthomap['GeneID'],
+    >>>     gene_age=query_orthomap['Phylostratum'])
     """
     id_age_df = pd.DataFrame(data={'GeneID': gene_id,
                                    'Phylostrata': gene_age})
@@ -388,9 +406,10 @@ def add_gene_age2adata_var(adata,
     >>> #packer19_small = sc.read('packer19_small.h5ad')
     >>> packer19_small = datasets.packer19_small(datapath='.')
     >>> # add gene age values to existing adata object
-    >>> orthomap2tei.add_gene_age2adata_var(adata=packer19_small,\
-    >>> gene_id=query_orthomap['GeneID'],\
-    >>> gene_age=query_orthomap['Phylostratum'])
+    >>> orthomap2tei.add_gene_age2adata_var(
+    >>>     adata=packer19_small,
+    >>>     gene_id=query_orthomap['GeneID'],
+    >>>     gene_age=query_orthomap['Phylostratum'])
     >>> packer19_small.var
     """
     id_age_df = pd.DataFrame(data={'GeneID': gene_id,
@@ -490,36 +509,44 @@ def get_tei(adata,
     >>> #packer19_small = sc.read('packer19_small.h5ad')
     >>> packer19_small = datasets.packer19_small(datapath='.')
     >>> # add TEI values to existing adata object
-    >>> orthomap2tei.get_tei(adata=packer19_small,\
-    >>> gene_id=query_orthomap['GeneID'],\
-    >>> gene_age=query_orthomap['Phylostratum'],\
-    >>> add_var=True,\
-    >>> add_obs=True)
+    >>> orthomap2tei.get_tei(
+    >>>     adata=packer19_small,
+    >>>     gene_id=query_orthomap['GeneID'],
+    >>>     gene_age=query_orthomap['Phylostratum'],
+    >>>     add_var=True,
+    >>>     add_obs=True)
     >>> # plot tei boxplot grouped by embryo.time.bin observation
-    >>> sns.boxplot(x='embryo.time.bin', y='tei', data=packer19_small.obs)
+    >>> sns.boxplot(
+    >>>     x='embryo.time.bin',
+    >>>     y='tei',
+    >>>     data=packer19_small.obs)
     >>> plt.show()
     >>> # plot tei violinplot for each cell.type grouped by cell.type and embryo.time.bin observation
     >>> # create new observation as a combination from embryo.time.bin and cell.type
-    >>> packer19_small.obs['etb_cell.type'] = packer19_small.obs[['embryo.time.bin', 'cell.type']]\
-    >>> .apply(lambda x: str(x[0]) + '_' + x[1], axis=1)
+    >>> packer19_small.obs['etb_cell.type'] = packer19_small.obs[['embryo.time.bin', 'cell.type']].apply(
+    >>>     lambda x: str(x[0]) + '_' + x[1], axis=1)
     >>> # convert into category
     >>> packer19_small.obs['etb_cell.type'] = packer19_small.obs['etb_cell.type'].astype('category')
     >>> # reorder categories
-    >>> packer19_small.obs['etb_cell.type'] = packer19_small.obs['etb_cell.type'].cat\
-    >>> .reorder_categories(list(packer19_small.obs['etb_cell.type']\
-    >>> .value_counts().index[np.argsort([int(x.split('_')[0]) for x in\
-    >>> list(packer19_small.obs['etb_cell.type'].value_counts().index)])]))
+    >>> packer19_small.obs['etb_cell.type'] = packer19_small.obs['etb_cell.type'].cat
+    >>>     .reorder_categories(list(packer19_small.obs['etb_cell.type']
+    >>>     .value_counts().index[np.argsort([int(x.split('_')[0]) for x in
+    >>>     list(packer19_small.obs['etb_cell.type'].value_counts().index)])]))
     >>> for c in packer19_small.obs['cell.type'].value_counts().index:
-    >>>    plt.figure()
-    >>>    sns.violinplot(x=packer19_small.obs[packer19_small.obs['cell.type'].isin([c])]\
-    >>>    ['etb_cell.type'].cat.remove_unused_categories(),\
-    >>>    y='tei', data=packer19_small.obs[packer19_small.obs['cell.type'].isin([c])])
+    >>>     plt.figure()
+    >>>     sns.violinplot(
+    >>>     x=packer19_small.obs[packer19_small.obs['cell.type'].isin([c])]['etb_cell.type'].cat
+    >>>     .remove_unused_categories(),
+    >>>     y='tei',
+    >>>     data=packer19_small.obs[packer19_small.obs['cell.type'].isin([c])])
     >>> plt.show()
     >>> # get 10 bootstrap TEI values
-    >>> orthomap2tei.get_tei(adata=packer19_small,\
-    >>> gene_id=query_orthomap['GeneID'],\
-    >>> gene_age=query_orthomap['Phylostratum'],\
-    >>> boot=True, bt=10)
+    >>> orthomap2tei.get_tei(
+    >>>     adata=packer19_small,
+    >>>     gene_id=query_orthomap['GeneID'],
+    >>>     gene_age=query_orthomap['Phylostratum'],
+    >>>     boot=True,
+    >>>     bt=10)
     """
     var_names_df,\
         id_age_df_keep_subset,\
@@ -625,9 +652,10 @@ def get_pmatrix(adata,
     >>> #packer19_small = sc.read('packer19_small.h5ad')
     >>> packer19_small = datasets.packer19_small(datapath='.')
     >>> # get pmatrix as new adata object
-    >>> packer19_small_pmatrix = orthomap2tei.get_pmatrix(adata=packer19_small,\
-    >>> gene_id=query_orthomap['GeneID'],\
-    >>> gene_age=query_orthomap['Phylostratum'])
+    >>> packer19_small_pmatrix = orthomap2tei.get_pmatrix(
+    >>>     adata=packer19_small,
+    >>>     gene_id=query_orthomap['GeneID'],
+    >>>     gene_age=query_orthomap['Phylostratum'])
     """
     var_names_df,\
         id_age_df_keep_subset,\
@@ -744,19 +772,22 @@ def get_pstrata(adata,
     >>> #packer19_small = sc.read('packer19_small.h5ad')
     >>> packer19_small = datasets.packer19_small(datapath='.')
     >>> # get pstrata
-    >>> packer19_small_pstrata = orthomap2tei.get_pstrata(adata=packer19_small,\
-    >>> gene_id=query_orthomap['GeneID'],\
-    >>> gene_age=query_orthomap['Phylostratum'])
+    >>> packer19_small_pstrata = orthomap2tei.get_pstrata(
+    >>>     adata=packer19_small,
+    >>>     gene_id=query_orthomap['GeneID'],
+    >>>     gene_age=query_orthomap['Phylostratum'])
     >>> # get cumsum over strata
-    >>> packer19_small_pstrata_cumsum = orthomap2tei.get_pstrata(adata=packer19_small,\
-    >>> gene_id=query_orthomap['GeneID'],\
-    >>> gene_age=query_orthomap['Phylostratum'],\
-    >>> cumsum=True)
+    >>> packer19_small_pstrata_cumsum = orthomap2tei.get_pstrata(
+    >>>     adata=packer19_small,
+    >>>     gene_id=query_orthomap['GeneID'],
+    >>>     gene_age=query_orthomap['Phylostratum'],
+    >>>     cumsum=True)
     >>> # group by embryo.time.bin observation
-    >>> packer19_small_pstrata_grouped = orthomap2tei.get_pstrata(adata=packer19_small,\
-    >>> gene_id=query_orthomap['GeneID'],\
-    >>> gene_age=query_orthomap['Phylostratum'],\
-    >>> group_by_obs='embryo.time.bin')
+    >>> packer19_small_pstrata_grouped = orthomap2tei.get_pstrata(
+    >>>     adata=packer19_small,
+    >>>     gene_id=query_orthomap['GeneID'],
+    >>>     gene_age=query_orthomap['Phylostratum'],
+    >>>     group_by_obs='embryo.time.bin')
     >>> # plot heatmap using partial TEI values
     >>> sns.heatmap(packer19_small_pstrata_grouped[0], cmap='viridis')
     >>> plt.show()
@@ -862,8 +893,9 @@ def _min_max_to_01(ndarray):
     Example
     -------
     >>> import numpy as np
+    >>> from orthomap import orthomap2tei
     >>> random_array = np.random.rand(10)
-    >>> min_max_to_01(random_array)
+    >>> orthomap2tei._min_max_to_01(random_array)
     """
     ndarray_min = np.min(ndarray)
     ndarray_max = np.max(ndarray)
@@ -968,14 +1000,20 @@ def get_ematrix(adata,
     >>> #packer19_small = sc.read('packer19_small.h5ad')
     >>> packer19_small = datasets.packer19_small(datapath='.')
     >>> # add gene age values to existing adata object
-    >>> orthomap2tei.add_gene_age2adata_var(adata=packer19_small,\
-    >>> gene_id=query_orthomap['GeneID'],\
-    >>> gene_age=query_orthomap['Phylostratum'])
-    >>> packer19_small_ematrix_grouped = get_ematrix(\
-    >>> adata=packer19_small, group_by_var='Phylostrata', group_by_obs='cell.type')
+    >>> orthomap2tei.add_gene_age2adata_var(
+    >>>     adata=packer19_small,
+    >>>     gene_id=query_orthomap['GeneID'],
+    >>>     gene_age=query_orthomap['Phylostratum'])
+    >>> packer19_small_ematrix_grouped = get_ematrix(
+    >>>     adata=packer19_small,
+    >>>     group_by_var='Phylostrata',
+    >>>     group_by_obs='cell.type')
     >>> # normalize counts
-    >>> packer19_small_ematrix_grouped = get_ematrix(\
-    >>> adata=packer19_small, group_by_var='Phylostrata', group_by_obs='cell.type', normalize_total=True)
+    >>> packer19_small_ematrix_grouped = get_ematrix(
+    >>>     adata=packer19_small,
+    >>>     group_by_var='Phylostrata',
+    >>>     group_by_obs='cell.type',
+    >>>     normalize_total=True)
     >>> sns.heatmap(packer19_small_ematrix_grouped, annot=True, cmap='viridis')
     """
     adata_counts = _get_counts(adata=adata,
@@ -1143,32 +1181,36 @@ def get_rematrix(adata,
     >>> #packer19_small = sc.read('packer19_small.h5ad')
     >>> packer19_small = datasets.packer19_small(datapath='.')
     >>> # get rematrix
-    >>> packer19_small_rematrix = orthomap2tei.get_rematrix(adata=packer19_small,\
-    >>> gene_id=query_orthomap['GeneID'],\
-    >>> gene_age=query_orthomap['Phylostratum'])
+    >>> packer19_small_rematrix = orthomap2tei.get_rematrix(
+    >>>     adata=packer19_small,
+    >>>     gene_id=query_orthomap['GeneID'],
+    >>>     gene_age=query_orthomap['Phylostratum'])
     >>> # group by embryo.time.bin observation
-    >>> packer19_small_rematrix_grouped = orthomap2tei.get_rematrix(adata=packer19_small,\
-    >>> gene_id=query_orthomap['GeneID'],\
-    >>> gene_age=query_orthomap['Phylostratum'],\
-    >>> group_by_obs='embryo.time.bin')
+    >>> packer19_small_rematrix_grouped = orthomap2tei.get_rematrix(
+    >>>     adata=packer19_small,
+    >>>     gene_id=query_orthomap['GeneID'],
+    >>>     gene_age=query_orthomap['Phylostratum'],
+    >>>     group_by_obs='embryo.time.bin')
     >>> # plot heatmap using partial TEI values
     >>> sns.heatmap(packer19_small_rematrix_grouped, cmap='viridis')
     >>> plt.show()
     >>> # group by embryo.time.bin observation and scale over rows
-    >>> packer19_small_rematrix_grouped_rows = orthomap2tei.get_rematrix(adata=packer19_small,\
-    >>> gene_id=query_orthomap['GeneID'],\
-    >>> gene_age=query_orthomap['Phylostratum'],\
-    >>> group_by_obs='embryo.time.bin',\
-    >>> standard_scale=0)
+    >>> packer19_small_rematrix_grouped_rows = orthomap2tei.get_rematrix(
+    >>>     adata=packer19_small,
+    >>>     gene_id=query_orthomap['GeneID'],
+    >>>     gene_age=query_orthomap['Phylostratum'],
+    >>>     group_by_obs='embryo.time.bin',
+    >>>     standard_scale=0)
     >>> # plot heatmap using partial TEI values
     >>> sns.heatmap(packer19_small_rematrix_grouped_rows, cmap='viridis')
     >>> plt.show()
     >>> # group by embryo.time.bin observation and scale over columns
-    >>> packer19_small_rematrix_grouped_columns = orthomap2tei.get_rematrix(adata=packer19_small,\
-    >>> gene_id=query_orthomap['GeneID'],\
-    >>> gene_age=query_orthomap['Phylostratum'],\
-    >>> group_by_obs='embryo.time.bin',\
-    >>> standard_scale=1)
+    >>> packer19_small_rematrix_grouped_columns = orthomap2tei.get_rematrix(
+    >>>     adata=packer19_small,
+    >>>     gene_id=query_orthomap['GeneID'],
+    >>>     gene_age=query_orthomap['Phylostratum'],
+    >>>     group_by_obs='embryo.time.bin',
+    >>>     standard_scale=1)
     >>> # plot heatmap using partial TEI values
     >>> sns.heatmap(packer19_small_rematrix_grouped_columns, cmap='viridis')
     >>> plt.show()
@@ -1291,6 +1333,13 @@ def _get_min_max_array(ndarray,
     :type min_expr: float
     :type max_expr: float
     :rtype: numpy.ndarray
+
+    Example
+    -------
+    >>> import numpy as np
+    >>> from orthomap import orthomap2tei
+    >>> data = np.array([0, 0, 1, 1, 4, 3, 7, 0, 10, 12])
+    >>> orthomap2tei._get_min_max_array(ndarray=data, min_expr=1, max_expr=10)
     """
     if min_expr is not None and max_expr is not None:
         return ndarray[np.where(np.logical_and(ndarray >= min_expr,
@@ -1345,6 +1394,10 @@ def get_group_counts(adata,
     :type log1p: bool
     :type target_sum: float
     :rtype: dictionary
+
+    Example
+    -------
+    >>>
     """
     group_counts_dict = {}
     adata_counts = _get_counts(adata=adata,
