@@ -42,7 +42,7 @@ def define_parser():
         usage='%(prog)s [options] [<arguments>...]',
         description='translate CDS to AA and optional retain longest isoform',
         epilog=cds2aa_example,
-        formatter_class=argparse.RawDescriptionHelpFormatter, )
+        formatter_class=argparse.RawDescriptionHelpFormatter)
     add_argparse_args(parser=parser)
     return parser
 
@@ -111,7 +111,8 @@ def get_gene(description,
     """
     gene = None
     if source == 'NCBI':
-        gene = description.split('[gene=')[1].split(' ')[0].replace(']', '')
+        gene = description.split('[gene=')[1].split(' ')[0].replace(']',
+                                                                    '')
     if source == 'ENSEMBL':
         gene = description.split('gene:')[1].split(' ')[0]
     if source == 'WORMBASE':
@@ -134,12 +135,15 @@ def get_gene_len_dict(record_iter,
     """
     record_dict = {}
     for record in record_iter:
-        gene = get_gene(record.description, source)
+        gene = get_gene(record.description,
+                        source)
         if gene in record_dict:
             if record_dict[gene][0] < len(record):
-                record_dict[gene] = [len(record), record]
+                record_dict[gene] = [len(record),
+                                     record]
         if gene not in record_dict:
-            record_dict[gene] = [len(record), record]
+            record_dict[gene] = [len(record),
+                                 record]
     return record_dict
 
 
@@ -160,7 +164,9 @@ def cds2aa_record(record_iter,
     :rtype: Bio.SeqIO.SeqRecord
     """
     for record in record_iter:
-        aa = SeqIO.SeqRecord(record.seq.translate(transtable[args.t]), name=record.name, id=record.name,
+        aa = SeqIO.SeqRecord(record.seq.translate(transtable[args.t]),
+                             name=record.name,
+                             id=record.name,
                              description=record.name)
         yield aa
 
@@ -183,17 +189,25 @@ def cds2aa_fasta(args,
         parser.print_help()
         sys.exit('\nPlease provide STDIN or input file')
     if args.i is None and not sys.stdin.isatty():
-        record_iter = SeqIO.parse(sys.stdin, "fasta")
+        record_iter = SeqIO.parse(sys.stdin,
+                                  "fasta")
     else:
-        record_iter = SeqIO.parse(args.i, "fasta")
+        record_iter = SeqIO.parse(args.i,
+                                  "fasta")
     if args.r:
-        record_gene_len_dict = get_gene_len_dict(record_iter, args.r)
+        record_gene_len_dict = get_gene_len_dict(record_iter,
+                                                 args.r)
         record_iter = iter([x[1] for x in record_gene_len_dict.values()])
-    cds2aa_iter = cds2aa_record(record_iter, args)
+    cds2aa_iter = cds2aa_record(record_iter,
+                                args)
     if args.o is None:
-        SeqIO.write(cds2aa_iter, sys.stdout, "fasta")
+        SeqIO.write(cds2aa_iter,
+                    sys.stdout,
+                    "fasta")
     else:
-        count = SeqIO.write(cds2aa_iter, args.o, "fasta")
+        count = SeqIO.write(cds2aa_iter,
+                            args.o,
+                            "fasta")
         print("translated %i sequences" % count)
 
 
@@ -207,7 +221,8 @@ def main():
         sys.stderr.write(str(args))
     else:
         print(args)
-    cds2aa_fasta(args, parser)
+    cds2aa_fasta(args,
+                 parser)
 
 
 if __name__ == '__main__':

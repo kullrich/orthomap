@@ -24,9 +24,12 @@ def define_parser():
 
     :rtype: argparse.ArgumentParser
     """
-    parser = argparse.ArgumentParser(prog='orthomap', usage='%(prog)s <sub-command>',
+    parser = argparse.ArgumentParser(prog='orthomap',
+                                     usage='%(prog)s <sub-command>',
                                      description='orthomap')
-    subparsers = parser.add_subparsers(dest='subcommand', title='sub-commands', help='sub-commands help')
+    subparsers = parser.add_subparsers(dest='subcommand',
+                                       title='sub-commands',
+                                       help='sub-commands help')
     cds2aa_example = '''cds2aa example:
 
     # to get CDS from Danio rerio on Linux run:
@@ -121,7 +124,8 @@ def main():
             sys.stderr.write(str(args))
         else:
             print(args)
-        cds2aa.cds2aa_fasta(args, parser)
+        cds2aa.cds2aa_fasta(args,
+                            parser)
     if args.subcommand == 'gtf2t2g':
         print(args)
         if not args.i:
@@ -132,10 +136,18 @@ def main():
             if os.path.exists(args.o) and not args.overwrite:
                 print('\nError <-overwrite>: output file exists, please set to True if it should be overwritten\n')
                 sys.exit()
-            output = open(args.o, 'w')
+            output = open(args.o,
+                          'w')
         else:
             output = sys.stdout
-        gtf2t2g.parse_gtf(gtf=args.i, g=args.g, b=args.b, p=args.p, v=args.v, s=args.s, output=output, q=args.q)
+        gtf2t2g.parse_gtf(gtf=args.i,
+                          g=args.g,
+                          b=args.b,
+                          p=args.p,
+                          v=args.v,
+                          s=args.s,
+                          output=output,
+                          q=args.q)
         output.close()
     if args.subcommand == 'ncbitax':
         print(args)
@@ -167,8 +179,15 @@ def main():
             parser.print_help()
             print('\nError <-og>: Please specify orthofinder <Orthogroups.tsv> (see Orthogroups directory)')
             sys.exit()
-        of2orthomap.get_orthomap(seqname=args.seqname, qt=args.qt, sl=args.sl, oc=args.oc, og=args.og, out=args.out,
-                                 quiet=False, continuity=True, overwrite=args.overwrite)
+        of2orthomap.get_orthomap(seqname=args.seqname,
+                                 qt=args.qt,
+                                 sl=args.sl,
+                                 oc=args.oc,
+                                 og=args.og,
+                                 out=args.out,
+                                 quiet=False,
+                                 continuity=True,
+                                 overwrite=args.overwrite)
     if args.subcommand == 'qlin':
         print(args)
         if not args.q and not args.qt:
@@ -179,7 +198,9 @@ def main():
             parser.print_help()
             print('\nWarning: Since both query species name and taxid are given taxid is used')
             sys.exit()
-        qlin.get_qlin(q=args.q, qt=args.qt, quiet=False)
+        qlin.get_qlin(q=args.q,
+                      qt=args.qt,
+                      quiet=False)
 
 
 if __name__ == '__main__':
