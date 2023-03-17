@@ -118,12 +118,11 @@ def get_orthomap(seqname,
     -------
     >>> from orthomap import datasets, of2orthomap, qlin
     >>> datasets.ensembl105(datapath='.')
-    >>> query_orthomap = of2orthomap.get_orthomap(
-    >>>     seqname='Danio_rerio.GRCz11.cds.longest',
-    >>>     qt='7955',
-    >>>     sl='ensembl_105_orthofinder_species_list.tsv',
-    >>>     oc='ensembl_105_orthofinder_Orthogroups.GeneCount.tsv',
-    >>>     og='ensembl_105_orthofinder_Orthogroups.tsv',
+    >>> query_orthomap = of2orthomap.get_orthomap(seqname='Danio_rerio.GRCz11.cds.longest',\
+    >>>     qt='7955',\
+    >>>     sl='ensembl_105_orthofinder_species_list.tsv',\
+    >>>     oc='ensembl_105_orthofinder_Orthogroups.GeneCount.tsv',\
+    >>>     og='ensembl_105_orthofinder_Orthogroups.tsv',\
     >>>     out=None, quiet=False, continuity=True, overwrite=True)
     >>> query_orthomap
     """
@@ -306,16 +305,15 @@ def get_counts_per_ps(omap_df,
     -------
     >>> from orthomap import datasets, of2orthomap, qlin
     >>> datasets.ensembl105(datapath='.')
-    >>> query_orthomap = of2orthomap.get_orthomap(
-    >>>     seqname='Danio_rerio.GRCz11.cds.longest',
-    >>>     qt='7955',
-    >>>     sl='ensembl_105_orthofinder_species_list.tsv',
-    >>>     oc='ensembl_105_orthofinder_Orthogroups.GeneCount.tsv',
-    >>>     og='ensembl_105_orthofinder_Orthogroups.tsv',
+    >>> query_orthomap = of2orthomap.get_orthomap(seqname='Danio_rerio.GRCz11.cds.longest',\
+    >>>     qt='7955',\
+    >>>     sl='ensembl_105_orthofinder_species_list.tsv',\
+    >>>     oc='ensembl_105_orthofinder_Orthogroups.GeneCount.tsv',\
+    >>>     og='ensembl_105_orthofinder_Orthogroups.tsv',\
     >>>     out=None, quiet=False, continuity=True, overwrite=True)
-    >>> of2orthomap.get_counts_per_ps(omap_df=query_orthomap[0],
-    >>>     psnum_col='PSnum',
-    >>>     pstaxid_col='PStaxID',
+    >>> of2orthomap.get_counts_per_ps(omap_df=query_orthomap[0],\
+    >>>     psnum_col='PSnum',\
+    >>>     pstaxid_col='PStaxID',\
     >>>     psname_col='PSname')
     """
     counts_df = pd.DataFrame(omap_df.value_counts(psnum_col))

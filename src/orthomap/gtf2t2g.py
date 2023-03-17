@@ -164,8 +164,7 @@ def parse_gtf(gtf,
     >>> # get gene to transcript table for Danio rerio
     >>> # https://ftp.ensembl.org/pub/release-105/gtf/danio_rerio/Danio_rerio.GRCz11.105.gtf.gz
     >>> gtf_file = datasets.zebrafish_gtf(datapath='.')
-    >>> query_species_t2g = gtf2t2g.parse_gtf(
-    >>>     gtf=gtf_file,
+    >>> query_species_t2g = gtf2t2g.parse_gtf(gtf=gtf_file,\
     >>>     g=True, b=True, p=True, v=True, s=True, q=True)
     >>> query_species_t2g
     """
