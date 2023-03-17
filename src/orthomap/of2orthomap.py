@@ -58,17 +58,25 @@ def add_argparse_args(parser: argparse.ArgumentParser):
 
     :type parser: argparse.ArgumentParser
     """
-    parser.add_argument('-seqname', help='sequence name of the query species in OrthoFinder'
-                                         '(see column names of  <Orthogroups.tsv>)')
-    parser.add_argument('-qt', help='query species taxID (e.g. use <orthomap qlin -h> to get taxID)')
-    parser.add_argument('-sl', help='species list as <OrthoFinder name><tab><species taxID> '
-                                    '(only samples in this list will be processed)')
-    parser.add_argument('-oc', help='specify OrthoFinder <Orthogroups.GeneCounts.tsv> (see Orthogroups directory)')
-    parser.add_argument('-og', help='specify OrthoFinder <Orthogroups.tsv> (see Orthogroups directory)')
-    parser.add_argument('-out', help='specify output file <orthomap.tsv> (default: orthomap.tsv)',
+    parser.add_argument('-seqname',
+                        help='sequence name of the query species in OrthoFinder '
+                             '(see column names of  <Orthogroups.tsv>)')
+    parser.add_argument('-qt',
+                        help='query species taxID (e.g. use <orthomap qlin -h> to get taxID)')
+    parser.add_argument('-sl',
+                        help='species list as <OrthoFinder name><tab><species taxID> '
+                             '(only samples in this list will be processed)')
+    parser.add_argument('-oc',
+                        help='specify OrthoFinder <Orthogroups.GeneCounts.tsv> (see Orthogroups directory)')
+    parser.add_argument('-og',
+                        help='specify OrthoFinder <Orthogroups.tsv> (see Orthogroups directory)')
+    parser.add_argument('-out',
+                        help='specify output file <orthomap.tsv> (default: orthomap.tsv)',
                         default='orthomap.tsv')
-    parser.add_argument('-overwrite', help='specify if existing output file should be overwritten (default: True)',
-                        default=True, type=bool)
+    parser.add_argument('-overwrite',
+                        help='specify if existing output file should be overwritten (default: True)',
+                        default=True,
+                        type=bool)
 
 
 def get_orthomap(seqname,
@@ -122,12 +130,20 @@ def get_orthomap(seqname,
     outhandle = None
     og_continuity_score = None
     ncbi = NCBITaxa()
-    qname, qtid, qlineage, qlineagenames_dict, qlineagezip, qlineagenames, qlineagerev, qk = \
-        qlin.get_qlin(qt=qt, quiet=True)
+    qname, \
+        qtid, \
+        qlineage, \
+        qlineagenames_dict, \
+        qlineagezip, \
+        qlineagenames, \
+        qlineagerev, \
+        qk = qlin.get_qlin(qt=qt,
+                           quiet=True)
     query_lineage_topo = qlin.get_lineage_topo(qt)
     species_list = pd.read_csv(sl, sep='\t', header=None)
     species_list.columns = ['species', 'taxID']
-    species_list['lineage'] = species_list.apply(lambda x: ncbi.get_lineage(x[1]), axis=1)
+    species_list['lineage'] = species_list.apply(lambda x: ncbi.get_lineage(x[1]),
+                                                 axis=1)
     species_list['youngest_common'] = [qlin.get_youngest_common(qlineage, x) for x in species_list.lineage]
     species_list['youngest_name'] = [list(x.values())[0] for x in [ncbi.get_taxid_translator([x])
                                                                    for x in list(species_list.youngest_common)]]
@@ -136,7 +152,8 @@ def get_orthomap(seqname,
         print(qname)
         print(qt)
         print(species_list)
-    youngest_common_counts_df = get_youngest_common_counts(qlineage, species_list)
+    youngest_common_counts_df = get_youngest_common_counts(qlineage,
+                                                           species_list)
     for node in query_lineage_topo.traverse('postorder'):
         nsplit = node.name.split('/')
         if len(nsplit) == 3:
@@ -149,7 +166,8 @@ def get_orthomap(seqname,
         oc_zip = zipfile.Path(oc, at='.'.join(os.path.basename(oc).split('.')[:-1]))
         oc_lines = oc_zip.open()
     else:
-        oc_lines = open(oc, 'r')
+        oc_lines = open(oc,
+                        'r')
     oc_species = next(oc_lines)
     if type(oc_species) == bytes:
         oc_species = oc_species.decode('utf-8').strip().split('\t')
@@ -176,11 +194,14 @@ def get_orthomap(seqname,
             # evaluate all youngest common nodes to retain the oldest of them and assign as the orthogroup
             # ancestral state (gene age)
             if len(oc_og_hits_youngest_common) > 0:
-                oc_og_oldest_common = qlin.get_oldest_common(qlineage, oc_og_hits_youngest_common)
+                oc_og_oldest_common = qlin.get_oldest_common(qlineage,
+                                                             oc_og_hits_youngest_common)
                 oc_og_dict[oc_og[0]] = oc_og_oldest_common
                 if continuity:
                     continuity_dict[oc_og[0]] = get_youngest_common_counts(
-                        qlineage, pd.DataFrame(oc_og_hits_youngest_common, columns=['youngest_common'])).counts
+                        qlineage,
+                        pd.DataFrame(oc_og_hits_youngest_common,
+                                     columns=['youngest_common'])).counts
     oc_lines.close()
     if continuity:
         youngest_common_counts_df = youngest_common_counts_df.join(pd.DataFrame.from_dict(continuity_dict))
@@ -189,16 +210,19 @@ def get_orthomap(seqname,
         if os.path.exists(out) and not overwrite:
             print('\nError <-overwrite>: output file exists, please set to True if it should be overwritten\n')
             sys.exit()
-        outhandle = open(out, 'w')
+        outhandle = open(out,
+                         'w')
         if continuity:
             outhandle.write('seqID\tOrthogroup\tPSnum\tPStaxID\tPSname\tPScontinuity\n')
         else:
             outhandle.write('seqID\tOrthogroup\tPSnum\tPStaxID\tPSname\n')
     if os.path.basename(og).split('.')[-1] == 'zip':
-        og_zip = zipfile.Path(og, at='.'.join(os.path.basename(og).split('.')[:-1]))
+        og_zip = zipfile.Path(og,
+                              at='.'.join(os.path.basename(og).split('.')[:-1]))
         og_lines = og_zip.open()
     else:
-        og_lines = open(og, 'r')
+        og_lines = open(og,
+                        'r')
     og_species = next(og_lines)
     if type(og_species) == bytes:
         og_species = og_species.decode('utf-8').strip().split('\t')
@@ -221,7 +245,8 @@ def get_orthomap(seqname,
                                   str(oc_og_dict[og_og[0]])].values.tolist()[0]
             og_ps_join = '\t'.join(og_ps)
             if continuity:
-                og_continuity_score = get_continuity_score(og_og[0], youngest_common_counts_df)
+                og_continuity_score = get_continuity_score(og_name=og_og[0],
+                                                           youngest_common_counts_df=youngest_common_counts_df)
             if out:
                 if continuity:
                     [outhandle.write(x.replace(' ', '') + '\t' + og_og[0] + '\t' + og_ps_join + '\t' +
@@ -240,11 +265,22 @@ def get_orthomap(seqname,
         outhandle.close()
     omap_df = pd.DataFrame(omap)
     if continuity:
-        omap_df.columns = ['seqID', 'Orthogroup', 'PSnum', 'PStaxID', 'PSname', 'PScontinuity']
+        omap_df.columns = ['seqID',
+                           'Orthogroup',
+                           'PSnum',
+                           'PStaxID',
+                           'PSname',
+                           'PScontinuity']
     else:
-        omap_df.columns = ['seqID', 'Orthogroup', 'PSnum', 'PStaxID', 'PSname']
+        omap_df.columns = ['seqID',
+                           'Orthogroup',
+                           'PSnum',
+                           'PStaxID',
+                           'PSname']
     omap_df['PSnum'] = [int(x) for x in list(omap_df['PSnum'])]
-    return [omap_df, species_list, youngest_common_counts_df]
+    return [omap_df,
+            species_list,
+            youngest_common_counts_df]
 
 
 def get_counts_per_ps(omap_df,
@@ -277,7 +313,7 @@ def get_counts_per_ps(omap_df,
     >>>     oc='ensembl_105_orthofinder_Orthogroups.GeneCount.tsv',
     >>>     og='ensembl_105_orthofinder_Orthogroups.tsv',
     >>>     out=None, quiet=False, continuity=True, overwrite=True)
-    >>> of2orthomap.get_counts_per_ps(query_orthomap[0],
+    >>> of2orthomap.get_counts_per_ps(omap_df=query_orthomap[0],
     >>>     psnum_col='PSnum',
     >>>     pstaxid_col='PStaxID',
     >>>     psname_col='PSname')
@@ -286,10 +322,16 @@ def get_counts_per_ps(omap_df,
     counts_df.columns = ['counts']
     counts_df.reset_index(inplace=True)
     if pstaxid_col:
-        counts_df = counts_df.merge(omap_df[~omap_df.duplicated(psnum_col)][[psnum_col, pstaxid_col]], on=psnum_col)
+        counts_df = counts_df.merge(omap_df[~omap_df.duplicated(psnum_col)][[psnum_col,
+                                                                             pstaxid_col]],
+                                    on=psnum_col)
     if psname_col:
-        counts_df = counts_df.merge(omap_df[~omap_df.duplicated(psnum_col)][[psnum_col, psname_col]], on=psnum_col)
-    counts_df.set_index(psnum_col, inplace=True, drop=False)
+        counts_df = counts_df.merge(omap_df[~omap_df.duplicated(psnum_col)][[psnum_col,
+                                                                             psname_col]],
+                                    on=psnum_col)
+    counts_df.set_index(psnum_col,
+                        inplace=True,
+                        drop=False)
     counts_df = counts_df.sort_index()
     return counts_df
 
@@ -312,9 +354,14 @@ def get_youngest_common_counts(qlineage,
     >>> from orthomap import datasets, of2orthomap, qlin
     >>> datasets.ensembl105(datapath='.')
     """
-    counts_df = pd.DataFrame(qlineage, columns=['lineage'])
-    counts_df.set_index('lineage', inplace=True)
-    counts_df = pd.concat([counts_df, species_list['youngest_common'].value_counts()], join='outer', axis=1)
+    counts_df = pd.DataFrame(qlineage,
+                             columns=['lineage'])
+    counts_df.set_index('lineage',
+                        inplace=True)
+    counts_df = pd.concat([counts_df,
+                           species_list['youngest_common'].value_counts()],
+                          join='outer',
+                          axis=1)
     counts_df.columns = ['counts']
     counts_df['PStaxID'] = counts_df.index.values
     counts_df['PSnum'] = list(range(len(counts_df['PStaxID'])))
@@ -377,8 +424,15 @@ def main():
         parser.print_help()
         print('\nError <-og>: Please specify OrthoFinder <Orthogroups.tsv> (see Orthogroups directory)')
         sys.exit()
-    get_orthomap(seqname=args.seqname, qt=args.qt, sl=args.sl, oc=args.oc, og=args.og, out=args.out, quiet=False,
-                 continuity=True, overwrite=args.overwrite)
+    get_orthomap(seqname=args.seqname,
+                 qt=args.qt,
+                 sl=args.sl,
+                 oc=args.oc,
+                 og=args.og,
+                 out=args.out,
+                 quiet=False,
+                 continuity=True,
+                 overwrite=args.overwrite)
 
 
 if __name__ == '__main__':
