@@ -878,10 +878,10 @@ def get_ematrix(adata,
                 layer=None,
                 group_by_var=None,
                 var_type='mean',
-                var_fillna='NaN',
+                var_fillna='__NaN',
                 group_by_obs=None,
                 obs_type='mean',
-                obs_fillna='NaN',
+                obs_fillna='__NaN',
                 standard_scale=None,
                 normalize_total=False,
                 log1p=False,
@@ -992,8 +992,8 @@ def get_ematrix(adata,
                                                     .isin([var_group])].mean(1)).flatten()
             if var_type == 'median':
                 ematrix[var_group_idx, ] = np.apply_along_axis(
-                    np.median, 1, adata_counts[:, adata.var[group_by_var].fillna(var_fillna)
-                                                  .isin([var_group])].toarray()).flatten()
+                    np.median, 1, adata_counts[:, adata.var[group_by_var].fillna(var_fillna).isin([var_group])]
+                    .toarray()).flatten()
             if var_type == 'sum':
                 ematrix[var_group_idx, ] = np.array(adata_counts[:, adata.var[group_by_var].fillna(var_fillna)
                                                     .isin([var_group])].sum(1)).flatten()
@@ -1306,9 +1306,9 @@ def _get_min_max_array(ndarray,
 def get_group_counts(adata,
                      layer=None,
                      group_by_var=None,
-                     var_fillna='NaN',
+                     var_fillna='__NaN',
                      group_by_obs=None,
-                     obs_fillna='NaN',
+                     obs_fillna='__NaN',
                      level='obs',
                      min_expr=None,
                      max_expr=None,
