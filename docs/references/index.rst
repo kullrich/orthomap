@@ -25,9 +25,3 @@ Sun, S., Rödelsperger, C. and Sommer, R.J., (2021).
 
 Wolf, F.A., Angerer, P. and Theis, F.J. (2018). **SCANPY: large-scale single-cell gene expression data analysis.**
 *Genome biology*, **19(1)**. [https://doi.org/10.1186/s13059-017-1382-0](https://doi.org/10.1186/s13059-017-1382-0)
-
-**Indices and tables**
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
