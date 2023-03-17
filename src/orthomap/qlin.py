@@ -51,8 +51,10 @@ def add_argparse_args(parser: argparse.ArgumentParser):
 
     :type parser: argparse.ArgumentParser
     """
-    parser.add_argument('-q', help='query species name')
-    parser.add_argument('-qt', help='query species taxID')
+    parser.add_argument('-q',
+                        help='query species name')
+    parser.add_argument('-qt',
+                        help='query species taxID')
 
 
 def get_qlin(ncbi=None,
@@ -93,16 +95,20 @@ def get_qlin(ncbi=None,
         ncbi = NCBITaxa()
     if qt:
         taxid2name = ncbi.get_taxid_translator([int(qt)])
-        qtid, qname = list(taxid2name.items())[0]
+        qtid, \
+            qname = list(taxid2name.items())[0]
     if q and not qt:
         name2taxid = ncbi.get_name_translator([q])
-        qname, qtid = list(name2taxid.items())[0]
+        qname, \
+            qtid = list(name2taxid.items())[0]
         qtid = qtid[0]
     qlineage = ncbi.get_lineage(qtid)
     qlineagenames_dict = ncbi.get_taxid_translator(qlineage)
     qlineagezip = [(a, qlineagenames_dict[a]) for a in qlineage]
     qlineagenames = pd.DataFrame([(x, y, qlineagenames_dict[y]) for x, y in enumerate(qlineage)],
-                                 columns=['PSnum', 'PStaxID', 'PSname'])
+                                 columns=['PSnum',
+                                          'PStaxID',
+                                          'PSname'])
     qlineagenames['PSnum'] = [str(x) for x in list(qlineagenames['PSnum'])]
     qlineagenames['PStaxID'] = [str(x) for x in list(qlineagenames['PStaxID'])]
     qlineagenames['PSname'] = [str(x) for x in list(qlineagenames['PSname'])]
@@ -121,7 +127,14 @@ def get_qlin(ncbi=None,
             'query lineage names: \n%s' % str([qlineagenames_dict[x] + '(' + str(x) + ')' for x in qlineage])
         )
         print('query lineage: \n%s' % str(qlineage))
-    return [qname, qtid, qlineage, qlineagenames_dict, qlineagezip, qlineagenames, qlineagerev, qk]
+    return [qname,
+            qtid,
+            qlineage,
+            qlineagenames_dict,
+            qlineagezip,
+            qlineagenames,
+            qlineagerev,
+            qk]
 
 
 def get_lineage_topo(qt):
@@ -139,8 +152,11 @@ def get_lineage_topo(qt):
     >>> from orthomap import qlin
     >>> lineage_tree = qlin.get_lineage_topo(qt='10090')
     """
-    _, _, _, _, _, qlineagenames, _, _ = get_qlin(qt=qt, quiet=True)
-    qln = list(qlineagenames[['PSnum', 'PStaxID', 'PSname']].apply(lambda x: '/'.join(x), axis=1))
+    _, _, _, _, _, qlineagenames, _, _ = get_qlin(qt=qt,
+                                                  quiet=True)
+    qln = list(qlineagenames[['PSnum',
+                              'PStaxID',
+                              'PSname']].apply(lambda x: '/'.join(x), axis=1))
     qln = [x.replace('(', '_').replace(')', '_').replace(':', '_') for x in qln]
     tree = Tree('(' * len(qln) + ''.join([str(x) + '),' for x in qln[1::][::-1]])+str(qln[0])+');')
     return tree
@@ -217,7 +233,9 @@ def main():
         parser.print_help()
         print('\nWarning: Since both query species name and taxID are given taxID is used')
         sys.exit()
-    get_qlin(q=args.q, qt=args.qt, quiet=False)
+    get_qlin(q=args.q,
+             qt=args.qt,
+             quiet=False)
 
 
 if __name__ == '__main__':
