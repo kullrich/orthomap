@@ -1004,12 +1004,12 @@ def get_ematrix(adata,
     >>>     adata=packer19_small,
     >>>     gene_id=query_orthomap['GeneID'],
     >>>     gene_age=query_orthomap['Phylostratum'])
-    >>> packer19_small_ematrix_grouped = get_ematrix(
+    >>> packer19_small_ematrix_grouped = orthomap2tei.get_ematrix(
     >>>     adata=packer19_small,
     >>>     group_by_var='Phylostrata',
     >>>     group_by_obs='cell.type')
     >>> # normalize counts
-    >>> packer19_small_ematrix_grouped = get_ematrix(
+    >>> packer19_small_ematrix_grouped = orthomap2tei.get_ematrix(
     >>>     adata=packer19_small,
     >>>     group_by_var='Phylostrata',
     >>>     group_by_obs='cell.type',
