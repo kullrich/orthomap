@@ -292,7 +292,7 @@ def _get_psd(adata,
     :param log1p: Logarithmize the data matrix prior TEI calculation.
     :param target_sum: After normalization, each observation (cell) has a total count equal to target_sum.
     :return: A list of results such as:
-    var_names_df, id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd
+             var_names_df, id_age_df_keep_subset, adata_counts, var_names_subset, sumx, sumx_recd, ps, psd
 
     :type adata: AnnData
     :type gene_id: list
@@ -734,11 +734,11 @@ def get_pstrata(adata,
     :param layer: Layer to work on instead of X. If None, X is used.
     :param cumsum: Return cumsum.
     :param group_by_obs: AnnData observation to be used as a group to combine partial transcriptome evolutionary index
-    (TEI) values.
+                         (TEI) values.
     :param obs_type: Specify how values should be combined per observation group. Possible values are 'mean', 'median',
-    'sum', 'min' and 'max'.
+                     'sum', 'min' and 'max'.
     :param standard_scale: Wether or not to standardize the given axis (0: colums, 1: rows) between 0 and 1,
-    meaning for each variable or group, subtract the minimum and divide each by its maximum.
+                           meaning for each variable or group, subtract the minimum and divide each by its maximum.
     :param normalize_total: Normalize counts per cell prior TEI calculation.
     :param log1p: Logarithmize the data matrix prior TEI calculation.
     :param target_sum: After normalization, each observation (cell) has a total count equal to target_sum.
@@ -959,14 +959,14 @@ def get_ematrix(adata,
     :param layer: Layer to work on instead of X. If None, X is used.
     :param group_by_var: AnnData variable to be used as a group to combine count values.
     :param var_type: Specify how values should be combined per variable group. Possible values are 'mean', 'median',
-    'sum', 'min' and 'max'.
+                     'sum', 'min' and 'max'.
     :param var_fillna: Specify how NaN values should be named for variable.
     :param group_by_obs: AnnData observation to be used as a group to combine count values.
     :param obs_type: Specify how values should be combined per observation group. Possible values are 'mean', 'median',
-    'sum', 'min' and 'max'.
+                     'sum', 'min' and 'max'.
     :param obs_fillna: Specify how NaN values should be named for observation.
     :param standard_scale: Wether or not to standardize the given axis (0: colums, 1: rows) between 0 and 1,
-    meaning for each variable or group, subtract the minimum and divide each by its maximum.
+                           meaning for each variable or group, subtract the minimum and divide each by its maximum.
     :param normalize_total: Normalize counts per cell.
     :param log1p: Logarithmize the data matrix.
     :param target_sum: After normalization, each observation (cell) has a total count equal to target_sum.
@@ -1138,15 +1138,15 @@ def get_rematrix(adata,
     :param keep: Either define 'min' (ascending pre-sorting) or 'max' (non-ascending pre-sorting) to keep duplicates.
     :param layer: Layer to work on instead of X. If None, X is used.
     :param use: Specify if counts from adata.X (default) should be combined per age group to calculate
-    the relative expression or if the corresponding 'pmatrix' or 'teimatrix' should be used.
-    If layer is not None adata.X refers to adata.layers[layer].
+                the relative expression or if the corresponding 'pmatrix' or 'teimatrix' should be used.
+                If layer is not None adata.X refers to adata.layers[layer].
     :param var_type: Specify how values should be combined per variable group. Possible values are 'mean', 'median',
-    'sum', 'min' and 'max'.
+                     'sum', 'min' and 'max'.
     :param group_by_obs: AnnData observation to be used as a group to combine count values.
     :param obs_type: Specify how values should be combined per observation group. Possible values are 'mean', 'median',
-    'sum', 'min' and 'max'.
+                     'sum', 'min' and 'max'.
     :param standard_scale: Wether or not to standardize the given axis (0: colums, 1: rows) between 0 and 1,
-    meaning for each variable or group, subtract the minimum and divide each by its maximum.
+                           meaning for each variable or group, subtract the minimum and divide each by its maximum.
     :param normalize_total: Normalize counts per cell prior TEI calculation.
     :param log1p: Logarithmize the data matrix prior TEI calculation.
     :param target_sum: After normalization, each observation (cell) has a total count equal to target_sum.
