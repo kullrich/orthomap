@@ -35,19 +35,27 @@ def ensembl105(datapath='.'):
     >>> from orthomap import datasets
     >>> datasets.ensembl105(datapath='.')
     """
-    oc_filename = os.path.join(datapath, 'ensembl_105_orthofinder_Orthogroups.GeneCount.tsv.zip')
-    og_filename = os.path.join(datapath, 'ensembl_105_orthofinder_Orthogroups.tsv.zip')
-    sl_filename = os.path.join(datapath, 'ensembl_105_orthofinder_species_list.tsv')
+    oc_filename = os.path.join(datapath,
+                               'ensembl_105_orthofinder_Orthogroups.GeneCount.tsv.zip')
+    og_filename = os.path.join(datapath,
+                               'ensembl_105_orthofinder_Orthogroups.tsv.zip')
+    sl_filename = os.path.join(datapath,
+                               'ensembl_105_orthofinder_species_list.tsv')
     oc_url = 'https://github.com/kullrich/orthomap/raw/main/examples/' \
              'ensembl_105_orthofinder_Orthogroups.GeneCount.tsv.zip'
     og_url = 'https://github.com/kullrich/orthomap/raw/main/examples/' \
              'ensembl_105_orthofinder_Orthogroups.tsv.zip'
     sl_url = 'https://github.com/kullrich/orthomap/raw/main/examples/' \
              'ensembl_105_orthofinder_species_list.tsv'
-    wget.download(url=oc_url, out=datapath)
-    wget.download(url=og_url, out=datapath)
-    wget.download(url=sl_url, out=datapath)
-    return [oc_filename, og_filename, sl_filename]
+    wget.download(url=oc_url,
+                  out=datapath)
+    wget.download(url=og_url,
+                  out=datapath)
+    wget.download(url=sl_url,
+                  out=datapath)
+    return [oc_filename,
+            og_filename,
+            sl_filename]
 
 
 def zebrafish_gtf(datapath='.'):
@@ -66,9 +74,11 @@ def zebrafish_gtf(datapath='.'):
     >>> from orthomap import datasets
     >>> datasets.zebrafish_gtf(datapath='.')
     """
-    zebrafish_gtf_filename = os.path.join(datapath, 'Danio_rerio.GRCz11.105.gtf.gz')
+    zebrafish_gtf_filename = os.path.join(datapath,
+                                          'Danio_rerio.GRCz11.105.gtf.gz')
     zebrafish_gtf_url = 'https://ftp.ensembl.org/pub/release-105/gtf/danio_rerio/Danio_rerio.GRCz11.105.gtf.gz'
-    wget.download(url=zebrafish_gtf_url, out=datapath)
+    wget.download(url=zebrafish_gtf_url,
+                  out=datapath)
     return zebrafish_gtf_filename
 
 
@@ -88,9 +98,11 @@ def mouse_gtf(datapath='.'):
     >>> from orthomap import datasets
     >>> datasets.mouse_gtf(datapath='.')
     """
-    mouse_gtf_filename = os.path.join(datapath, 'Mus_musculus.GRCm39.105.gtf.gz')
+    mouse_gtf_filename = os.path.join(datapath,
+                                      'Mus_musculus.GRCm39.105.gtf.gz')
     mouse_gtf_url = 'https://ftp.ensembl.org/pub/release-105/gtf/mus_musculus/Mus_musculus.GRCm39.105.gtf.gz'
-    wget.download(url=mouse_gtf_url, out=datapath)
+    wget.download(url=mouse_gtf_url,
+                  out=datapath)
     return mouse_gtf_filename
 
 
@@ -114,9 +126,11 @@ def sun21_orthomap(datapath='.'):
     >>> from orthomap import datasets
     >>> datasets.sun21_orthomap(datapath='.')
     """
-    sun21_orthomap_filename = os.path.join(datapath, 'Sun2021_Orthomap.tsv')
+    sun21_orthomap_filename = os.path.join(datapath,
+                                           'Sun2021_Orthomap.tsv')
     sun21_orthomap_url = 'https://zenodo.org/record/7404798/files/Sun2021_Orthomap.tsv'
-    wget.download(url=sun21_orthomap_url, out=datapath)
+    wget.download(url=sun21_orthomap_url,
+                  out=datapath)
     return sun21_orthomap_filename
 
 
@@ -140,9 +154,11 @@ def cazet22_orthomap(datapath='.'):
     >>> from orthomap import datasets
     >>> datasets.cazet22_orthomap(datapath='.')
     """
-    cazet22_orthomap_filename = os.path.join(datapath, 'Cazet2022_Orthomap.tsv')
+    cazet22_orthomap_filename = os.path.join(datapath,
+                                             'Cazet2022_Orthomap.tsv')
     cazet22_orthomap_url = 'https://zenodo.org/record/7404798/files/Cazet2022_Orthomap.tsv'
-    wget.download(url=cazet22_orthomap_url, out=datapath)
+    wget.download(url=cazet22_orthomap_url,
+                  out=datapath)
     return cazet22_orthomap_filename
 
 
@@ -169,9 +185,11 @@ def packer19(datapath='.'):
     >>> from orthomap import datasets
     >>> datasets.packer19(datapath='.')
     """
-    packer19_filename = os.path.join(datapath, 'GSE126954.h5ad')
+    packer19_filename = os.path.join(datapath,
+                                     'GSE126954.h5ad')
     packer19_url = 'https://zenodo.org/record/7496490/files/GSE126954.h5ad'
-    wget.download(url=packer19_url, out=datapath)
+    wget.download(url=packer19_url,
+                  out=datapath)
     adata = sc.read(packer19_filename)
     return adata
 
@@ -199,9 +217,11 @@ def packer19_small(datapath='.'):
     >>> from orthomap import datasets
     >>> datasets.packer19_small(datapath='.')
     """
-    packer19_small_filename = os.path.join(datapath, 'packer19_small.h5ad')
+    packer19_small_filename = os.path.join(datapath,
+                                           'packer19_small.h5ad')
     packer19_small_url = 'https://zenodo.org/record/7496490/files/packer19_small.h5ad'
-    wget.download(url=packer19_small_url, out=datapath)
+    wget.download(url=packer19_small_url,
+                  out=datapath)
     adata = sc.read(packer19_small_filename)
     return adata
 
@@ -229,9 +249,11 @@ def cazet22(datapath='.'):
     >>> from orthomap import datasets
     >>> datasets.cazet22(datapath='.')
     """
-    cazet22_filename = os.path.join(datapath, 'aepAtlasNonDub.h5ad')
+    cazet22_filename = os.path.join(datapath,
+                                    'aepAtlasNonDub.h5ad')
     cazet22_url = 'https://zenodo.org/record/7369647/files/aepAtlasNonDub.h5ad'
-    wget.download(url=cazet22_url, out=datapath)
+    wget.download(url=cazet22_url,
+                  out=datapath)
     adata = sc.read(cazet22_filename)
     return adata
 
@@ -269,9 +291,11 @@ def qiu22_zebrafish(datapath='.'):
     >>> from orthomap import datasets
     >>> datasets.qiu22_zebrafish(datapath='.')
     """
-    qiu22_zebrafish_filename = os.path.join(datapath, 'zebrafish_data.h5ad')
+    qiu22_zebrafish_filename = os.path.join(datapath,
+                                            'zebrafish_data.h5ad')
     qiu22_zebrafish_url = 'https://zenodo.org/record/7243603/files/zebrafish_data.h5ad'
-    wget.download(url=qiu22_zebrafish_url, out=datapath)
+    wget.download(url=qiu22_zebrafish_url,
+                  out=datapath)
     adata = sc.read(qiu22_zebrafish_filename)
     return adata
 
@@ -305,9 +329,11 @@ def qiu22_frog(datapath='.'):
     >>> from orthomap import datasets
     >>> datasets.qiu22_frog(datapath='.')
     """
-    qiu22_frog_filename = os.path.join(datapath, 'frog_data.h5ad')
+    qiu22_frog_filename = os.path.join(datapath,
+                                       'frog_data.h5ad')
     qiu22_frog_url = 'https://zenodo.org/record/7244441/files/frog_data.h5ad'
-    wget.download(url=qiu22_frog_url, out=datapath)
+    wget.download(url=qiu22_frog_url,
+                  out=datapath)
     adata = sc.read(qiu22_frog_filename)
     return adata
 
@@ -357,8 +383,10 @@ def qiu22_mouse(datapath='.'):
     >>> from orthomap import datasets
     >>> datasets.qiu22_mouse(datapath='.')
     """
-    qiu22_mouse_filename = os.path.join(datapath, 'mouse_data.h5ad')
+    qiu22_mouse_filename = os.path.join(datapath,
+                                        'mouse_data.h5ad')
     qiu22_mouse_url = 'https://zenodo.org/record/7244568/files/mouse_data.h5ad'
-    wget.download(url=qiu22_mouse_url, out=datapath)
+    wget.download(url=qiu22_mouse_url,
+                  out=datapath)
     adata = sc.read(qiu22_mouse_filename)
     return adata

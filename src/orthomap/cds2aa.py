@@ -55,10 +55,15 @@ def add_argparse_args(parser: argparse.ArgumentParser):
 
     :type parser: argparse.ArgumentParser
     """
-    parser.add_argument('-i', help='specify fasta input file')
-    parser.add_argument('-o', help='specify output file [optional]')
-    parser.add_argument('-t', help='transtable [default: std]', default='std')
-    parser.add_argument('-r', help='specify CDS source to retain longest isoform')
+    parser.add_argument('-i',
+                        help='specify fasta input file')
+    parser.add_argument('-o',
+                        help='specify output file [optional]')
+    parser.add_argument('-t',
+                        help='transtable [default: std]',
+                        default='std')
+    parser.add_argument('-r',
+                        help='specify CDS source to retain longest isoform')
 
 
 transtable = {'std': CodonTable.CodonTable(forward_table={
