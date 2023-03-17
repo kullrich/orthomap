@@ -84,8 +84,8 @@ def get_qlin(ncbi=None,
 
     Example
     -------
-    >>> from orthomap import qlin
     >>> from ete3 import NCBITaxa
+    >>> from orthomap import qlin
     >>> qlin.get_qlin(q='Danio rerio')
     """
     qtid = None
@@ -184,7 +184,7 @@ def get_youngest_common(ql,
     >>> # get target species taxonomic lineage information
     >>> _, _, target_lineage, _, _, _, _, _ = qlin.get_qlin(q='Mus musculus')
     >>> # get youngest common node
-    >>> get_youngest_common(query_lineage, target_lineage)
+    >>> qlin.get_youngest_common(ql=query_lineage, tl=target_lineage)
     """
     return [x for x in tl if x in ql][-1]
 
@@ -213,7 +213,7 @@ def get_oldest_common(ql,
     >>> # get target species taxonomic lineage information
     >>> _, _, target_lineage, _, _, _, _, _ = qlin.get_qlin(q='Mus musculus')
     >>> # get oldest common node
-    >>> get_oldest_common(query_lineage, target_lineage)
+    >>> qlin.get_oldest_common(ql=query_lineage, tl=target_lineage)
     """
     return ql[min([x for x, y in enumerate(ql) if y in tl])]
 
