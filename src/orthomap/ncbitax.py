@@ -45,7 +45,9 @@ def add_argparse_args(parser: argparse.ArgumentParser):
 
     :type parser: argparse.ArgumentParser
     """
-    parser.add_argument('-u', help='update', action='store_true')
+    parser.add_argument('-u',
+                        help='update',
+                        action='store_true')
 
 
 def update_ncbi():
