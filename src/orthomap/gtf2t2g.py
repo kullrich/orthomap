@@ -41,7 +41,7 @@ def define_parser():
         usage='%(prog)s [options] [<arguments>...]',
         description='extracts transcript to gene table from GTF',
         epilog=gtf2t2g_example,
-        formatter_class=argparse.RawDescriptionHelpFormatter, )
+        formatter_class=argparse.RawDescriptionHelpFormatter)
     add_argparse_args(parser=parser)
     return parser
 
@@ -54,16 +54,32 @@ def add_argparse_args(parser: argparse.ArgumentParser):
 
     :type parser: argparse.ArgumentParser
     """
-    parser.add_argument('-i', help='specify GTF input file')
-    parser.add_argument('-o', help='specify output file [optional]')
-    parser.add_argument('-g', help='specify if gene names should be appended if they exist', action='store_true')
-    parser.add_argument('-b', help='specify if gene biotype should be appended if they exist', action='store_true')
-    parser.add_argument('-p', help='specify if protein id should be appended if they exist', action='store_true')
-    parser.add_argument('-v', help='specify if gene/transcript/protein version should be appended', action='store_true')
-    parser.add_argument('-s', help='specify if summary should be printed', action='store_true')
-    parser.add_argument('-q', help='specify if output should be quite', action='store_true')
-    parser.add_argument('-overwrite', help='specify if existing output file should be overwritten (default: True)',
-                        default=True, type=bool)
+    parser.add_argument('-i',
+                        help='specify GTF input file')
+    parser.add_argument('-o',
+                        help='specify output file [optional]')
+    parser.add_argument('-g',
+                        help='specify if gene names should be appended if they exist',
+                        action='store_true')
+    parser.add_argument('-b',
+                        help='specify if gene biotype should be appended if they exist',
+                        action='store_true')
+    parser.add_argument('-p',
+                        help='specify if protein id should be appended if they exist',
+                        action='store_true')
+    parser.add_argument('-v',
+                        help='specify if gene/transcript/protein version should be appended',
+                        action='store_true')
+    parser.add_argument('-s',
+                        help='specify if summary should be printed',
+                        action='store_true')
+    parser.add_argument('-q',
+                        help='specify if output should be quite',
+                        action='store_true')
+    parser.add_argument('-overwrite',
+                        help='specify if existing output file should be overwritten (default: True)',
+                        default=True,
+                        type=bool)
 
 
 def _information_based_on_key(infosplit,
@@ -154,9 +170,11 @@ def parse_gtf(gtf,
     >>> query_species_t2g
     """
     if gtf.endswith('gz'):
-        gtf_handle = gzip.open(gtf, 'rt')
+        gtf_handle = gzip.open(gtf,
+                               'rt')
     else:
-        gtf_handle = open(gtf, 'rt')
+        gtf_handle = open(gtf,
+                          'rt')
     t2g = {}
     t2p = {}
     tc = 0
@@ -173,19 +191,39 @@ def parse_gtf(gtf,
             gid_first_version = None
             tid_first_version = None
             infosplit = line[8].strip().split(';')
-            gid, gid_first = _information_based_on_key(infosplit, 'gene_id', q, lines)
+            gid, gid_first = _information_based_on_key(infosplit=infosplit,
+                                                       key='gene_id',
+                                                       q=q,
+                                                       lines=lines)
             if not gid:
                 continue
-            tid, tid_first = _information_based_on_key(infosplit, 'transcript_id', q, lines)
+            tid, tid_first = _information_based_on_key(infosplit=infosplit,
+                                                       key='transcript_id',
+                                                       q=q,
+                                                       lines=lines)
             if not tid:
                 continue
             if g:
-                _, gname_first = _information_based_on_key(infosplit, 'gene_name', q, lines)
+                _, gname_first = _information_based_on_key(infosplit=infosplit,
+                                                           key='gene_name',
+                                                           q=q,
+                                                           lines=lines)
             if b:
-                _, gtype_first = _information_based_on_key(infosplit, 'gene_biotype', q, lines)
+                _, gtype_first = _information_based_on_key(infosplit=infosplit,
+                                                           key='gene_biotype',
+                                                           q=q,
+                                                           lines=lines)
             if v:
-                _, gv_first = _information_based_on_key(infosplit, 'gene_version', q, line, version=True)
-                _, tv_first = _information_based_on_key(infosplit, 'transcript_version', q, line, version=True)
+                _, gv_first = _information_based_on_key(infosplit=infosplit,
+                                                        key='gene_version',
+                                                        q=q,
+                                                        lines=line,
+                                                        version=True)
+                _, tv_first = _information_based_on_key(infosplit=infosplit,
+                                                        key='transcript_version',
+                                                        q=q,
+                                                        lines=line,
+                                                        version=True)
                 if gv_first:
                     gid_first_version = gid_first + '.' + gv_first
                 if tv_first:
@@ -223,15 +261,24 @@ def parse_gtf(gtf,
                 tid_first = None
                 pv_first = None
                 infosplit = line[8].strip().split(';')
-                tid, tid_first = _information_based_on_key(infosplit, 'transcript_id', q, lines)
+                tid, tid_first = _information_based_on_key(infosplit=infosplit,
+                                                           key='transcript_id',
+                                                           q=q,
+                                                           lines=lines)
                 tid = [x for x in infosplit if 'transcript_id' in x]
                 if not tid:
                     continue
-                pid, pid_first = _information_based_on_key(infosplit, 'protein_id', q, lines)
+                pid, pid_first = _information_based_on_key(infosplit=infosplit,
+                                                           key='protein_id',
+                                                           q=q,
+                                                           lines=lines)
                 if not pid:
                     continue
                 if v:
-                    _, pv_first = _information_based_on_key(infosplit, 'protein_version', q, lines)
+                    _, pv_first = _information_based_on_key(infosplit=infosplit,
+                                                            key='protein_version',
+                                                            q=q,
+                                                            lines=lines)
                     if pv_first:
                         pid_first_version = pid_first + '.' + pv_first
                 if tid_first in t2p:
@@ -267,8 +314,10 @@ def parse_gtf(gtf,
             'gene_type',
             'protein_id',
             'protein_id_version', ], )
-    t2g_df.sort_values(by='gene_id', inplace=True)
-    t2g_df.reset_index(drop=True, inplace=True)
+    t2g_df.sort_values(by='gene_id',
+                       inplace=True)
+    t2g_df.reset_index(drop=True,
+                       inplace=True)
     gtf_handle.close()
     return t2g_df
 
@@ -291,7 +340,14 @@ def main():
         output = open(args.o, 'w')
     else:
         output = sys.stdout
-    parse_gtf(gtf=args.i, g=args.g, b=args.b, p=args.p, v=args.v, s=args.s, output=output, q=args.q)
+    parse_gtf(gtf=args.i,
+              g=args.g,
+              b=args.b,
+              p=args.p,
+              v=args.v,
+              s=args.s,
+              output=output,
+              q=args.q)
     output.close()
 
 
