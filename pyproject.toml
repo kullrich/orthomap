@@ -12,6 +12,7 @@ version = "0.0.1"
 description = "extract orthomap from OrthoFinder output for query species"
 authors = [
     {name = "Kristian K Ullrich", email="ullrich@evolbio.mpg.de"},
+    {name = "Nikoleta E Glynatsi", email="glynatsi@evolbio.mpg.de"},
 ]
 maintainers = [
     {name = "Kristian K Ullrich", email="ullrich@evolbio.mpg.de"},
@@ -19,12 +20,16 @@ maintainers = [
 license = {text = "GPLv3"}
 readme = "README.md"
 requires-python = ">=3.8"
-keywords = ["orthomap", "gene age", "orthologs", "phylostratigraphy"]
+keywords = ["orthomap", "gene age", "orthologs", "phylostratigraphy", "single-cell"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Topic :: Scientific/Engineering :: Bio-Informatics",
     "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
 ]
 dependencies = [
     "numpy<1.24",

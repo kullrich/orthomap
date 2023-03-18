@@ -70,7 +70,7 @@ def test_split_gene_id_by_gene_age():
     pass
 
 
-def test_get_ps():
+def test_get_psd():
     # No data to run the example.
     pass
 
@@ -92,6 +92,11 @@ def test_min_max_to_01():
     assert orthomap2tei._min_max_to_01(ndarray_example_one) == [0 for _ in range(5)]
     ndarray_example_two = [1 for _ in range(5)] + [2]
     assert orthomap2tei._min_max_to_01(ndarray_example_two) == [0 for _ in range(5)] + [1]
+
+
+
+def test_get_ematrix():
+    pass
 
 
 def test_get_rematrix():
