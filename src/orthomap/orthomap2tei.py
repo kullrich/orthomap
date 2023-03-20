@@ -30,6 +30,7 @@ def read_orthomap(orthomapfile):
     -------
     >>> from orthomap import orthomap2tei, datasets
     >>> # download pre-calculated orthomap
+    >>> #query_orthomap = orthomap2tei.read_orthomap(orthomapfile='Sun2021_Orthomap.tsv')
     >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
     >>> # load query species orthomap
     >>> query_orthomap = orthomap2tei.read_orthomap(orthomapfile=sun21_orthomap_file)
@@ -180,6 +181,7 @@ def _split_gene_id_by_gene_age(gene_id,
     -------
     >>> from orthomap import orthomap2tei, datasets
     >>> # download pre-calculated orthomap
+    >>> #query_orthomap = orthomap2tei.read_orthomap(orthomapfile='Sun2021_Orthomap.tsv')
     >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
     >>> # load query species orthomap
     >>> query_orthomap = orthomap2tei.read_orthomap(orthomapfile=sun21_orthomap_file)
@@ -309,6 +311,7 @@ def _get_psd(adata,
     >>> import scanpy as sc
     >>> from orthomap import orthomap2tei, datasets
     >>> # download pre-calculated orthomap
+    >>> #query_orthomap = orthomap2tei.read_orthomap(orthomapfile='Sun2021_Orthomap.tsv')
     >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
     >>> # load query species orthomap
     >>> query_orthomap = orthomap2tei.read_orthomap(orthomapfile=sun21_orthomap_file)
@@ -399,6 +402,7 @@ def add_gene_age2adata_var(adata,
     >>> import scanpy as sc
     >>> from orthomap import datasets, orthomap2tei
     >>> # download pre-calculated orthomap
+    >>> #query_orthomap = orthomap2tei.read_orthomap(orthomapfile='Sun2021_Orthomap.tsv')
     >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
     >>> # load query species orthomap
     >>> query_orthomap = orthomap2tei.read_orthomap(orthomapfile=sun21_orthomap_file)
@@ -502,6 +506,7 @@ def get_tei(adata,
     >>> import seaborn as sns
     >>> from orthomap import datasets, orthomap2tei
     >>> # download pre-calculated orthomap
+    >>> #query_orthomap = orthomap2tei.read_orthomap(orthomapfile='Sun2021_Orthomap.tsv')
     >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
     >>> # load query species orthomap
     >>> query_orthomap = orthomap2tei.read_orthomap(orthomapfile=sun21_orthomap_file)
@@ -645,6 +650,7 @@ def get_pmatrix(adata,
     >>> import scanpy as sc
     >>> from orthomap import orthomap2tei, datasets
     >>> # download pre-calculated orthomap
+    >>> #query_orthomap = orthomap2tei.read_orthomap(orthomapfile='Sun2021_Orthomap.tsv')
     >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
     >>> # load query species orthomap
     >>> query_orthomap = orthomap2tei.read_orthomap(orthomapfile=sun21_orthomap_file)
@@ -765,6 +771,7 @@ def get_pstrata(adata,
     >>> import seaborn as sns
     >>> from orthomap import orthomap2tei, datasets
     >>> # download pre-calculated orthomap
+    >>> #query_orthomap = orthomap2tei.read_orthomap(orthomapfile='Sun2021_Orthomap.tsv')
     >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
     >>> # load query species orthomap
     >>> query_orthomap = orthomap2tei.read_orthomap(orthomapfile=sun21_orthomap_file)
@@ -789,10 +796,10 @@ def get_pstrata(adata,
     >>>     gene_age=query_orthomap['Phylostratum'],
     >>>     group_by_obs='embryo.time.bin')
     >>> # plot heatmap using partial TEI values
-    >>> sns.heatmap(packer19_small_pstrata_grouped[0], cmap='viridis')
+    >>> sns.heatmap(packer19_small_pstrata_grouped[0], annot=True, cmap='viridis')
     >>> plt.show()
     >>> # plot heatmap using partial TEI percent
-    >>> sns.heatmap(packer19_small_pstrata_grouped[1], cmap='viridis')
+    >>> sns.heatmap(packer19_small_pstrata_grouped[1], annot=True, cmap='viridis')
     >>> plt.show()
     """
     var_names_df,\
@@ -993,6 +1000,7 @@ def get_ematrix(adata,
     >>> import seaborn as sns
     >>> from orthomap import orthomap2tei, datasets
     >>> # download pre-calculated orthomap
+    >>> #query_orthomap = orthomap2tei.read_orthomap(orthomapfile='Sun2021_Orthomap.tsv')
     >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
     >>> # load query species orthomap
     >>> query_orthomap = orthomap2tei.read_orthomap(orthomapfile=sun21_orthomap_file)
@@ -1008,6 +1016,8 @@ def get_ematrix(adata,
     >>>     adata=packer19_small,
     >>>     group_by_var='Phylostrata',
     >>>     group_by_obs='cell.type')
+    >>> sns.heatmap(packer19_small_ematrix_grouped, annot=True, cmap='viridis')
+    >>> plt.show()
     >>> # normalize counts
     >>> packer19_small_ematrix_grouped = orthomap2tei.get_ematrix(
     >>>     adata=packer19_small,
@@ -1015,6 +1025,7 @@ def get_ematrix(adata,
     >>>     group_by_obs='cell.type',
     >>>     normalize_total=True)
     >>> sns.heatmap(packer19_small_ematrix_grouped, annot=True, cmap='viridis')
+    >>> plt.show()
     """
     adata_counts = _get_counts(adata=adata,
                                layer=layer,
@@ -1022,60 +1033,120 @@ def get_ematrix(adata,
                                log1p=log1p,
                                target_sum=target_sum)
     if group_by_var is not None:
-        var_groups = list(set(adata.var[group_by_var].fillna(var_fillna)))
-        ematrix = np.zeros((len(var_groups), adata_counts.shape[0]))
-        for var_group_idx, var_group in enumerate(var_groups):
-            if var_type == 'mean':
-                ematrix[var_group_idx, ] = np.array(adata_counts[:, adata.var[group_by_var].fillna(var_fillna)
-                                                    .isin([var_group])].mean(1)).flatten()
-            if var_type == 'median':
-                ematrix[var_group_idx, ] = np.apply_along_axis(
-                    np.median, 1, adata_counts[:, adata.var[group_by_var].fillna(var_fillna).isin([var_group])]
-                    .toarray()).flatten()
-            if var_type == 'sum':
-                ematrix[var_group_idx, ] = np.array(adata_counts[:, adata.var[group_by_var].fillna(var_fillna)
-                                                    .isin([var_group])].sum(1)).flatten()
-            if var_type == 'min':
-                ematrix[var_group_idx, ] = np.array(adata_counts[:, adata.var[group_by_var].fillna(var_fillna)
-                                                    .isin([var_group])].min(1).toarray()).flatten()
-            if var_type == 'max':
-                ematrix[var_group_idx, ] = np.array(adata_counts[:, adata.var[group_by_var].fillna(var_fillna)
-                                                    .isin([var_group])].max(1).toarray()).flatten()
-        ematrix_df = pd.DataFrame(ematrix)
-        ematrix_df['var_groups'] = var_groups
-        ematrix_df.set_index('var_groups',
-                             inplace=True)
-        ematrix_df.columns = adata.obs_names
-    else:
-        if var_type == 'mean':
-            ematrix = np.array(adata_counts.mean(1)).flatten()
-        if var_type == 'median':
-            ematrix = np.apply_along_axis(
-                np.median, 1, adata_counts.toarray()).flatten()
-        if var_type == 'sum':
-            ematrix = np.array(adata_counts.sum(1)).flatten()
-        if var_type == 'min':
-            ematrix = np.array(adata_counts.min(1).toarray()).flatten()
-        if var_type == 'max':
-            ematrix = np.array(adata_counts.max(1).toarray()).flatten()
-        ematrix_df = pd.DataFrame(ematrix).transpose()
-        ematrix_df.columns = adata.obs_names
+        var_grouped = pd.DataFrame(adata.var[group_by_var].fillna(var_fillna)).groupby(group_by_var)
+        var_groups = var_grouped.groups.keys()
     if group_by_obs is not None:
-        if obs_type == 'mean':
-            ematrix_df =\
-                ematrix_df.transpose().groupby(adata.obs[group_by_obs].fillna(obs_fillna)).mean().transpose()
-        if obs_type == 'median':
-            ematrix_df =\
-                ematrix_df.transpose().groupby(adata.obs[group_by_obs].fillna(obs_fillna)).median().transpose()
-        if obs_type == 'sum':
-            ematrix_df =\
-                ematrix_df.transpose().groupby(adata.obs[group_by_obs].fillna(obs_fillna)).sum().transpose()
-        if obs_type == 'min':
-            ematrix_df =\
-                ematrix_df.transpose().groupby(adata.obs[group_by_obs].fillna(obs_fillna)).min().transpose()
-        if obs_type == 'max':
-            ematrix_df =\
-                ematrix_df.transpose().groupby(adata.obs[group_by_obs].fillna(obs_fillna)).max().transpose()
+        obs_grouped = pd.DataFrame(adata.obs[group_by_obs].fillna(obs_fillna)).groupby(group_by_obs)
+        obs_groups = obs_grouped.groups.keys()
+    if group_by_var is not None and group_by_obs is not None:
+        ematrix_df = pd.DataFrame(np.zeros((len(var_groups), len(obs_groups)), dtype=np.float64),
+                                  columns=list(obs_groups),
+                                  index=list(var_groups)
+                                  )
+        for var_idx, (var_group, var_group_idx) in enumerate(var_grouped.indices.items()):
+            for obs_idx, (obs_group, obs_group_idx) in enumerate(obs_grouped.indices.items()):
+                adata_counts_x = adata_counts[:, var_group_idx][obs_group_idx, :]
+                if var_type == obs_type:
+                    if var_type == 'mean':
+                        ematrix_df.loc[var_group, obs_group] = adata_counts_x.mean()
+                    if var_type == 'median':
+                        ematrix_df.loc[var_group, obs_group] = np.median(np.apply_along_axis(
+                            np.median, 1, adata_counts_x.toarray()))
+                    if var_type == 'sum':
+                        ematrix_df.loc[var_group, obs_group] = adata_counts_x.sum()
+                    if var_type == 'min':
+                        ematrix_df.loc[var_group, obs_group] = adata_counts_x.min()
+                    if var_type == 'max':
+                        ematrix_df.loc[var_group, obs_group] = adata_counts_x.max()
+                else:
+                    if var_type == 'mean':
+                        if obs_type == 'median':
+                            ematrix_df.loc[var_group, obs_group] = np.median(np.ravel(adata_counts_x.mean(1)))
+                        if obs_type == 'sum':
+                            ematrix_df.loc[var_group, obs_group] = adata_counts_x.mean(1).sum()
+                        if obs_type == 'min':
+                            ematrix_df.loc[var_group, obs_group] = adata_counts_x.mean(1).min()
+                        if obs_type == 'max':
+                            ematrix_df.loc[var_group, obs_group] = adata_counts_x.mean(1).max()
+                    if var_type == 'median':
+                        if obs_type == 'mean':
+                            ematrix_df.loc[var_group, obs_group] = np.apply_along_axis(
+                                np.median, 1, adata_counts_x.toarray()).mean()
+                        if obs_type == 'sum':
+                            ematrix_df.loc[var_group, obs_group] = np.apply_along_axis(
+                                np.median, 1, adata_counts_x.toarray()).sum()
+                        if obs_type == 'min':
+                            ematrix_df.loc[var_group, obs_group] = np.apply_along_axis(
+                                np.median, 1, adata_counts_x.toarray()).min()
+                        if obs_type == 'max':
+                            ematrix_df.loc[var_group, obs_group] = np.apply_along_axis(
+                                np.median, 1, adata_counts_x.toarray()).max()
+                    if var_type == 'sum':
+                        if obs_type == 'mean':
+                            ematrix_df.loc[var_group, obs_group] = adata_counts_x.sum(1).mean()
+                        if obs_type == 'median':
+                            ematrix_df.loc[var_group, obs_group] = np.median(np.ravel(adata_counts_x.sum(1)))
+                        if obs_type == 'min':
+                            ematrix_df.loc[var_group, obs_group] = adata_counts_x.sum(1).min()
+                        if obs_type == 'max':
+                            ematrix_df.loc[var_group, obs_group] = adata_counts_x.sum(1).max()
+                    if var_type == 'min':
+                        if obs_type == 'mean':
+                            ematrix_df.loc[var_group, obs_group] = adata_counts_x.min(1).mean()
+                        if obs_type == 'median':
+                            ematrix_df.loc[var_group, obs_group] = np.median(np.ravel(adata_counts_x.min(1)))
+                        if obs_type == 'sum':
+                            ematrix_df.loc[var_group, obs_group] = adata_counts_x.min(1).sum()
+                        if obs_type == 'max':
+                            ematrix_df.loc[var_group, obs_group] = adata_counts_x.min(1).max()
+                    if var_type == 'max':
+                        if obs_type == 'mean':
+                            ematrix_df.loc[var_group, obs_group] = adata_counts_x.max(1).mean()
+                        if obs_type == 'median':
+                            ematrix_df.loc[var_group, obs_group] = np.median(np.ravel(adata_counts_x.max(1)))
+                        if obs_type == 'sum':
+                            ematrix_df.loc[var_group, obs_group] = adata_counts_x.max(1).sum()
+                        if obs_type == 'min':
+                            ematrix_df.loc[var_group, obs_group] = adata_counts_x.max(1).min()
+    if group_by_var is None and group_by_obs is not None:
+        ematrix_df = pd.DataFrame(np.zeros((adata.shape[1], len(obs_groups)), dtype=np.float64),
+                                  columns=list(obs_groups),
+                                  index=adata.var.index
+                                  )
+        for obs_idx, (obs_group, obs_group_idx) in enumerate(obs_grouped.indices.items()):
+            adata_counts_x = adata_counts[obs_group_idx, :]
+            if obs_type == 'mean':
+                ematrix_df.loc[:, obs_group] = np.ravel(adata_counts_x.mean(0))
+            if obs_type == 'median':
+                ematrix_df.loc[:, obs_group] = np.apply_along_axis(np.median, 0, adata_counts_x.toarray())
+            if obs_type == 'sum':
+                ematrix_df.loc[:, obs_group] = np.ravel(adata_counts_x.sum(0))
+            if obs_type == 'min':
+                ematrix_df.loc[:, obs_group] = np.ravel(adata_counts_x.min(0))
+            if obs_type == 'max':
+                ematrix_df.loc[:, obs_group] = np.ravel(adata_counts_x.max(0))
+    if group_by_var is not None and group_by_obs is None:
+        ematrix_df = pd.DataFrame(np.zeros((len(var_groups), adata.shape[0]), dtype=np.float64),
+                                  columns=adata.obs.index,
+                                  index=list(var_groups)
+                                  )
+        for var_idx, (var_group, var_group_idx) in enumerate(var_grouped.indices.items()):
+            adata_counts_x = adata_counts[:, var_group_idx]
+            if var_type == 'mean':
+                ematrix_df.loc[var_group, :] = np.ravel(adata_counts_x.mean(1))
+            if var_type == 'median':
+                ematrix_df.loc[var_group, :] = np.apply_along_axis(np.median, 1, adata_counts_x.toarray())
+            if var_type == 'sum':
+                ematrix_df.loc[var_group, :] = np.ravel(adata_counts_x.sum(1))
+            if var_type == 'min':
+                ematrix_df.loc[var_group, :] = np.ravel(adata_counts_x.min(1))
+            if var_type == 'max':
+                ematrix_df.loc[var_group, :] = np.ravel(adata_counts_x.max(1))
+    if group_by_var is None and group_by_obs is None:
+        ematrix_df = pd.DataFrame(adata_counts.toarray().transpose(),
+                                  columns=adata.obs.index,
+                                  index=adata.var.index
+                                  )
     if standard_scale is not None:
         if standard_scale == 0:
             ematrix_df = ematrix_df.apply(_min_max_to_01,
@@ -1174,6 +1245,7 @@ def get_rematrix(adata,
     >>> import seaborn as sns
     >>> from orthomap import orthomap2tei, datasets
     >>> # download pre-calculated orthomap
+    >>> #query_orthomap = orthomap2tei.read_orthomap(orthomapfile='Sun2021_Orthomap.tsv')
     >>> sun21_orthomap_file = datasets.sun21_orthomap(datapath='.')
     >>> # load query species orthomap
     >>> query_orthomap = orthomap2tei.read_orthomap(orthomapfile=sun21_orthomap_file)
@@ -1215,7 +1287,8 @@ def get_rematrix(adata,
     >>> sns.heatmap(packer19_small_rematrix_grouped_columns, cmap='viridis')
     >>> plt.show()
     """
-    id_age_df_keep_subset,\
+    var_names_df,\
+        id_age_df_keep_subset,\
         adata_counts,\
         var_names_subset,\
         sumx,\
@@ -1397,7 +1470,20 @@ def get_group_counts(adata,
 
     Example
     -------
-    >>>
+    >>> import scanpy as sc
+    >>> import matplotlib.pyplot as plt
+    >>> import seaborn as sns
+    >>> from orthomap import orthomap2tei, datasets
+    >>> # download and load scRNA data
+    >>> #packer19_small = sc.read('packer19_small.h5ad')
+    >>> packer19_small = datasets.packer19_small(datapath='.')
+    >>> # get group counts
+    >>> packer19_small_group_counts = orthomap2tei.get_group_counts(
+    >>>     adata=packer19_small,
+    >>>     group_by_var='num_cells_expressed',
+    >>>     group_by_obs='embryo.time.bin')
+    >>> sns.boxplot(packer19_small_group_counts)
+    >>> plt.show()
     """
     group_counts_dict = {}
     adata_counts = _get_counts(adata=adata,
