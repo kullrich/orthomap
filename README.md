@@ -10,9 +10,9 @@
 ## orthologous maps - evolutionary age index
 
 [`orthomap`](https://github.com/kullrich/orthomap) is a python package to extract orthologous maps
-(in other words the evolutionary age of a given orthologous group) from OrthoFinder results.
+(in other words the evolutionary age of a given orthologous group) from OrthoFinder or eggNOG results.
 Orthomap results (gene ages per orthogroup) can be further used to calculate and visualize weighted expression data
-from scRNA sequencing objects.
+(transcriptome evolutionary index) from scRNA sequencing objects.
 
 ## Documentation
 
