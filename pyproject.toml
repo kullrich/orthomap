@@ -32,6 +32,7 @@ classifiers = [
     "Intended Audience :: Education",
 ]
 dependencies = [
+    "setuptools>=67.5.1",
     "numpy<1.24",
     "numba",
     "scipy",
