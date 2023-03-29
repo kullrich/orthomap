@@ -128,7 +128,7 @@ def sun21_orthomap(datapath='.'):
     """
     sun21_orthomap_filename = os.path.join(datapath,
                                            'Sun2021_Orthomap.tsv')
-    sun21_orthomap_url = 'https://zenodo.org/record/7404798/files/Sun2021_Orthomap.tsv'
+    sun21_orthomap_url = 'https://zenodo.org/record/7783163/files/Sun2021_Orthomap.tsv'
     wget.download(url=sun21_orthomap_url,
                   out=datapath)
     return sun21_orthomap_filename
@@ -416,7 +416,7 @@ def mytai_example(datapath='.'):
     """
     mytai_example_filename = os.path.join(datapath,
                                           'PhyloExpressionSetExample.h5ad')
-    mytai_example_url = 'https://zenodo.org/record/7782917/files/PhyloExpressionSetExample.h5ad'
+    mytai_example_url = 'https://zenodo.org/record/7783163/files/PhyloExpressionSetExample.h5ad'
     wget.download(url=mytai_example_url,
                   out=datapath)
     adata = sc.read(mytai_example_filename)

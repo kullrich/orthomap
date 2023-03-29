@@ -123,3 +123,16 @@ Correspondance of myTAI and orthomap function
         columns=marker_genes, index=adata.obs.index)
     marker_expression.plot.line(cmap='Accent')
     plt.show()
+
+`myTAI::PlotMeans()` in R
+
+.. code-block:: R
+
+    PlotMeans(PhyloExpressionSetExample, Groups=list(1:12))
+
+`orthomap2tei.get_ematrix()` in Python
+
+.. code-block:: Python
+
+    ematrix = orthomap2tei.get_ematrix(
+        adata=adata)
