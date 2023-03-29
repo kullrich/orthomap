@@ -3,11 +3,16 @@
 Correspondance of myTAI and orthomap function
 =============================================
 
+`myTAI::TAI()` in R
+
 .. code-block:: R
 
+    install.packages("myTAI")
     library(myTAI)
     data(PhyloExpressionSetExample)
     TAI(PhyloExpressionSetExample)
+
+`orthomap2tei.get_tei()` in Python
 
 .. code-block:: Python
 
@@ -22,9 +27,13 @@ Correspondance of myTAI and orthomap function
         gene_id=adata.var.index,
         gene_age=adata.var['Phylostrata'])
 
+`myTAI::PlotDistribution()` in R
+
 .. code-block:: R
 
     PlotDistribution(PhyloExpressionSetExample)
+
+`of2orthomap.get_counts_per_ps()` in Python
 
 .. code-block:: Python
 
@@ -37,10 +46,14 @@ Correspondance of myTAI and orthomap function
         psname_col=None).plot.bar(y='counts', x='Phylostrata')
     plt.show()
 
+`myTAI::REMatrix()` and `myTAI::PlotRE()` in R
+
 .. code-block:: R
 
     REMatrix(PhyloExpressionSetExample)
     PlotRE(PhyloExpressionSetExample, Groups=list(1:12))
+
+`orthomap2tei.get_rematrix()` in Python
 
 .. code-block:: Python
 
@@ -52,11 +65,34 @@ Correspondance of myTAI and orthomap function
     rematrix.transpose().plot.line(cmap='Accent')
     plt.show()
 
+`myTAI::pStrata()` and `myTAI::PlotContribution()` in R
+
+.. code-block:: R
+
+    pstrata <- pStrata(PhyloExpressionSetExample)
+    PlotContribution(PhyloExpressionSetExample, "PS")
+
+`orthomap2tei.get_pstrata()` in Python
+
+.. code-block:: Python
+
+    pstrata = orthomap2tei.get_pstrata(
+        adata=adata,
+        gene_id=adata.var.index,
+        gene_age=adata.var['Phylostrata'])
+    pstrata[0]
+    pstrata[0].transpose().plot.line(cmap='Accent', stacked=True)
+    plt.show()
+
+`myTAI::pMatrix()` in R
+
 .. code-block:: R
 
     pmatrix <- pMatrix(PhyloExpressionSetExample)
     pmatrix
     boxplot(pmatrix, outline=FALSE)
+
+`orthomap2tei.get_pmatrix()` in Python
 
 .. code-block:: Python
 
@@ -68,6 +104,8 @@ Correspondance of myTAI and orthomap function
         index=pmatrix.obs.index).transpose().boxplot(showfliers=False)
     plt.show()
 
+`myTAI::PlotGeneSet()` in R
+
 .. code-block:: R
 
     marker_expression <- PlotGeneSet(ExpressionSet = PhyloExpressionSetExample,
@@ -75,6 +113,8 @@ Correspondance of myTAI and orthomap function
         get.subset = TRUE)
     PlotGeneSet(ExpressionSet = PhyloExpressionSetExample,
         gene.set = PhyloExpressionSetExample[1:5, 2])
+
+`scanpy` in Python
 
 .. code-block:: Python
 
