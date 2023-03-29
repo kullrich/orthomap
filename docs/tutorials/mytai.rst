@@ -3,11 +3,13 @@
 Correspondance of myTAI and orthomap function
 =============================================
 
-::
+.. code-block:: R
 
     library(myTAI)
     data(PhyloExpressionSetExample)
     TAI(PhyloExpressionSetExample)
+
+.. code-block:: Python
 
     >>> import scanpy as sc
     >>> import pandas as pd
@@ -20,7 +22,11 @@ Correspondance of myTAI and orthomap function
     >>>     gene_id=adata.var.index,
     >>>     gene_age=adata.var['Phylostrata'])
 
+.. code-block:: R
+
     PlotDistribution(PhyloExpressionSetExample)
+
+.. code-block:: Python
 
     >>> query_orthomap = pd.DataFrame(adata.var.index,
     >>>     columns=['GeneID'])
@@ -31,8 +37,12 @@ Correspondance of myTAI and orthomap function
     >>>     psname_col=None).plot.bar(y='counts', x='Phylostrata')
     >>> plt.show()
 
+.. code-block:: R
+
     REMatrix(PhyloExpressionSetExample)
     PlotRE(PhyloExpressionSetExample, Groups=list(1:12))
+
+.. code-block:: Python
 
     >>> rematrix = orthomap2tei.get_rematrix(
     >>>     adata=adata,
@@ -42,9 +52,13 @@ Correspondance of myTAI and orthomap function
     >>> rematrix.transpose().plot.line(cmap='Accent')
     >>> plt.show()
 
+.. code-block:: R
+
     pmatrix <- pMatrix(PhyloExpressionSetExample)
     pmatrix
     boxplot(pmatrix, outline=FALSE)
+
+.. code-block:: Python
 
     >>> pmatrix = orthomap2tei.get_pmatrix(
     >>>     adata=adata,
@@ -54,11 +68,15 @@ Correspondance of myTAI and orthomap function
     >>>     index=pmatrix.obs.index).transpose().boxplot(showfliers=False)
     >>> plt.show()
 
+.. code-block:: R
+
     marker_expression <- PlotGeneSet(ExpressionSet = PhyloExpressionSetExample,
         gene.set = PhyloExpressionSetExample[1:5, 2],
         get.subset = TRUE)
     PlotGeneSet(ExpressionSet = PhyloExpressionSetExample,
         gene.set = PhyloExpressionSetExample[1:5, 2])
+
+.. code-block:: Python
 
     >>> marker_genes = adata.var_names[:5]
     >>> marker_expression = pd.DataFrame(adata[:, marker_genes].X,
