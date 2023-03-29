@@ -135,4 +135,7 @@ Correspondance of myTAI and orthomap function
 .. code-block:: Python
 
     ematrix = orthomap2tei.get_ematrix(
-        adata=adata)
+        adata=adata,
+        group_by_var='Phylostrata')
+    ematrix.transpose().plot.line(cmap='Accent')
+    plt.show()
