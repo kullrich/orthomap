@@ -100,7 +100,7 @@ Correspondance of myTAI and orthomap function
         adata=adata,
         gene_id=adata.var.index,
         gene_age=adata.var['Phylostrata'])
-    pd.DataFrame(pmatrix.layers['pmatrix'],
+    pd.DataFrame(pmatrix.layers['pmatrix'].toarray(),
         index=pmatrix.obs.index).transpose().boxplot(showfliers=False)
     plt.show()
 
@@ -119,7 +119,7 @@ Correspondance of myTAI and orthomap function
 .. code-block:: Python
 
     marker_genes = adata.var_names[:5]
-    marker_expression = pd.DataFrame(adata[:, marker_genes].X,
+    marker_expression = pd.DataFrame(adata[:, marker_genes].X.toarray(),
         columns=marker_genes, index=adata.obs.index)
     marker_expression.plot.line(cmap='Accent')
     plt.show()
