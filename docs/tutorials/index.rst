@@ -21,3 +21,9 @@ Table of Contents
    commandline.qlin
    commandline.gtf2t2g
    commandline.of2orthomap
+
+.. toctree::
+   :caption: myTAI - function correspondance
+   :maxdepth: 1
+
+   mytai.rst

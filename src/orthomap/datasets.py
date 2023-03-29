@@ -390,3 +390,34 @@ def qiu22_mouse(datapath='.'):
                   out=datapath)
     adata = sc.read(qiu22_mouse_filename)
     return adata
+
+
+def mytai_example(datapath='.'):
+    """
+    expression count data from:
+
+    Drost, H.G., Janitza, P., Grosse, I. and Quint, M., 2017.
+    Cross-kingdom comparison of the developmental hourglass.
+    Current Opinion in Genetics & Development, 45, pp.69-75.
+
+    All files can be obtained from here:
+    https://doi.org/10.5281/zenodo.7242263
+
+    :param datapath: Path to safe dataset.
+    :return: AnnData object.
+
+    :type datapath: str
+    :rtype: AnnData
+
+    Example
+    -------
+    >>> from orthomap import datasets
+    >>> datasets.mytai_example(datapath='.')
+    """
+    mytai_example_filename = os.path.join(datapath,
+                                          'PhyloExpressionSetExample.h5ad')
+    mytai_example_url = 'https://zenodo.org/record/7782917/files/PhyloExpressionSetExample.h5ad'
+    wget.download(url=mytai_example_url,
+                  out=datapath)
+    adata = sc.read(mytai_example_filename)
+    return adata

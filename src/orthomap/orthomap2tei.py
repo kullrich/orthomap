@@ -14,6 +14,7 @@ import anndata as ad
 import scanpy as sc
 import seaborn as sns
 from alive_progress import alive_bar
+from statannot import add_stat_annotation
 
 
 def read_orthomap(orthomapfile):
@@ -624,8 +625,8 @@ def get_tei(adata,
                        normalize_total=normalize_total,
                        log1p=log1p,
                        target_sum=target_sum)
-    teimatrix = psd.dot(adata_counts.transpose()).transpose()
-    pmatrix = sumx_recd.dot(teimatrix)
+    wmatrix = psd.dot(adata_counts.transpose()).transpose()
+    pmatrix = sumx_recd.dot(wmatrix)
     tei = pmatrix.sum(1)
     tei_df = pd.DataFrame(tei,
                           columns=['tei'])
@@ -734,8 +735,8 @@ def get_pmatrix(adata,
                        normalize_total=normalize_total,
                        log1p=log1p,
                        target_sum=target_sum)
-    teimatrix = psd.dot(adata_counts.transpose()).transpose()
-    pmatrix = sumx_recd.dot(teimatrix)
+    wmatrix = psd.dot(adata_counts.transpose()).transpose()
+    pmatrix = sumx_recd.dot(wmatrix)
     adata_pmatrix = ad.AnnData(adata_counts)
     adata_pmatrix.layers[layer_name] = pmatrix
     adata_pmatrix.obs_names = adata.obs_names
@@ -764,6 +765,7 @@ def get_pstrata(adata,
                 layer=None,
                 cumsum=False,
                 group_by_obs=None,
+                obs_fillna='__NaN',
                 obs_type='mean',
                 standard_scale=None,
                 normalize_total=False,
@@ -797,6 +799,7 @@ def get_pstrata(adata,
     :param cumsum: Return cumsum.
     :param group_by_obs: AnnData observation to be used as a group to combine partial transcriptome evolutionary index
                          (TEI) values.
+    :param obs_fillna: Specify how NaN values should be named for observation.
     :param obs_type: Specify how values should be combined per observation group. Possible values are 'mean', 'median',
                      'sum', 'min' and 'max'.
     :param standard_scale: Wether or not to standardize the given axis (0: colums, 1: rows) between 0 and 1,
@@ -804,7 +807,9 @@ def get_pstrata(adata,
     :param normalize_total: Normalize counts per cell prior TEI calculation.
     :param log1p: Logarithmize the data matrix prior TEI calculation.
     :param target_sum: After normalization, each observation (cell) has a total count equal to target_sum.
-    :return:
+    :return: List of two DataFrame. First DataFrame contains the summed partial TEI values per strata.
+             Second DataFrame contains summed partial TEI values divided by the corresponding global TEI value,
+             which represent percentage of global TEI per strata.
 
     :type adata: AnnData
     :type gene_id: list
@@ -813,12 +818,13 @@ def get_pstrata(adata,
     :type layer: str
     :type cumsum: bool
     :type group_by_obs: str
+    :type obs_fillna: str
     :type obs_type: str
     :type standard_scale: int
     :type normalize_total: bool
     :type log1p: bool
     :type target_sum: float
-    :rtype: AnnData
+    :rtype: list
 
     Example
     -------
@@ -851,6 +857,8 @@ def get_pstrata(adata,
     >>>     gene_id=query_orthomap['GeneID'],
     >>>     gene_age=query_orthomap['Phylostratum'],
     >>>     group_by_obs='embryo.time.bin')
+    >>> # plot strata as lines
+    >>> packer19_small_pstrata_grouped[0].transpose().plot.line(stacked=True, cmap='Accent')
     >>> # plot heatmap using partial TEI values
     >>> sns.heatmap(packer19_small_pstrata_grouped[0], annot=True, cmap='viridis')
     >>> plt.show()
@@ -873,8 +881,8 @@ def get_pstrata(adata,
                        normalize_total=normalize_total,
                        log1p=log1p,
                        target_sum=target_sum)
-    teimatrix = psd.dot(adata_counts.transpose()).transpose()
-    pmatrix = sumx_recd.dot(teimatrix)
+    wmatrix = psd.dot(adata_counts.transpose()).transpose()
+    pmatrix = sumx_recd.dot(wmatrix)
     tei = pmatrix.sum(1)
     phylostrata = list(set(id_age_df_keep_subset['Phylostrata']))
     pstrata_norm_by_sumx = np.zeros((len(phylostrata), pmatrix.shape[0]))
@@ -898,31 +906,32 @@ def get_pstrata(adata,
         pstrata_norm_by_sumx_df = pstrata_norm_by_sumx_df.cumsum(0)
         pstrata_norm_by_pmatrix_sum_df = pstrata_norm_by_pmatrix_sum_df.cumsum(0)
     if group_by_obs is not None:
+        obs_group_nan = pd.DataFrame(adata.obs[group_by_obs].fillna(obs_fillna))
         if obs_type == 'mean':
             pstrata_norm_by_sumx_df =\
-                pstrata_norm_by_sumx_df.transpose().groupby(adata.obs[group_by_obs]).mean().transpose()
+                pstrata_norm_by_sumx_df.transpose().groupby(obs_group_nan[group_by_obs]).mean().transpose()
             pstrata_norm_by_pmatrix_sum_df =\
-                pstrata_norm_by_pmatrix_sum_df.transpose().groupby(adata.obs[group_by_obs]).mean().transpose()
+                pstrata_norm_by_pmatrix_sum_df.transpose().groupby(obs_group_nan[group_by_obs]).mean().transpose()
         if obs_type == 'median':
             pstrata_norm_by_sumx_df =\
-                pstrata_norm_by_sumx_df.transpose().groupby(adata.obs[group_by_obs]).median().transpose()
+                pstrata_norm_by_sumx_df.transpose().groupby(obs_group_nan[group_by_obs]).median().transpose()
             pstrata_norm_by_pmatrix_sum_df =\
-                pstrata_norm_by_pmatrix_sum_df.transpose().groupby(adata.obs[group_by_obs]).median().transpose()
+                pstrata_norm_by_pmatrix_sum_df.transpose().groupby(obs_group_nan[group_by_obs]).median().transpose()
         if obs_type == 'sum':
             pstrata_norm_by_sumx_df =\
-                pstrata_norm_by_sumx_df.transpose().groupby(adata.obs[group_by_obs]).sum().transpose()
+                pstrata_norm_by_sumx_df.transpose().groupby(obs_group_nan[group_by_obs]).sum().transpose()
             pstrata_norm_by_pmatrix_sum_df =\
-                pstrata_norm_by_pmatrix_sum_df.transpose().groupby(adata.obs[group_by_obs]).sum().transpose()
+                pstrata_norm_by_pmatrix_sum_df.transpose().groupby(obs_group_nan[group_by_obs]).sum().transpose()
         if obs_type == 'min':
             pstrata_norm_by_sumx_df =\
-                pstrata_norm_by_sumx_df.transpose().groupby(adata.obs[group_by_obs]).min().transpose()
+                pstrata_norm_by_sumx_df.transpose().groupby(obs_group_nan[group_by_obs]).min().transpose()
             pstrata_norm_by_pmatrix_sum_df =\
-                pstrata_norm_by_pmatrix_sum_df.transpose().groupby(adata.obs[group_by_obs]).min().transpose()
+                pstrata_norm_by_pmatrix_sum_df.transpose().groupby(obs_group_nan[group_by_obs]).min().transpose()
         if obs_type == 'max':
             pstrata_norm_by_sumx_df =\
-                pstrata_norm_by_sumx_df.transpose().groupby(adata.obs[group_by_obs]).max().transpose()
+                pstrata_norm_by_sumx_df.transpose().groupby(obs_group_nan[group_by_obs]).max().transpose()
             pstrata_norm_by_pmatrix_sum_df =\
-                pstrata_norm_by_pmatrix_sum_df.transpose().groupby(adata.obs[group_by_obs]).max().transpose()
+                pstrata_norm_by_pmatrix_sum_df.transpose().groupby(obs_group_nan[group_by_obs]).max().transpose()
     if standard_scale is not None:
         if standard_scale == 0:
             pstrata_norm_by_sumx_df = pstrata_norm_by_sumx_df.apply(_min_max_to_01,
@@ -1227,6 +1236,7 @@ def get_rematrix(adata,
                  use='counts',
                  var_type='mean',
                  group_by_obs=None,
+                 obs_fillna='__NaN',
                  obs_type='mean',
                  standard_scale=None,
                  normalize_total=False,
@@ -1269,11 +1279,13 @@ def get_rematrix(adata,
     :param keep: Either define 'min' (ascending pre-sorting) or 'max' (non-ascending pre-sorting) to keep duplicates.
     :param layer: Layer to work on instead of X. If None, X is used.
     :param use: Specify if counts from adata.X (default) should be combined per age group to calculate
-                the relative expression or if the corresponding 'pmatrix' or 'teimatrix' should be used.
+                the relative expression or if the corresponding 'pmatrix' (partial TEI values, see get_pmatrix)
+                or 'wmatrix' (gene aged weighted expression) should be used.
                 If layer is not None adata.X refers to adata.layers[layer].
     :param var_type: Specify how values should be combined per variable group. Possible values are 'mean', 'median',
                      'sum', 'min' and 'max'.
     :param group_by_obs: AnnData observation to be used as a group to combine count values.
+    :param obs_fillna: Specify how NaN values should be named for observation.
     :param obs_type: Specify how values should be combined per observation group. Possible values are 'mean', 'median',
                      'sum', 'min' and 'max'.
     :param standard_scale: Wether or not to standardize the given axis (0: colums, 1: rows) between 0 and 1,
@@ -1291,6 +1303,7 @@ def get_rematrix(adata,
     :type use: str
     :type var_type: str
     :type group_by_obs: str
+    :type obs_fillna: str
     :type obs_type: str
     :type standard_scale: int
     :type normalize_total: bool
@@ -1362,8 +1375,8 @@ def get_rematrix(adata,
                        normalize_total=normalize_total,
                        log1p=log1p,
                        target_sum=target_sum)
-    teimatrix = psd.dot(adata_counts.transpose()).transpose()
-    pmatrix = sumx_recd.dot(teimatrix)
+    wmatrix = psd.dot(adata_counts.transpose()).transpose()
+    pmatrix = sumx_recd.dot(wmatrix)
     tei = pmatrix.sum(1)
     phylostrata = list(set(id_age_df_keep_subset['Phylostrata']))
     rematrix = np.zeros((len(phylostrata), adata_counts.shape[0]))
@@ -1384,22 +1397,22 @@ def get_rematrix(adata,
             if var_type == 'max':
                 rematrix[pk_idx, ] = np.array(pmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .max(1).toarray()).flatten()
-    if use == 'teimatrix':
+    elif use == 'wmatrix':
         for pk_idx, pk in enumerate(phylostrata):
             if var_type == 'mean':
-                rematrix[pk_idx, ] = np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
+                rematrix[pk_idx, ] = np.array(wmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .mean(1)).flatten()
             if var_type == 'median':
                 rematrix[pk_idx, ] = np.apply_along_axis(
-                    np.median, 1, teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])].toarray()).flatten()
+                    np.median, 1, wmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])].toarray()).flatten()
             if var_type == 'sum':
-                rematrix[pk_idx, ] = np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
+                rematrix[pk_idx, ] = np.array(wmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .sum(1)).flatten()
             if var_type == 'min':
-                rematrix[pk_idx, ] = np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
+                rematrix[pk_idx, ] = np.array(wmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .min(1).toarray()).flatten()
             if var_type == 'max':
-                rematrix[pk_idx, ] = np.array(teimatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
+                rematrix[pk_idx, ] = np.array(wmatrix[:, id_age_df_keep_subset['Phylostrata'].isin([pk])]
                                               .max(1).toarray()).flatten()
     else:
         for pk_idx, pk in enumerate(phylostrata):
@@ -1424,21 +1437,22 @@ def get_rematrix(adata,
                           inplace=True)
     rematrix_df.columns = adata.obs_names
     if group_by_obs is not None:
+        obs_group_nan = pd.DataFrame(adata.obs[group_by_obs].fillna(obs_fillna))
         if obs_type == 'mean':
             rematrix_df = \
-                rematrix_df.transpose().groupby(adata.obs[group_by_obs]).mean().transpose()
+                rematrix_df.transpose().groupby(obs_group_nan[group_by_obs]).mean().transpose()
         if obs_type == 'median':
             rematrix_df = \
-                rematrix_df.transpose().groupby(adata.obs[group_by_obs]).median().transpose()
+                rematrix_df.transpose().groupby(obs_group_nan[group_by_obs]).median().transpose()
         if obs_type == 'sum':
             rematrix_df = \
-                rematrix_df.transpose().groupby(adata.obs[group_by_obs]).sum().transpose()
+                rematrix_df.transpose().groupby(obs_group_nan[group_by_obs]).sum().transpose()
         if obs_type == 'min':
             rematrix_df = \
-                rematrix_df.transpose().groupby(adata.obs[group_by_obs]).min().transpose()
+                rematrix_df.transpose().groupby(obs_group_nan[group_by_obs]).min().transpose()
         if obs_type == 'max':
             rematrix_df = \
-                rematrix_df.transpose().groupby(adata.obs[group_by_obs]).max().transpose()
+                rematrix_df.transpose().groupby(obs_group_nan[group_by_obs]).max().transpose()
     if standard_scale is not None:
         if standard_scale == 0:
             rematrix_df = rematrix_df.apply(_min_max_to_01,
@@ -1483,6 +1497,36 @@ def _get_min_max_array(ndarray,
         return ndarray[np.where(ndarray <= max_expr)]
     else:
         return ndarray
+
+
+def plot_group(df,
+               col_group=None,
+               col_fillna='__NaN',
+               row_group=None,
+               row_fillna='__NaN',
+               level='col'):
+    if col_group is not None:
+        col_group_df = pd.DataFrame(col_group.fillna(col_fillna))
+        col_group_df.columns = ['col_group']
+        if col_group_df.shape[0] != df.shape[1]:
+            print('col_group length and number of columns of df differ')
+            return
+        col_grouped = col_group_df.groupby('col_group')
+        col_groups = col_grouped.groups.keys()
+    if row_group is not None:
+        row_group_df = pd.DataFrame(row_group.fillna(row_fillna))
+        row_group_df.columns = ['row_group']
+        if row_group_df.shape[0] != df.shape[0]:
+            print('row_group length and number of rows of df differ')
+            return
+        row_grouped = row_group_df.groupby('row_group')
+        row_groups = row_grouped.groups.keys()
+    if col_group is not None and row_group is None:
+        col_dict = {}
+        for col_idx, (col_grp, col_grp_idx) in enumerate(col_grouped.indices.items()):
+            col_dict[col_idx] = df.iloc[:, col_grp_idx].apply(list, axis=1)
+
+
 
 
 def get_group_counts(adata,
