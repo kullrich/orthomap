@@ -3,6 +3,9 @@ References
 
 **Bibliography**
 
+Drost, H.G., Gabel, A., Liu, J., Quint, M. and Grosse, I. (2018). **myTAI: evolutionary transcriptomics with R.**
+*Bioinformatics*, **34(9)**. [https://doi.org/10.1093/bioinformatics/btx835](https://doi.org/10.1093/bioinformatics/btx835)
+
 Emms, D.M. and Kelly, S. (2019). **OrthoFinder: phylogenetic orthology inference for comparative genomics.** 
 *Genome biology*, **20(1)**. [https://doi.org/10.1186/s13059-019-1832-y](https://doi.org/10.1186/s13059-019-1832-y)
 

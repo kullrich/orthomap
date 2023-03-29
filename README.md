@@ -286,6 +286,8 @@ By contributing to this project, you agree to abide by its terms.
 
 ## References
 
+Drost, H.G., Gabel, A., Liu, J., Quint, M. and Grosse, I. (2018). **myTAI: evolutionary transcriptomics with R.** *Bioinformatics*, **34(9)**. [https://doi.org/10.1093/bioinformatics/btx835](https://doi.org/10.1093/bioinformatics/btx835)
+
 Emms, D.M. and Kelly, S. (2019). **OrthoFinder: phylogenetic orthology inference for comparative genomics.** *Genome biology*, **20(1)**. [https://doi.org/10.1186/s13059-019-1832-y](https://doi.org/10.1186/s13059-019-1832-y)
 
 Hernández-Plaza, A., Szklarczyk, D., Botas, J., Cantalapiedra, C.P., Giner-Lamia, J., Mende, D.R., Kirsch, R., Rattei, T., Letunic, I., Jensen, L.J. and Bork, P. (2023). **eggNOG 6.0: enabling comparative genomics across 12 535 organisms.** *Nucleic Acids Research*, **51(D1)**. [https://doi.org/10.1093/nar/gkac1022](https://doi.org/10.1093/nar/gkac1022)
