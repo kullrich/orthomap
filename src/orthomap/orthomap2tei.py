@@ -433,6 +433,50 @@ def add_gene_age2adata_var(adata,
     adata.var[var_name] = list(var_names_df['Phylostrata'])
 
 
+def _get_pairwise_comb_self(list1, exclude_self=True):
+    """
+    A helper function to get all pairwise combinations as a list of tuples.
+
+    :param list1: List to use for combinations.
+    :param exclude_self:
+    :return: A list of combinations as tuples.
+
+    :type list1: list
+    :type exclude_self: bool
+    :rtype: list
+    """
+    pairwise_comb = []
+    for l1_idx, l1 in enumerate(list1[:-1]):
+        for l2 in list1[l1_idx:]:
+            if exclude_self:
+                if l1 != l2:
+                    pairwise_comb.append((l1, l2))
+            else:
+                pairwise_comb.append((l1, l2))
+    if not exclude_self:
+        pairwise_comb.append((list1[-1], list1[-1]))
+    return pairwise_comb
+
+
+def _get_pairwise_comb(list1, list2):
+    """
+    A helper function to get all pairwise combinations from two lists.
+
+    :param list1: List1 to use for combinations.
+    :param list2: List1 to use for combinations.
+    :return: A list of combinations as tuples.
+
+    :type list1: list
+    :type list2: list
+    :rtype: list
+    """
+    pairwise_comb = []
+    for l1 in list1:
+        for l2 in list2:
+            pairwise_comb.append((l1, l2))
+    return pairwise_comb
+
+
 def get_tei(adata,
             gene_id,
             gene_age,
@@ -504,6 +548,7 @@ def get_tei(adata,
     >>> import scanpy as sc
     >>> import matplotlib.pyplot as plt
     >>> import seaborn as sns
+    >>> from statannot import add_stat_annotation
     >>> from orthomap import datasets, orthomap2tei
     >>> # download pre-calculated orthomap
     >>> #query_orthomap = orthomap2tei.read_orthomap(orthomapfile='Sun2021_Orthomap.tsv')
@@ -521,10 +566,21 @@ def get_tei(adata,
     >>>     add_var=True,
     >>>     add_obs=True)
     >>> # plot tei boxplot grouped by embryo.time.bin observation
-    >>> sns.boxplot(
+    >>> ax = sns.boxplot(
     >>>     x='embryo.time.bin',
     >>>     y='tei',
     >>>     data=packer19_small.obs)
+    >>> test_results = add_stat_annotation(
+    >>>     ax,
+    >>>     x='embryo.time.bin',
+    >>>     y='tei',
+    >>>     data=packer19_small.obs,
+    >>>     box_pairs=orthomap2tei._get_pairwise_comb_self(
+    >>>         list1=packer19_small.obs['embryo.time.bin'].value_counts().index),
+    >>>     test='Mann-Whitney',
+    >>>     text_format='star',
+    >>>     loc='outside',
+    >>>     verbose=2)
     >>> plt.show()
     >>> # plot tei violinplot for each cell.type grouped by cell.type and embryo.time.bin observation
     >>> # create new observation as a combination from embryo.time.bin and cell.type
@@ -1015,16 +1071,20 @@ def get_ematrix(adata,
     >>> packer19_small_ematrix_grouped = orthomap2tei.get_ematrix(
     >>>     adata=packer19_small,
     >>>     group_by_var='Phylostrata',
-    >>>     group_by_obs='cell.type')
+    >>>     group_by_obs='embryo.time.bin')
+    >>> packer19_small_ematrix_grouped.transpose().plot.line(stacked=True, cmap='Accent')
+    >>> plt.show()
     >>> sns.heatmap(packer19_small_ematrix_grouped, annot=True, cmap='viridis')
     >>> plt.show()
-    >>> # normalize counts
-    >>> packer19_small_ematrix_grouped = orthomap2tei.get_ematrix(
+    >>> # normalize counts (transcript per million - tpm)
+    >>> packer19_small_ematrix_grouped_tpm = orthomap2tei.get_ematrix(
     >>>     adata=packer19_small,
     >>>     group_by_var='Phylostrata',
-    >>>     group_by_obs='cell.type',
+    >>>     group_by_obs='embryo.time.bin',
     >>>     normalize_total=True)
-    >>> sns.heatmap(packer19_small_ematrix_grouped, annot=True, cmap='viridis')
+    >>> packer19_small_ematrix_grouped_tpm.transpose().plot.line(stacked=True, cmap='Accent')
+    >>> plt.show()
+    >>> sns.heatmap(packer19_small_ematrix_grouped_tpm, annot=True, cmap='viridis')
     >>> plt.show()
     """
     adata_counts = _get_counts(adata=adata,
