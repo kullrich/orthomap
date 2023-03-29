@@ -13,8 +13,8 @@ Correspondance of myTAI and orthomap function
     >>> import pandas as pd
     >>> import matplotlib.pyplot as plt
     >>> import seaborn as sns
-    >>> from orthomap import of2orthomap, orthomap2tei
-    >>> adata = sc.read('PhyloExpressionSetExample.h5ad')
+    >>> from orthomap import of2orthomap, orthomap2tei, datasets
+    >>> adata = datasets.mytai_example(datapath='.')
     >>> orthomap2tei.get_tei(
     >>>     adata=adata,
     >>>     gene_id=adata.var.index,
@@ -40,6 +40,7 @@ Correspondance of myTAI and orthomap function
     >>>     gene_age=adata.var['Phylostrata'],
     >>>     standard_scale=0)
     >>> rematrix.transpose().plot.line(cmap='Accent')
+    >>> plt.show()
 
     pmatrix <- pMatrix(PhyloExpressionSetExample)
     pmatrix
@@ -60,4 +61,7 @@ Correspondance of myTAI and orthomap function
         gene.set = PhyloExpressionSetExample[1:5, 2])
 
     >>> marker_genes = adata.var_names[:5]
-    >>> pd.DataFrame(adata[:, marker_genes].X, columns=marker_genes, index=)
+    >>> marker_expression = pd.DataFrame(adata[:, marker_genes].X,
+    >>>     columns=marker_genes, index=adata.obs.index)
+    >>> marker_expression.plot.line(cmap='Accent')
+    >>> plt.show()
