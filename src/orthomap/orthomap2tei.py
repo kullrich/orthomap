@@ -1499,48 +1499,123 @@ def _get_min_max_array(ndarray,
         return ndarray
 
 
-def plot_group(df,
-               col_group=None,
-               col_fillna='__NaN',
-               row_group=None,
-               row_fillna='__NaN',
-               level='col'):
+def mergeby_from_dataframe(df,
+                           col_group=None,
+                           col_fillna='__NaN',
+                           row_group=None,
+                           row_fillna='__NaN',
+                           level='col',
+                           min_expr=None,
+                           max_expr=None):
+    """
+    This function groups all values of an existing pandas.DataFrame as an array based on column or row groups.
+    The resulting pandas.DataFrame can be used to e.g. apply statistics or visualize the groups more easily.
+
+    :param df: DataFrame to be grouped
+    :param col_group: numpy.ndarray containing group assignment for columns
+                      (needs to be same length and same order as Columns of df).
+    :param col_fillna:
+    :param row_group: numpy.ndarray containing group assignment for row
+                      (needs to be same length and same order as Index of df).
+    :param row_fillna:
+    :param level: Specify if col or row should be used as primary group (only effects output orientation).
+    :param min_expr: Specify minimal expression to be included.
+    :param max_expr: Specify maximal expression to be included.
+    :return: List of two DataFrame. First DataFrame contains the grouped data (each cell contains a numpy.ndarray).
+             Second DataFrame contains original col and row assignment and groupings.
+
+    :type df: pandas.DataFrame
+    :type col_group: numpy.ndarray
+    :type col_fillna: str
+    :type row_group: numpy.ndarray
+    :type row_fillna: str
+    :type level: str
+    :type min_expr: float
+    :type max_expr: float
+    :rtype: list
+    """
+    col_assignment = pd.DataFrame(list(df.columns), columns=['orig.col'])
+    row_assignment = pd.DataFrame(list(df.index), columns=['orig.row'])
     if col_group is not None:
-        col_group_df = pd.DataFrame(col_group.fillna(col_fillna))
+        col_group_df = pd.DataFrame(col_group).fillna(col_fillna)
         col_group_df.columns = ['col_group']
         if col_group_df.shape[0] != df.shape[1]:
             print('col_group length and number of columns of df differ')
             return
         col_grouped = col_group_df.groupby('col_group')
         col_groups = col_grouped.groups.keys()
+        col_assignment['col_group'] = col_group_df['col_group']
     if row_group is not None:
-        row_group_df = pd.DataFrame(row_group.fillna(row_fillna))
+        row_group_df = pd.DataFrame(row_group).fillna(row_fillna)
         row_group_df.columns = ['row_group']
         if row_group_df.shape[0] != df.shape[0]:
             print('row_group length and number of rows of df differ')
             return
         row_grouped = row_group_df.groupby('row_group')
         row_groups = row_grouped.groups.keys()
-    if col_group is not None and row_group is None:
-        col_dict = {}
+        row_assignment['row_group'] = row_group_df['row_group']
+    if col_group is not None and row_group is not None:
+        merged_df = pd.DataFrame(row_groups).set_index(0)
         for col_idx, (col_grp, col_grp_idx) in enumerate(col_grouped.indices.items()):
-            col_dict[col_idx] = df.iloc[:, col_grp_idx].apply(list, axis=1)
+            merged_df[col_grp] = [[] for x in row_groups]
+            for row_idx, (row_grp, row_grp_idx) in enumerate(row_grouped.indices.items()):
+                merged_df.iat[row_idx, col_idx] = _get_min_max_array(df.iloc[row_grp_idx,
+                                                                             col_grp_idx].values.flatten(),
+                                                                     min_expr=min_expr,
+                                                                     max_expr=max_expr)
+        if level == 'col':
+            return [merged_df,
+                    col_assignment,
+                    row_assignment]
+        if level == 'row':
+            return [merged_df.transpose(),
+                    col_assignment,
+                    row_assignment]
+    if col_group is None and row_group is not None:
+        merged_df = pd.DataFrame(df.columns.values).set_index(0)
+        for row_idx, (row_grp, row_grp_idx) in enumerate(row_grouped.indices.items()):
+            merged_df[row_grp] = df.transpose().iloc[:, row_grp_idx].apply(np.array, axis=1).apply(_get_min_max_array,
+                                                                                                   min_expr=min_expr,
+                                                                                                   max_expr=max_expr)
+        if level == 'col':
+            return [merged_df.transpose(),
+                    col_assignment,
+                    row_assignment]
+        if level == 'row':
+            return [merged_df,
+                    col_assignment,
+                    row_assignment]
+    if col_group is not None and row_group is None:
+        merged_df = pd.DataFrame(df.index).set_index(df.index.name)
+        for col_idx, (col_grp, col_grp_idx) in enumerate(col_grouped.indices.items()):
+            merged_df[col_grp] = df.iloc[:, col_grp_idx].apply(np.array, axis=1).apply(_get_min_max_array,
+                                                                                       min_expr=min_expr,
+                                                                                       max_expr=max_expr)
+        if level == 'col':
+            return [merged_df,
+                    col_assignment,
+                    row_assignment]
+        if level == 'row':
+            return [merged_df.transpose(),
+                    col_assignment,
+                    row_assignment]
+    return [df,
+            col_assignment,
+            row_assignment]
 
 
-
-
-def get_group_counts(adata,
-                     layer=None,
-                     group_by_var=None,
-                     var_fillna='__NaN',
-                     group_by_obs=None,
-                     obs_fillna='__NaN',
-                     level='obs',
-                     min_expr=None,
-                     max_expr=None,
-                     normalize_total=False,
-                     log1p=False,
-                     target_sum=1e6):
+def mergeby_from_counts(adata,
+                        layer=None,
+                        group_by_var=None,
+                        var_fillna='__NaN',
+                        group_by_obs=None,
+                        obs_fillna='__NaN',
+                        level='obs',
+                        min_expr=None,
+                        max_expr=None,
+                        normalize_total=False,
+                        log1p=False,
+                        target_sum=1e6):
     """
     This function
 
