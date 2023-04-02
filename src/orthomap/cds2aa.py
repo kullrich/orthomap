@@ -544,7 +544,7 @@ transtable = {1: CodonTable.CodonTable(forward_table={
         'TAY': 'Y', 'TAR': '*',
         'TGY': 'C',
         'CTY': 'L', 'CTH': 'L',
-        'CCN': 'P', 'CCN': 'P', 'CCN': 'P',
+        'CCN': 'P', 'CCY': 'P', 'CCR': 'P',
         'CAY': 'H', 'CAR': 'Q',
         'CGN': 'R', 'CGY': 'R', 'CGR': 'R',
         'ATY': 'I', 'ATH': 'I',

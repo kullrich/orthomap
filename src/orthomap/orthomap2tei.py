@@ -1521,8 +1521,8 @@ def mergeby_from_dataframe(df,
     :param level: Specify if col or row should be used as primary group (only effects output orientation).
     :param min_expr: Specify minimal expression to be included.
     :param max_expr: Specify maximal expression to be included.
-    :return: List of two DataFrame. First DataFrame contains the grouped data (each cell contains a numpy.ndarray).
-             Second DataFrame contains original col and row assignment and groupings.
+    :return: List of three DataFrame. First DataFrame contains the grouped data (each cell contains a numpy.ndarray).
+             Second DataFrame contains original col and third row assignment and groupings.
 
     :type df: pandas.DataFrame
     :type col_group: numpy.ndarray
@@ -1534,6 +1534,7 @@ def mergeby_from_dataframe(df,
     :type max_expr: float
     :rtype: list
     """
+    merged_df = None
     col_assignment = pd.DataFrame(list(df.columns), columns=['orig.col'])
     row_assignment = pd.DataFrame(list(df.index), columns=['orig.row'])
     if col_group is not None:
@@ -1599,9 +1600,14 @@ def mergeby_from_dataframe(df,
             return [merged_df.transpose(),
                     col_assignment,
                     row_assignment]
-    return [df,
-            col_assignment,
-            row_assignment]
+    if level == 'col':
+        return [df,
+                col_assignment,
+                row_assignment]
+    if level == 'row':
+        return [df.transpose(),
+                col_assignment,
+                row_assignment]
 
 
 def mergeby_from_counts(adata,
@@ -1617,7 +1623,8 @@ def mergeby_from_counts(adata,
                         log1p=False,
                         target_sum=1e6):
     """
-    This function
+    This function groups all counts of an existing AnnData object as an array based on variable or observation groups.
+    The resulting pandas.DataFrame can be used to e.g. apply statistics or visualize the groups more easily.
 
     :param adata: The annotated data matrix of shape n_obs × n_vars. Rows correspond to cells and columns to genes.
     :param layer: Layer to work on instead of X. If None, X is used.
@@ -1625,13 +1632,14 @@ def mergeby_from_counts(adata,
     :param var_fillna: Specify how NaN values should be named for variable.
     :param group_by_obs: AnnData observation to be used as a group to combine count values.
     :param obs_fillna: Specify how NaN values should be named for observation.
-    :param level: Specify if observation or variable should be used as primary group.
+    :param level: Specify if observation or variable should be used as primary group (only effects output orientation).
     :param min_expr: Specify minimal expression to be included.
     :param max_expr: Specify maximal expression to be included.
     :param normalize_total: Normalize counts per cell.
     :param log1p: Logarithmize the data matrix.
     :param target_sum: After normalization, each observation (cell) has a total count equal to target_sum.
-    :return: Grouped counts.
+    :return: List of three DataFrame. First DataFrame contains the grouped data (each cell contains a numpy.ndarray).
+             Second DataFrame contains original variable and observation assignment and groupings.
 
     :type adata: AnnData
     :type layer: str
@@ -1645,7 +1653,7 @@ def mergeby_from_counts(adata,
     :type normalize_total: bool
     :type log1p: bool
     :type target_sum: float
-    :rtype: dictionary
+    :rtype: list
 
     Example
     -------
@@ -1656,72 +1664,97 @@ def mergeby_from_counts(adata,
     >>> # download and load scRNA data
     >>> #packer19_small = sc.read('packer19_small.h5ad')
     >>> packer19_small = datasets.packer19_small(datapath='.')
-    >>> # get group counts
-    >>> packer19_small_group_counts = orthomap2tei.get_group_counts(
+    >>> # add gene age values to existing adata object
+    >>> orthomap2tei.add_gene_age2adata_var(
     >>>     adata=packer19_small,
-    >>>     group_by_var='num_cells_expressed',
+    >>>     gene_id=query_orthomap['GeneID'],
+    >>>     gene_age=query_orthomap['Phylostratum'])
+    >>> # get group counts
+    >>> packer19_small_group_counts = orthomap2tei.mergeby_from_counts(
+    >>>     adata=packer19_small,
+    >>>     group_by_var='Phylostrata',
     >>>     group_by_obs='embryo.time.bin')
-    >>> sns.boxplot(packer19_small_group_counts)
-    >>> plt.show()
     """
-    group_counts_dict = {}
     adata_counts = _get_counts(adata=adata,
                                layer=layer,
                                normalize_total=normalize_total,
                                log1p=log1p,
                                target_sum=target_sum)
-    if group_by_var is not None:
-        var_groups = list(set(adata.var[group_by_var].fillna(var_fillna)))
+    merged_df = None
+    var_assignment = pd.DataFrame(list(adata.var.index), columns=['orig.var'])
+    obs_assignment = pd.DataFrame(list(adata.obs.index), columns=['orig.obs'])
     if group_by_obs is not None:
-        obs_groups = list(set(adata.obs[group_by_obs].fillna(obs_fillna)))
-    if group_by_var is not None and group_by_obs is not None:
+        obs_group_df = pd.DataFrame(adata.obs[group_by_obs]).fillna(obs_fillna)
+        if obs_group_df.shape[0] != adata_counts.shape[0]:
+            print('obs_group length and number of cells of adata_counts differ')
+            return
+        obs_grouped = obs_group_df.groupby(group_by_obs)
+        obs_groups = obs_grouped.groups.keys()
+        obs_assignment[group_by_obs] = np.array(obs_group_df[group_by_obs])
+    if group_by_var is not None:
+        var_group_df = pd.DataFrame(adata.var[group_by_var]).fillna(var_fillna)
+        if var_group_df.shape[0] != adata_counts.shape[1]:
+            print('var_group length and number of genes of adata_counts differ')
+            return
+        var_grouped = var_group_df.groupby(group_by_var)
+        var_groups = var_grouped.groups.keys()
+        var_assignment[group_by_var] = np.array(var_group_df[group_by_var])
+    if group_by_obs is not None and group_by_var is not None:
+        merged_df = pd.DataFrame(var_groups).set_index(0)
+        for obs_idx, (obs_grp, obs_grp_idx) in enumerate(obs_grouped.indices.items()):
+            merged_df[obs_grp] = [[] for x in var_groups]
+            for var_idx, (var_grp, var_grp_idx) in enumerate(var_grouped.indices.items()):
+                group_counts = _get_min_max_array(ndarray=np.array(adata_counts[:, var_grp_idx]
+                                                                   [obs_grp_idx, :].toarray()).flatten(),
+                                                  min_expr=min_expr,
+                                                  max_expr=max_expr)
+                merged_df.iat[var_idx, obs_idx] = group_counts
         if level == 'obs':
-            for obs_group_idx, obs_group in enumerate(obs_groups):
-                group_counts_list = []
-                group_counts_keys = []
-                for var_group_idx, var_group in enumerate(var_groups):
-                    group_counts = _get_min_max_array(ndarray=np.array(adata_counts[:, adata.var[group_by_var]
-                                                                       .fillna(var_fillna).isin([var_group])]
-                                                                       [adata.obs[group_by_obs].fillna(obs_fillna)
-                                                                       .isin([obs_group]), :].toarray()).flatten(),
-                                                      min_expr=min_expr,
-                                                      max_expr=max_expr)
-                    group_counts_list.append(group_counts)
-                    group_counts_keys.append(var_group)
-                group_counts_dict[obs_group] = [group_counts_list, group_counts_keys]
+            return [merged_df.transpose(),
+                    obs_assignment,
+                    var_assignment]
+        if level == 'row':
+            return [merged_df,
+                    obs_assignment,
+                    var_assignment]
+    if group_by_obs is not None and group_by_var is None:
+        merged_df = pd.DataFrame(list(obs_groups)).set_index(0)
+        for obs_idx, (obs_grp, obs_grp_idx) in enumerate(obs_grouped.indices.items()):
+            group_counts = _get_min_max_array(ndarray=np.array(adata_counts[obs_grp_idx, :].toarray()).flatten(),
+                                              min_expr=min_expr,
+                                              max_expr=max_expr)
+            merged_df[obs_grp] = group_counts
+        if level == 'obs':
+            return [merged_df.transpose(),
+                    obs_assignment,
+                    var_assignment]
         if level == 'var':
-            for var_group_idx, var_group in enumerate(var_groups):
-                group_counts_list = []
-                group_counts_keys = []
-                group_counts = None
-                for obs_group_idx, obs_group in enumerate(obs_groups):
-                    group_counts = _get_min_max_array(ndarray=np.array(adata_counts[:, adata.var[group_by_var]
-                                                                       .fillna(var_fillna).isin([var_group])]
-                                                                       [adata.obs[group_by_obs].fillna(obs_fillna)
-                                                                       .isin([obs_group]), :].toarray()).flatten(),
-                                                      min_expr=min_expr,
-                                                      max_expr=max_expr)
-                    group_counts_list.append(group_counts)
-                    group_counts_keys.append(obs_group)
-                group_counts_dict[var_group] = [group_counts_list,
-                                                group_counts_keys]
-    if group_by_var is None and group_by_obs is not None:
-        for obs_group_idx, obs_group in enumerate(obs_groups):
-            group_counts = _get_min_max_array(ndarray=np.array(adata_counts[adata.obs[group_by_obs]
-                                                               .fillna(obs_fillna).isin([obs_group]), :]
-                                                               .toarray()).flatten(),
+            return [merged_df,
+                    obs_assignment,
+                    var_assignment]
+    if group_by_obs is None and group_by_var is not None:
+        merged_df = pd.DataFrame(list(var_groups)).set_index(0)
+        for var_idx, (var_grp, var_grp_idx) in enumerate(var_grouped.indices.items()):
+            group_counts = _get_min_max_array(ndarray=np.array(adata_counts[:, var_grp_idx].toarray()).flatten(),
                                               min_expr=min_expr,
                                               max_expr=max_expr)
-            group_counts_dict[obs_group] = group_counts
-    if group_by_var is not None and group_by_obs is None:
-        for var_group_idx, var_group in enumerate(var_groups):
-            group_counts = _get_min_max_array(ndarray=np.array(adata_counts[:, adata.var[group_by_var]
-                                                               .fillna(var_fillna).isin([var_group])]
-                                                               .toarray()).flatten(),
-                                              min_expr=min_expr,
-                                              max_expr=max_expr)
-            group_counts_dict[var_group] = group_counts
-    return group_counts_dict
+            merged_df[var_grp] = group_counts
+        if level == 'obs':
+            return [merged_df.transpose(),
+                    obs_assignment,
+                    var_assignment]
+        if level == 'var':
+            return [merged_df,
+                    obs_assignment,
+                    var_assignment]
+    if level == 'obs':
+        return [pd.DataFrame.sparse.from_spmatrix(adata_counts).transpose(),
+                obs_assignment,
+                var_assignment]
+    if level == 'var':
+        return [pd.DataFrame.sparse.from_spmatrix(adata_counts),
+                obs_assignment,
+                var_assignment]
 
 
 def _get_min_max_expr_number(ndarray,
