@@ -425,7 +425,7 @@ def add_gene_age2adata_var(adata,
                                    dup_col='GeneID',
                                    sort_col='Phylostrata')
     # get overlap with var_names
-    var_names_df = pd.merge(left=pd.DataFrame(adata.var_names,
+    var_names_df = pd.merge(left=pd.DataFrame(adata.var_names.values,
                                               columns=['GeneID']),
                             right=id_age_df_keep,
                             how='left',
