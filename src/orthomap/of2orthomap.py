@@ -30,9 +30,9 @@ def define_parser():
     of2orthomap_example = '''of2orthomap example:
 
     # download OrthoFinder example:
-    $ wget https://github.com/kullrich/orthomap/raw/main/examples/ensembl_105_orthofinder_Orthogroups.GeneCount.tsv.zip
-    $ wget https://github.com/kullrich/orthomap/raw/main/examples/ensembl_105_orthofinder_Orthogroups.tsv.zip
-    $ wget https://github.com/kullrich/orthomap/raw/main/examples/ensembl_105_orthofinder_species_list.tsv
+    $ wget https://zenodo.org/record/7796253/files/ensembl_105_orthofinder_Orthogroups.GeneCount.tsv.zip
+    $ wget https://zenodo.org/record/7796253/files/ensembl_105_orthofinder_Orthogroups.tsv.zip
+    $ wget https://zenodo.org/record/7796253/files/ensembl_105_orthofinder_species_list.tsv
     
     # extract orthomap:
     $ of2orthomap -seqname Danio_rerio.GRCz11.cds.longest -qt 7955 \\

@@ -41,12 +41,10 @@ def ensembl105(datapath='.'):
                                'ensembl_105_orthofinder_Orthogroups.tsv.zip')
     sl_filename = os.path.join(datapath,
                                'ensembl_105_orthofinder_species_list.tsv')
-    oc_url = 'https://github.com/kullrich/orthomap/raw/main/examples/' \
-             'ensembl_105_orthofinder_Orthogroups.GeneCount.tsv.zip'
-    og_url = 'https://github.com/kullrich/orthomap/raw/main/examples/' \
-             'ensembl_105_orthofinder_Orthogroups.tsv.zip'
-    sl_url = 'https://github.com/kullrich/orthomap/raw/main/examples/' \
-             'ensembl_105_orthofinder_species_list.tsv'
+    oc_url = 'https://zenodo.org/record/7796253/files/ensembl_105_orthofinder_Orthogroups.GeneCount.tsv.zip'
+    og_url = 'https://zenodo.org/record/7796253/files/ensembl_105_orthofinder_Orthogroups.tsv.zip'
+    sl_url = 'https://zenodo.org/record/7796253/files/ensembl_105_orthofinder_species_list.tsv'
+
     wget.download(url=oc_url,
                   out=datapath)
     wget.download(url=og_url,
