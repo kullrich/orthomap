@@ -216,16 +216,16 @@ def get_plaza_orthomap(qt,
             if out:
                 if continuity:
                     [outhandle.write(x.replace(' ', '') + '\t' + og + '\t' + og_ps_join + '\t' +
-                                     str(og_continuity_score) + '\n') for x in og_tmp['gene_id']]
+                                     str(og_continuity_score) + '\n') for x in list(og_tmp['gene_id'])[0]]
                 else:
                     [outhandle.write(x.replace(' ', '') + '\t' + og + '\t' + og_ps_join + '\n')
-                     for x in og_tmp['gene_id']]
+                     for x in list(og_tmp['gene_id'])[0]]
         if continuity:
             omap += [[x.replace(' ', ''), og, og_ps[0], og_ps[1], og_ps[2], og_continuity_score]
-                     for x in og_tmp[2]]
+                     for x in list(og_tmp['gene_id'])[0]]
         else:
             omap += [[x.replace(' ', ''), og, og_ps[0], og_ps[1], og_ps[2]]
-                     for x in og_tmp['gene_id']]
+                     for x in list(og_tmp['gene_id'])[0]]
     if out:
         outhandle.close()
     omap_df = pd.DataFrame(omap)
