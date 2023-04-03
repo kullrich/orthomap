@@ -27,11 +27,11 @@ More installation options can be found [here](https://orthomap.readthedocs.io/en
 We recommend installing `orthomap` in an independent conda environment to avoid dependent software conflicts.
 Please make a new python environment for `orthomap` and install dependent libraries in it.
 
-The environment is created with conda create in which `orthomap` is installed.
-
 If you do not have a working installation of Python 3.8 (or later),
 consider installing [Anaconda](https://docs.anaconda.com/anaconda/install/) or
-[Miniconda](https://docs.conda.io/en/latest/miniconda.html). Then run:
+[Miniconda](https://docs.conda.io/en/latest/miniconda.html).
+
+To create and activate the environment run:
 
 ```shell
 $ git clone https://github.com/kullrich/orthomap.git
@@ -40,7 +40,7 @@ $ conda env create --file environment.yml
 $ conda activate orthomap_env
 ```
 
-Install `orthomap` via [PyPI](Install orthomap via PyPI:):
+Then to install `orthomap` via PyPI:
 
 ```shell
 $ pip install orthomap
@@ -239,6 +239,15 @@ Install `orthomap` into your current python environment:
 
 ```shell
 $ pip install -e .
+```
+
+## Testing `orthomap`
+
+`orthmap` has an extensive test suite which is run each time a new contribution
+is made to the repository. To run the test suite locally run:
+
+```shell
+$ pytest tests
 ```
 
 ## Contributing Code
