@@ -76,7 +76,7 @@ def _get_species_tax_id(species_name_list, species_list):
     :param species_list: DataFrame with plaza species information.
     :return: List of species taxID.
 
-    :type species_name: list
+    :type species_name_list: list
     :type species_list: pandas.DataFrame
     :rtype: list
     """
