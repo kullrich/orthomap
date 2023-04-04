@@ -38,11 +38,9 @@ Table of Contents
    :maxdepth: 1
 
    installation/index
-   modules/index
-   changelog/index
-   license/index
    citation/index
    contact/index
+   license/index
    references/index
 
 .. toctree::
@@ -50,6 +48,13 @@ Table of Contents
     :caption: Tutorials
 
     tutorials/index
+
+.. toctree::
+   :caption: API
+   :maxdepth: 1
+
+   modules/index
+   changelog/index
 
 .. |GitHub Workflow Status| image:: https://img.shields.io/github/actions/workflow/status/kullrich/orthomap/build_check.yml?branch=main
    :target: https://github.com/kullrich/orthomap/actions/workflows/build_check.yml
