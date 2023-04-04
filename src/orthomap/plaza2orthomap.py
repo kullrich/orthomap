@@ -106,7 +106,7 @@ def get_plaza_orthomap(qt,
     :param continuity: Specify if continuity score should be calculated.
     :param overwrite: Specify if output should be overwritten.
     :return: A list of results such as:
-             orthomap, species_list, younges_common_counts
+             orthomap, species_list, youngest_common_counts
 
     :type qt: str
     :type og: str

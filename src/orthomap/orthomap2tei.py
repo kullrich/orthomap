@@ -84,8 +84,8 @@ def replace_by(x_orig,
     <xmatch[0]> is the original value and <xreplace[0]> is the corresponding new value.
 
     :param x_orig: List of original values to be used for sorting.
-    :param xmatch: List of matches to the original values. Each xmatch position pairs with xrepalce position.
-    :param xreplace: List of replace values. Each xreplace positon pairs with xmatch position.
+    :param xmatch: List of matches to the original values. Each xmatch position pairs with xreplace position.
+    :param xreplace: List of replace values. Each xreplace position pairs with xmatch position.
     :return: Replacement ordered by the original values.
 
     :type x_orig: list
@@ -176,7 +176,7 @@ def _split_gene_id_by_gene_age(gene_id,
     :type gene_age: list
     :type keep: str
     :type adata: AnnData
-    :rtype: dictonary
+    :rtype: dictionary
 
     Example
     -------

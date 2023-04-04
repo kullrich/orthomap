@@ -73,7 +73,7 @@ def get_qlin(ncbi=None,
     :param qt: The taxID of the queried species.
     :param quiet: Specify if output should be quiet.
     :return: A list of information for the queried species such as:
-             query name, query taxID, query lineage, query lineage dictonary, query lineage zip,
+             query name, query taxID, query lineage, query lineage dictionary, query lineage zip,
              query lineage names, reverse query lineage, query kingdom
 
     :type ncbi: ete3.NCBITaxa

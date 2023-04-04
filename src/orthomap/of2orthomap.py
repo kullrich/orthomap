@@ -101,7 +101,7 @@ def get_orthomap(seqname,
     :param continuity: Specify if continuity score should be calculated.
     :param overwrite: Specify if output should be overwritten.
     :return: A list of results such as:
-             orthomap, species_list, younges_common_counts
+             orthomap, species_list, youngest_common_counts
 
     :type seqname: str
     :type qt: str

@@ -25,7 +25,7 @@ def ensembl105(datapath='.'):
     https://doi.org/10.5281/zenodo.7242263
 
     :param datapath: Path to safe dataset.
-    :return: Path to Orthogroups.GeneCount file, OrthoGroups file and sepcies list file.
+    :return: Path to Orthogroups.GeneCount file, OrthoGroups file and species list file.
 
     :type datapath: str
     :rtype: list of str
