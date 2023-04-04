@@ -95,7 +95,7 @@ def _information_based_on_key(infosplit,
     :param q: Specify if output should be quiet.
     :param lines: Line of GTF file.
     :param version: Specify if gene/transcript/protein version should be appended.
-    :return: A list of parssed information from a GTF info field such as:
+    :return: A list of parsed information from a GTF info field such as:
              infos, output
 
     :type infosplit: list

@@ -1,6 +1,7 @@
 # Docs
 /docs/_build/
 /docs/generated/
+/docs/notebooks/data/
 /docs/data/
 
 # tests
