@@ -177,7 +177,7 @@ def get_plaza_orthomap(qt,
     continuity_dict = {}
     for og in ogs_grouped_qt.index:
         og_hits = np.sort(
-            list(set([x[0] for x in ogs_grouped_qt[ogs_grouped_qt.index.isin([og])]['species'].to_dict().values()])))
+            list(set(list(ogs_grouped_qt[ogs_grouped_qt.index.isin([og])]['species'].to_dict().values())[0])))
         # get list of the youngest common between query and all other species
         og_hits_youngest_common = list(species_list_df.youngest_common[
                                            [x for x, y in enumerate(species_list_df.taxID)
