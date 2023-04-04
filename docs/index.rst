@@ -19,7 +19,9 @@ What is orthomap?
 
 - extract orthologous maps from `OrthoFinder <https://github.com/davidemms/OrthoFinder>`_ results.
 
-- extract orthologous maps from `eggnog_6.0 <http://eggnog6.embl.de/download/eggnog_6.0/>`_ results.
+- extract orthologous maps from `eggnog_6.0 <https://eggnog6.embl.de/download/eggnog_6.0/>`_ results.
+
+- extract orthologous maps from `PLAZA <https://bioinformatics.psb.ugent.be/plaza/>`_ results.
 
 - extract gene and transcript information from GTF files (`GTF File Format <https://www.ensembl.org/info/website/upload/gff.html>`_).
 
