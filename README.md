@@ -207,7 +207,7 @@ optional arguments:
   -h, --help            show this help message and exit
 
 sub-commands:
-  {cds2aa,gtf2t2g,ncbitax,of2orthomap,qlin}
+  {cds2aa,gtf2t2g,ncbitax,of2orthomap,plaza2orthomap,qlin}
                         sub-commands help
     cds2aa              translate CDS to AA and optional retain longest
                         isoform <cds2aa -h>
@@ -216,6 +216,8 @@ sub-commands:
     ncbitax             update local ncbi taxonomy database <ncbitax -h>
     of2orthomap         extract orthomap from OrthoFinder output for query
                         species <orthomap -h>
+    plaza2orthomap      extract orthomap from PLAZA gene family data for query
+                        species <of2orthomap -h>
     qlin                get query lineage based on ncbi taxonomy <qlin -h>
 ```
 

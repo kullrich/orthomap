@@ -41,13 +41,16 @@ Table of Contents
    :caption: Command line
    :maxdepth: 1
 
-   commandline.ncbitax
-   commandline.qlin
+   commandline.cds2aa
    commandline.gtf2t2g
+   commandline.ncbitax
    commandline.of2orthomap
+   commandline.plaza2orthomap
+   commandline.qlin
+
 
 .. toctree::
    :caption: myTAI - function correspondance
    :maxdepth: 1
 
-   mytai.rst
+   mytai
