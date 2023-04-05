@@ -3,9 +3,20 @@ References
 
 **Bibliography**
 
+Briggs, J.A., Weinreb, C., Wagner, D.E., Megason, S., Peshkin, L., Kirschner, M.W. and Klein, A.M. (2018).
+**The dynamics of gene expression in vertebrate embryogenesis at single-cell resolution.** *Science*, **360(6392)**. [https://doi.org/10.1126/science.aar5780](https://doi.org/10.1126/science.aar5780)
+
 Cazet, J., Siebert, S., Little, H.M., Bertemes, P., Primack, A.S., Ladurner, P., Achrainer, M., Fredriksen,
 M.T., Moreland, R.T., Singh, S. and Zhang, S. (2022). **New Hydra genomes reveal conserved principles of hydrozoan
 transcriptional regulation.** bioRxiv. [https://doi.org/10.1101/2022.06.21.496857](https://doi.org/10.1101/2022.06.21.496857)
+
+Cao, J., Spielmann, M., Qiu, X., Huang, X., Ibrahim, D.M., Hill, A.J., Zhang, F., Mundlos, S., Christiansen, L.,
+Steemers, F.J. and Trapnell, C. (2019). **The single-cell transcriptional landscape of mammalian organogenesis.**
+*Nature*, **566(7745)**. [https://doi.org/10.1038/s41586-019-0969-x](https://doi.org/10.1038/s41586-019-0969-x)
+
+Cheng, S., Pei, Y., He, L., Peng, G., Reinius, B., Tam, P.P., Jing, N. and Deng, Q. (2019). **Single-cell RNA-seq
+reveals cellular heterogeneity of pluripotency transition and X chromosome dynamics during early mouse development.**
+*Cell reports*, **26(10)**. [https://doi.org/10.1016/j.celrep.2019.02.031](https://doi.org/10.1016/j.celrep.2019.02.031)
 
 Domazet-Loso, T., Brajkovic J. and Tautz D. (2007). **A phylostratigraphy approach to uncover the genomic history of
 major adaptations in metazoan lineages.** *Trends in Genetics*, **23(11)**. [https://doi.org/10.1016/j.tig.2007.08.014](https://doi.org/10.1016/j.tig.2007.08.014)
@@ -60,10 +71,18 @@ reduction.** *arXiv preprint*, **arXiv:1802.03426**. [https://doi.org/10.48550/a
 McKinney, W. (2011). **pandas: a foundational python library for data analysis and statistics.**
 *Python for high performance and scientific computing*, **14(9)**. [https://www.dlr.de/sc/portaldata/15/resources/dokumente/pyhpc2011/submissions/pyhpc2011_submission_9.pdf](https://www.dlr.de/sc/portaldata/15/resources/dokumente/pyhpc2011/submissions/pyhpc2011_submission_9.pdf)
 
+Mohammed, H., Hernando-Herraez, I., Savino, A., Scialdone, A., Macaulay, I., Mulas, C., Chandra, T., Voet, T.,
+Dean, W., Nichols, J. and Marioni, J.C. (2017). **Single-cell landscape of transcriptional heterogeneity and cell fate
+decisions during mouse early gastrulation.** *Cell reports*, **20(5)**. [https://doi.org/10.1016/j.celrep.2017.07.009](https://doi.org/10.1016/j.celrep.2017.07.009)
+
 Packer, J.S., Zhu, Q., Huynh, C., Sivaramakrishnan, P., Preston, E., Dueck, H., Stefanik, D.,
 Tan, K., Trapnell, C., Kim, J. and Waterston, R.H., (2019).
 **A lineage-resolved molecular atlas of C. elegans embryogenesis at single-cell resolution.**
 *Science*, **365(6459)**. [https://doi.org/10.1126/science.aax1971](https://doi.org/10.1126/science.aax1971)
+
+Pijuan-Sala, B., Griffiths, J.A., Guibentif, C., Hiscock, T.W., Jawaid, W., Calero-Nieto, F.J., Mulas, C.,
+Ibarra-Soria, X., Tyser, R.C., Ho, D.L.L. and Reik, W. (2019). **A single-cell molecular map of mouse gastrulation and
+early organogenesis.** *Nature*, **566(7745)**. [https://doi.org/10.1038/s41586-019-0933-9](https://doi.org/10.1038/s41586-019-0933-9)
 
 Qiu, C., Cao, J., Martin, B.K., Li, T., Welsh, I.C., Srivatsan, S., Huang, X., Calderon,
 D., Noble, W.S., Disteche, C.M. and Murray, S.A. (2022). 
