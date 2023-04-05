@@ -629,7 +629,7 @@ def get_tei(adata,
     pmatrix = sumx_recd.dot(wmatrix)
     tei = pmatrix.sum(1)
     tei_df = pd.DataFrame(tei,
-                          columns=['tei'])
+                          columns=[obs_name])
     tei_df.index = adata.obs_names
     if add_var:
         add_gene_age2adata_var(adata=adata,
