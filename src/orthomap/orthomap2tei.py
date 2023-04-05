@@ -1871,22 +1871,25 @@ def get_e50(adata,
 
 def get_bins(tobin_df,
              bincol,
-             q=[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]):
+             q=[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+             method='median_unbiased'):
     """
     This function sorts values of a DataFrame column and return the binary categories in which they fall.
 
     :param tobin_df: DataFrame which contains the column that should be binned.
     :param bincol: Name of the columns that should be binned.
     :param q: Array of qunatiles to be used for binning.
+    :param method: This parameter specifies the method to use for estimating the quantile.
     :return: DataFrame with additional column which contain the binned values as categories.
 
     :type tobin_df: pandas.DataFrame
     :type bincol: str
     :type q: list
+    :type method: str
     :rytpe: pandas.DataFrame
     """
     tobin_df[bincol+'_binned'] = np.nan
-    qs = np.nanquantile(a=tobin_df[bincol], q=q)
+    qs = np.nanquantile(a=tobin_df[bincol], q=q, method=method)
     for qs_idx, qs_val in enumerate(qs):
         if qs_idx+1 == len(qs):
             continue
