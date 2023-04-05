@@ -28,6 +28,12 @@ Code and data availability
 - You can download the demo input data using `orthomap` data loading function in the notebooks.
   `see here <https://orthomap.readthedocs.io/en/latest/modules/orthomap.html#modules-for-dataset-downloads>`_)
 
+Getting started
+---------------
+
+If you are running `orthomap` for the first time, we recommend getting started with the :doc:`nematode_example` and
+then, proceed to :doc:`zebrafish_example`.
+
 Table of Contents
 -----------------
 
