@@ -1894,10 +1894,10 @@ def get_bins(tobin_df,
         if qs_idx == 0:
             tobin_df.loc[tobin_df[bincol] < qs[qs_idx], [bincol + '_binned']] = qs_idx + 1
             tobin_df.loc[np.bitwise_and(tobin_df[bincol] >= qs[qs_idx], tobin_df[bincol] < qs[qs_idx + 1]), [
-                bincol + '_binned']] = qs_idx + 1
+                bincol + '_binned']] = qs_idx + 2
         elif qs_idx+1 == len(qs):
-            tobin_df.loc[tobin_df[bincol] >= qs[qs_idx], [bincol + '_binned']] = qs_idx + 1
+            tobin_df.loc[tobin_df[bincol] >= qs[qs_idx], [bincol + '_binned']] = qs_idx + 2
         else:
             tobin_df.loc[np.bitwise_and(tobin_df[bincol] >= qs[qs_idx], tobin_df[bincol] < qs[qs_idx + 1]), [
-                bincol + '_binned']] = qs_idx + 1
+                bincol + '_binned']] = qs_idx + 2
     return tobin_df
