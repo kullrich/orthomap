@@ -13,7 +13,7 @@ License: GPL-3
 import os
 import sys
 import argparse
-from orthomap import cds2aa, gtf2t2g, ncbitax, of2orthomap, qlin
+from orthomap import cds2aa, gtf2t2g, ncbitax, of2orthomap, plaza2orthomap, qlin
 
 
 def define_parser():
@@ -62,15 +62,29 @@ def define_parser():
     of2orthomap_example = '''of2orthomap example:
 
     # download OrthoFinder example:
-    $ wget https://github.com/kullrich/orthomap/raw/main/examples/ensembl_105_orthofinder_Orthogroups.GeneCount.tsv.zip
-    $ wget https://github.com/kullrich/orthomap/raw/main/examples/ensembl_105_orthofinder_Orthogroups.tsv.zip
-    $ wget https://github.com/kullrich/orthomap/raw/main/examples/ensembl_105_orthofinder_species_list.tsv
+    $ wget https://zenodo.org/record/7796253/files/ensembl_105_orthofinder_Orthogroups.GeneCount.tsv.zip
+    $ wget https://zenodo.org/record/7796253/files/ensembl_105_orthofinder_Orthogroups.tsv.zip
+    $ wget https://zenodo.org/record/7796253/files/ensembl_105_orthofinder_species_list.tsv
 
     # extract orthomap:
     $ of2orthomap -seqname Danio_rerio.GRCz11.cds.longest -qt 7955 \\
       -sl ensembl_105_orthofinder_species_list.tsv \\
       -oc ensembl_105_orthofinder_Orthogroups.GeneCount.tsv.zip \\
       -og ensembl_105_orthofinder_Orthogroups.tsv.zip
+    '''
+    plaza2orthomap_example = '''plaza2orthomap example:
+    
+    # using Orthologous gene family 
+    $ plaza2orthomap -qt 3702 \\
+      -sl species_information.csv \\
+      -og genefamily_data.ORTHOFAM.csv \\
+      -out 3702.orthofam.orthomap
+    
+    # using Homologous gene family 
+    $ plaza2orthomap -qt 3702 \\
+      -sl species_information.csv \\ 
+      -og genefamily_data.HOMFAM.csv \\
+      -out 3702.homfam.orthomap
     '''
     qlin_example = '''qlin example:
 
@@ -98,6 +112,11 @@ def define_parser():
                                                     '<of2orthomap -h>',
                                                epilog=of2orthomap_example,
                                                formatter_class=argparse.RawDescriptionHelpFormatter)
+    plaza2orthomap_parser = subparsers.add_parser(name='plaza2orthomap',
+                                                  help='extract orthomap from PLAZA gene family data for query species '
+                                                       '<of2orthomap -h>',
+                                                  epilog=plaza2orthomap_example,
+                                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     qlin_parser = subparsers.add_parser(name='qlin',
                                         help='get query lineage based on ncbi taxonomy <qlin -h>',
                                         epilog=qlin_example,
@@ -106,6 +125,7 @@ def define_parser():
     gtf2t2g.add_argparse_args(parser=gtf2t2g_parser)
     ncbitax.add_argparse_args(parser=ncbitax_parser)
     of2orthomap.add_argparse_args(parser=of2orthomap_parser)
+    plaza2orthomap.add_argparse_args(parser=plaza2orthomap_parser)
     qlin.add_argparse_args(parser=qlin_parser)
     return parser
 
@@ -188,6 +208,28 @@ def main():
                                  quiet=False,
                                  continuity=True,
                                  overwrite=args.overwrite)
+    if args.subcommand == 'plaza2orthomap':
+        print(args)
+        if not args.qt:
+            parser.print_help()
+            print('\nError <-qt>: Please specify query species taxID')
+            sys.exit()
+        if not args.sl:
+            parser.print_help()
+            print('\nError <-sl>: Please specify PLAZA species information file <species_information.csv>')
+            sys.exit()
+        if not args.og:
+            parser.print_help()
+            print('\nError <-og>: Please specify PLAZA gene family file <genefamily_data.ORTHOFAM.csv> or '
+                  '<genefamily_data.HOMFAM.csv>')
+            sys.exit()
+        plaza2orthomap.get_plaza_orthomap(qt=args.qt,
+                                          sl=args.sl,
+                                          og=args.og,
+                                          out=args.out,
+                                          quiet=False,
+                                          continuity=True,
+                                          overwrite=args.overwrite)
     if args.subcommand == 'qlin':
         print(args)
         if not args.q and not args.qt:

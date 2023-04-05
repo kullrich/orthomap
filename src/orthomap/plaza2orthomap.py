@@ -29,15 +29,15 @@ def define_parser():
     plaza2orthomap_example = '''example:
 
     # using Orthologous gene family 
-    $ plaza2orthomap -qt 3702 -og genefamily_data.ORTHOFAM.csv -sl species_information.csv -out 3702.orthofam.orthomap
+    $ plaza2orthomap -qt 3702 -sl species_information.csv -og genefamily_data.ORTHOFAM.csv -out 3702.orthofam.orthomap
     
     # using Homologous gene family 
-    $ plaza2orthomap -qt 3702 -og genefamily_data.HOMFAM.csv -sl species_information.csv -out 3702.homfam.orthomap
+    $ plaza2orthomap -qt 3702 -sl species_information.csv -og genefamily_data.HOMFAM.csv -out 3702.homfam.orthomap
     '''
     parser = argparse.ArgumentParser(
         prog='plaza2orthomap',
         usage='%(prog)s [options] [<arguments>...]',
-        description='extract orthomap from plaza gene family data for query species',
+        description='extract orthomap from PLAZA gene family data for query species',
         epilog=plaza2orthomap_example,
         formatter_class=argparse.RawDescriptionHelpFormatter)
     add_argparse_args(parser=parser)
@@ -54,11 +54,11 @@ def add_argparse_args(parser: argparse.ArgumentParser):
     """
     parser.add_argument('-qt',
                         help='query species taxID (e.g. use <orthomap qlin -h> to get taxID)')
-    parser.add_argument('-og',
-                        help='specify plaza gene family file <genefamily_data.ORTHOFAM.csv> or '
-                             'genefamily_data.HOMFAM.csv')
     parser.add_argument('-sl',
-                        help='specify plaza species information file <species_information.csv>')
+                        help='specify PLAZA species information file <species_information.csv>')
+    parser.add_argument('-og',
+                        help='specify PLAZA gene family file <genefamily_data.ORTHOFAM.csv> or '
+                             'genefamily_data.HOMFAM.csv')
     parser.add_argument('-out',
                         help='specify output file <orthomap.tsv> (default: orthomap.tsv)',
                         default='orthomap.tsv')
@@ -70,10 +70,10 @@ def add_argparse_args(parser: argparse.ArgumentParser):
 
 def _get_species_tax_id(species_name_list, species_list):
     """
-    A helper function to map plaza species short name and species taxID.
+    A helper function to map PLAZA species short name and species taxID.
 
-    :param species_name_list: List of plaza species short names.
-    :param species_list: DataFrame with plaza species information.
+    :param species_name_list: List of PLAZA species short names.
+    :param species_list: DataFrame with PLAZA species information.
     :return: List of species taxID.
 
     :type species_name_list: list
@@ -89,18 +89,18 @@ def _get_species_tax_id(species_name_list, species_list):
 
 
 def get_plaza_orthomap(qt,
-                       og,
                        sl,
+                       og,
                        out=None,
                        quiet=False,
                        continuity=True,
                        overwrite=True):
     """
-    This function return an orthomap for a given query species and plaza gene family data.
+    This function return an orthomap for a given query species and PLAZA gene family data.
 
     :param qt: Query species taxID.
-    :param og: Path to plaza gene families <genefamily_data.ORTHOFAM.csv> file.
-    :param sl: Path to plaza species information <species_information.csv> file.
+    :param sl: Path to PLAZA species information <species_information.csv> file.
+    :param og: Path to PLAZA gene families <genefamily_data.ORTHOFAM.csv> file.
     :param out: Path to output file.
     :param quiet: Specify if output should be quiet.
     :param continuity: Specify if continuity score should be calculated.
@@ -109,8 +109,8 @@ def get_plaza_orthomap(qt,
              orthomap, species_list, youngest_common_counts
 
     :type qt: str
-    :type og: str
     :type sl: str
+    :type og: str
     :type out: str
     :type quiet: bool
     :type continuity: bool
@@ -138,7 +138,7 @@ def get_plaza_orthomap(qt,
     species_list.columns = ['species', 'common_name', 'tax_id', 'source', 'data_provider', 'pubmed_id']
     qt_species = list(species_list['species'][species_list['tax_id'] == int(qt)])
     if len(qt_species) == 0:
-        print('\nError <-qt>: query species taxID not in plaza results, please check taxID.')
+        print('\nError <-qt>: query species taxID not in PLAZA results, please check taxID.')
         sys.exit()
     ogs = pd.DataFrame(pd.read_csv(og, sep='\t', header=None, comment='#'))
     ogs.columns = ['gf_id', 'species', 'gene_id']
@@ -259,18 +259,18 @@ def main():
         parser.print_help()
         print('\nError <-qt>: Please specify query species taxID')
         sys.exit()
-    if not args.og:
-        parser.print_help()
-        print('\nError <-og>: Please specify plaza gene family file <genefamily_data.ORTHOFAM.csv> or '
-              '<genefamily_data.HOMFAM.csv>')
-        sys.exit()
     if not args.sl:
         parser.print_help()
-        print('\nError <-sl>: Please specify plaza species information file <species_information.csv>')
+        print('\nError <-sl>: Please specify PLAZA species information file <species_information.csv>')
+        sys.exit()
+    if not args.og:
+        parser.print_help()
+        print('\nError <-og>: Please specify PLAZA gene family file <genefamily_data.ORTHOFAM.csv> or '
+              '<genefamily_data.HOMFAM.csv>')
         sys.exit()
     get_plaza_orthomap(qt=args.qt,
-                       og=args.og,
                        sl=args.sl,
+                       og=args.og,
                        out=args.out,
                        overwrite=args.overwrite)
 
