@@ -1878,7 +1878,7 @@ def get_bins(tobin_df,
 
     :param tobin_df: DataFrame which contains the column that should be binned.
     :param bincol: Name of the columns that should be binned.
-    :param q: Array of qunatiles to be used for binning.
+    :param q: Array of inner quantiles to be used for binning. Border quantiles will be set automatically.
     :param method: This parameter specifies the method to use for estimating the quantile.
     :return: DataFrame with additional column which contain the binned values as categories.
 
