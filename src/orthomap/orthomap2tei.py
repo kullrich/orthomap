@@ -1888,11 +1888,15 @@ def get_bins(tobin_df,
     :type method: str
     :rytpe: pandas.DataFrame
     """
+    if len(q) == 0:
+        print('at least provide one quantile value')
     tobin_df[bincol + '_binned'] = np.nan
     tobin_df[bincol + '_bins'] = np.nan
     qs = np.nanquantile(a=tobin_df[bincol], q=q, method=method)
     for qs_idx, qs_val in enumerate(qs):
         if qs_idx == 0:
+            if qs[qs_idx] == qs[qs_idx + 1]:
+                print('bin cutoff neighbors are equal, please reduce bin size')
             tobin_df.loc[tobin_df[bincol] < qs[qs_idx], [bincol + '_binned']] = qs_idx + 1
             tobin_df.loc[tobin_df[bincol] < qs[qs_idx], [bincol + '_bins']] = 'x < ' + str(qs[qs_idx])
             tobin_df.loc[np.bitwise_and(tobin_df[bincol] >= qs[qs_idx], tobin_df[bincol] < qs[qs_idx + 1]), [
@@ -1903,6 +1907,8 @@ def get_bins(tobin_df,
             tobin_df.loc[tobin_df[bincol] >= qs[qs_idx], [bincol + '_binned']] = qs_idx + 2
             tobin_df.loc[tobin_df[bincol] >= qs[qs_idx], [bincol + '_bins']] = str(qs[qs_idx]) + ' < x'
         else:
+            if qs[qs_idx] == qs[qs_idx + 1]:
+                print('bin cutoff neighbors are equal, please reduce bin size')
             tobin_df.loc[np.bitwise_and(tobin_df[bincol] >= qs[qs_idx], tobin_df[bincol] < qs[qs_idx + 1]), [
                 bincol + '_binned']] = qs_idx + 2
             tobin_df.loc[np.bitwise_and(tobin_df[bincol] >= qs[qs_idx], tobin_df[bincol] < qs[qs_idx + 1]), [
