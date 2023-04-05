@@ -6,6 +6,27 @@ Tutorials
 This section contains a variety of tutorials that should help get you started
 with the `orthomap` package.
 
+What the tutorial covers
+------------------------
+
+- :doc:`run_orthofinder`: This notebook introduces how to run your own OrthoFinder analysis (step 0).
+- :doc:`get_orthomap`: This notebook introduces how to get taxonomic information and how to extract an orthomap (gene age class) from OrthoFinder results (step 1 and step 2).
+- :doc:`geneset_overlap`: This notebook introduces how to match gene or transcript IDs between an orthomap and scRNA data (step 3).
+- :doc:`add_TEI`: This notebook introduces how to add a transcriptome evolutionary index (short: TEI) to scRNA data (step 4).
+- :doc:`partial_TEI`: This notebook introduces partial TEI and its contribution to the global TEI per cell or cell type (step 5).
+- :doc:`relative_expression`: This notebook introduces relative expression per gene age class and its contribution to the global TEI per cell or cell type (step 5).
+- :doc:`plotting`: This notebook introduces some basic concepts of plotting results (step 5).
+- :doc:`nematode_example`: This notebook covers a re-analysis of nematode (Caenorhabditis elegans) scRNA data.
+- :doc:`zebrafish_example`: This notebook covers a re-analysis of zebrafish (Danio rerio) scRNA data.
+- :doc:`frog_example`: This notebook covers a re-analysis of frog (Xenopus tropicalis) scRNA data.
+- :doc:`mouse_example`: This notebook covers a re-analysis of mouse (Mus musculus) scRNA data.
+- :doc:`hvulgaris_example`: This notebook covers a re-analysis of hydra (Hydra vulgaris) scRNA data.
+
+.. note::
+   A demo dataset is available for each of the tutorial notebooks above.
+   These datasets allow you to begin exploring `orthomap` even if you do not have any data at any step in the analysis
+   pipeline.
+
 Prerequisites
 -------------
 
