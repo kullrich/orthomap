@@ -1867,3 +1867,31 @@ def get_e50(adata,
     #if group_by is not None:
     #if standard_scale is not None:
     return
+
+
+def get_bins(tobin_df,
+             bincol,
+             q=[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]):
+    """
+    This function sorts values of a DataFrame column and return the binary categories in which they fall.
+
+    :param tobin_df: DataFrame which contains the column that should be binned.
+    :param bincol: Name of the columns that should be binned.
+    :param q: Array of qunatiles to be used for binning.
+    :return: DataFrame with additional column which contain the binned values as categories.
+
+    :type tobin_df: pandas.DataFrame
+    :type bincol: str
+    :type q: list
+    :rytpe: pandas.DataFrame
+    """
+    tobin_df[bincol+'_binned'] = np.nan
+    qs = np.quantile(a=tobin_df[bincol], q=q)
+    for qs_idx, qs_val in enumerate(qs):
+        if qs_idx+1 == len(qs):
+            continue
+        elif qs_idx+2 == len(qs):
+            tobin_df.loc[np.bitwise_and(tobin_df[bincol]>=qs[qs_idx], tobin_df[bincol]<=qs[qs_idx+1]), [bincol+'_binned']]=  qs_idx+1
+        else:
+            tobin_df.loc[np.bitwise_and(tobin_df[bincol]>=qs[qs_idx], tobin_df[bincol]<qs[qs_idx+1]), [bincol+'_binned']] = qs_idx+1
+    return tobin_df
