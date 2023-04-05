@@ -115,7 +115,7 @@ def mouse_gtf(datapath='.'):
 
 def sun21_orthomap(datapath='.'):
     """
-    Pre-calculated orthomap from:
+    Pre-calculated orthomap for Caenorhabditis elegans from:
 
     Sun, S., Rödelsperger, C. and Sommer, R.J., 2021.
     Single worm transcriptomics identifies a developmental core network of oscillating genes with deep
@@ -144,9 +144,40 @@ def sun21_orthomap(datapath='.'):
     return sun21_orthomap_filename
 
 
+def ma21_fst(datapath='.'):
+    """
+    Pre-calculated TajimaD, NormalizedPi, FayWu and Fst for Caenorhabditis elegans from:
+
+    Ma, F., Lau, C.Y. and Zheng, C., 2021.
+    Large genetic diversity and strong positive selection in F-box and GPCR genes among the wild isolates of
+    Caenorhabditis elegans.
+    Genome Biology and Evolution, 13(5), p.evab048.
+
+    :param datapath: Path to safe dataset.
+    :return: Path to diversity file.
+
+    :type datapath: str
+    :rtype: str
+
+    Example
+    -------
+    >>> from orthomap import datasets
+    >>> datasets.ma21_orthomap(datapath='.')
+    """
+    if not os.path.exists(datapath):
+        print('datapath does not exist, is created now')
+        os.makedirs(name=datapath)
+    ma21_orthomap_filename = os.path.join(datapath,
+                                          'Ma2021_Fst.tsv')
+    ma21_orthomap_url = 'https://zenodo.org/record/7802177/files/Ma2021_Fst.tsv'
+    wget.download(url=ma21_orthomap_url,
+                  out=datapath)
+    return ma21_orthomap_filename
+
+
 def cazet22_orthomap(datapath='.'):
     """
-    Pre-calculated orthomap from:
+    Pre-calculated orthomap for Hydra vulgaris from:
 
     Cazet, Jack, Stefan Siebert, Hannah Morris Little, Philip Bertemes, Abby S. Primack, Peter Ladurner,
     Matthias Achrainer et al. (2022)
@@ -177,7 +208,7 @@ def cazet22_orthomap(datapath='.'):
 
 def packer19(datapath='.'):
     """
-    scRNA count data from:
+    scRNA count data for Caenorhabditis elegans from:
 
     Packer, J.S., Zhu, Q., Huynh, C., Sivaramakrishnan, P., Preston, E., Dueck, H., Stefanik, D.,
     Tan, K., Trapnell, C., Kim, J. and Waterston, R.H., 2019.
@@ -212,7 +243,7 @@ def packer19(datapath='.'):
 
 def packer19_small(datapath='.'):
     """
-    scRNA count data from:
+    scRNA count data for Caenorhabditis elegans from:
 
     Packer, J.S., Zhu, Q., Huynh, C., Sivaramakrishnan, P., Preston, E., Dueck, H., Stefanik, D.,
     Tan, K., Trapnell, C., Kim, J. and Waterston, R.H., 2019.
@@ -247,7 +278,7 @@ def packer19_small(datapath='.'):
 
 def cazet22(datapath='.'):
     """
-    scRNA count data from:
+    scRNA count data for Hydra vulgaris from:
 
     Cazet, Jack, Stefan Siebert, Hannah Morris Little, Philip Bertemes, Abby S. Primack, Peter Ladurner,
     Matthias Achrainer et al. (2022)
@@ -282,7 +313,7 @@ def cazet22(datapath='.'):
 
 def qiu22_zebrafish(datapath='.'):
     """
-    combined scRNA count data from:
+    combined scRNA count data for Danio rerio from:
 
     Qiu, C., Cao, J., Martin, B.K., Li, T., Welsh, I.C., Srivatsan, S., Huang, X., Calderon,
     D., Noble, W.S., Disteche, C.M. and Murray, S.A., 2022.
@@ -327,7 +358,7 @@ def qiu22_zebrafish(datapath='.'):
 
 def qiu22_frog(datapath='.'):
     """
-    combined scRNA count data from:
+    combined scRNA count data for Xenopus tropicalis from:
 
     Qiu, C., Cao, J., Martin, B.K., Li, T., Welsh, I.C., Srivatsan, S., Huang, X., Calderon,
     D., Noble, W.S., Disteche, C.M. and Murray, S.A., 2022.
@@ -368,7 +399,7 @@ def qiu22_frog(datapath='.'):
 
 def qiu22_mouse(datapath='.'):
     """
-    combined scRNA count data from:
+    combined scRNA count data for Mus musculus from:
 
     Qiu, C., Cao, J., Martin, B.K., Li, T., Welsh, I.C., Srivatsan, S., Huang, X., Calderon,
     D., Noble, W.S., Disteche, C.M. and Murray, S.A., 2022.
@@ -425,7 +456,7 @@ def qiu22_mouse(datapath='.'):
 
 def mytai_example(datapath='.'):
     """
-    expression count data from:
+    expression count data for Arabidopsis thaliana from:
 
     Drost, H.G., Janitza, P., Grosse, I. and Quint, M., 2017.
     Cross-kingdom comparison of the developmental hourglass.
