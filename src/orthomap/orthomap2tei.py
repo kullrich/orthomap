@@ -1888,16 +1888,23 @@ def get_bins(tobin_df,
     :type method: str
     :rytpe: pandas.DataFrame
     """
-    tobin_df[bincol+'_binned'] = np.nan
+    tobin_df[bincol + '_binned'] = np.nan
+    tobin_df[bincol + '_bins'] = np.nan
     qs = np.nanquantile(a=tobin_df[bincol], q=q, method=method)
     for qs_idx, qs_val in enumerate(qs):
         if qs_idx == 0:
             tobin_df.loc[tobin_df[bincol] < qs[qs_idx], [bincol + '_binned']] = qs_idx + 1
+            tobin_df.loc[tobin_df[bincol] < qs[qs_idx], [bincol + '_bins']] = 'x < ' + str(qs[qs_idx])
             tobin_df.loc[np.bitwise_and(tobin_df[bincol] >= qs[qs_idx], tobin_df[bincol] < qs[qs_idx + 1]), [
                 bincol + '_binned']] = qs_idx + 2
+            tobin_df.loc[np.bitwise_and(tobin_df[bincol] >= qs[qs_idx], tobin_df[bincol] < qs[qs_idx + 1]), [
+                bincol + '_bins']] = str(qs[qs_idx]) + ' >= x < ' + str(qs[qs_idx + 1])
         elif qs_idx+1 == len(qs):
             tobin_df.loc[tobin_df[bincol] >= qs[qs_idx], [bincol + '_binned']] = qs_idx + 2
+            tobin_df.loc[tobin_df[bincol] >= qs[qs_idx], [bincol + '_bins']] = str(qs[qs_idx]) + ' < x'
         else:
             tobin_df.loc[np.bitwise_and(tobin_df[bincol] >= qs[qs_idx], tobin_df[bincol] < qs[qs_idx + 1]), [
                 bincol + '_binned']] = qs_idx + 2
+            tobin_df.loc[np.bitwise_and(tobin_df[bincol] >= qs[qs_idx], tobin_df[bincol] < qs[qs_idx + 1]), [
+                bincol + '_bins']] = str(qs[qs_idx]) + ' >= x < ' + str(qs[qs_idx + 1])
     return tobin_df
