@@ -7,7 +7,8 @@ Command line of2orthomap
 
     orthomap of2orthomap -h
 
-    usage: orthomap <sub-command> of2orthomap [-h] [-seqname SEQNAME] [-qt QT] [-sl SL] [-oc OC] [-og OG] [-out OUT] [-overwrite OVERWRITE]
+    usage: orthomap <sub-command> of2orthomap [-h] [-seqname SEQNAME] [-qt QT] [-sl SL] [-oc OC] [-og OG] [-out OUT]
+                                              [-overwrite OVERWRITE]
 
     options:
       -h, --help            show this help message and exit
@@ -22,9 +23,9 @@ Command line of2orthomap
     of2orthomap example:
 
         # download OrthoFinder example:
-        $ wget https://github.com/kullrich/orthomap/raw/main/examples/ensembl_105_orthofinder_Orthogroups.GeneCount.tsv.zip
-        $ wget https://github.com/kullrich/orthomap/raw/main/examples/ensembl_105_orthofinder_Orthogroups.tsv.zip
-        $ wget https://github.com/kullrich/orthomap/raw/main/examples/ensembl_105_orthofinder_species_list.tsv
+        $ wget https://zenodo.org/record/7796253/files/ensembl_105_orthofinder_Orthogroups.GeneCount.tsv.zip
+        $ wget https://zenodo.org/record/7796253/files/ensembl_105_orthofinder_Orthogroups.tsv.zip
+        $ wget https://zenodo.org/record/7796253/files/ensembl_105_orthofinder_species_list.tsv
 
         # extract orthomap:
         $ of2orthomap -seqname Danio_rerio.GRCz11.cds.longest -qt 7955 \
