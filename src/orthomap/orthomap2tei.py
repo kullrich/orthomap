@@ -907,7 +907,7 @@ def get_pstrata(adata,
         pstrata_norm_by_pmatrix_sum_df = pstrata_norm_by_pmatrix_sum_df.cumsum(0)
     if group_by_obs is not None:
         if adata.obs[group_by_obs].dtype.name == 'category':
-            obs_group_nan = pd.DataFrame(adata.obs[group_by_obs].cat.add_categories(obs_fillna).fillna(obs_fillna))
+            obs_group_nan = pd.DataFrame(adata.obs[group_by_obs])
         else:
             obs_group_nan = pd.DataFrame(adata.obs[group_by_obs].fillna(obs_fillna))
         if obs_type == 'mean':
@@ -1106,15 +1106,13 @@ def get_ematrix(adata,
                                target_sum=target_sum)
     if group_by_var is not None:
         if adata.var[group_by_var].dtype.name == 'category':
-            var_grouped = pd.DataFrame(adata.var[group_by_var].cat.add_categories(var_fillna).fillna(
-                var_fillna)).groupby(group_by_var)
+            var_grouped = pd.DataFrame(adata.var[group_by_var]).groupby(group_by_var)
         else:
             var_grouped = pd.DataFrame(adata.var[group_by_var].fillna(var_fillna)).groupby(group_by_var)
         var_groups = var_grouped.groups.keys()
     if group_by_obs is not None:
         if adata.obs[group_by_obs].dtype.name == 'category':
-            obs_grouped = pd.DataFrame(adata.obs[group_by_obs].cat.add_categories(obs_fillna).fillna(
-                obs_fillna)).groupby(group_by_obs)
+            obs_grouped = pd.DataFrame(adata.obs[group_by_obs]).groupby(group_by_obs)
         else:
             obs_grouped = pd.DataFrame(adata.obs[group_by_obs].fillna(obs_fillna)).groupby(group_by_obs)
         obs_groups = obs_grouped.groups.keys()
@@ -1449,7 +1447,7 @@ def get_rematrix(adata,
     rematrix_df.columns = adata.obs_names
     if group_by_obs is not None:
         if adata.obs[group_by_obs].dtype.name == 'category':
-            obs_group_nan = pd.DataFrame(adata.obs[group_by_obs].cat.add_categories(obs_fillna).fillna(obs_fillna))
+            obs_group_nan = pd.DataFrame(adata.obs[group_by_obs])
         else:
             obs_group_nan = pd.DataFrame(adata.obs[group_by_obs].fillna(obs_fillna))
         if obs_type == 'mean':
@@ -1699,7 +1697,7 @@ def mergeby_from_counts(adata,
     obs_assignment = pd.DataFrame(list(adata.obs.index), columns=['orig.obs'])
     if group_by_obs is not None:
         if adata.obs[group_by_obs].dtype.name == 'category':
-            obs_group_df = pd.DataFrame(adata.obs[group_by_obs].cat.add_categories(obs_fillna).fillna(obs_fillna))
+            obs_group_df = pd.DataFrame(adata.obs[group_by_obs])
         else:
             obs_group_df = pd.DataFrame(adata.obs[group_by_obs]).fillna(obs_fillna)
         if obs_group_df.shape[0] != adata_counts.shape[0]:
@@ -1710,7 +1708,7 @@ def mergeby_from_counts(adata,
         obs_assignment[group_by_obs] = np.array(obs_group_df[group_by_obs])
     if group_by_var is not None:
         if adata.obs[group_by_var].dtype.name == 'category':
-            var_group_df = pd.DataFrame(adata.obs[group_by_var].cat.add_categories(var_fillna).fillna(var_fillna))
+            var_group_df = pd.DataFrame(adata.obs[group_by_var])
         else:
             var_group_df = pd.DataFrame(adata.var[group_by_var]).fillna(var_fillna)
         if var_group_df.shape[0] != adata_counts.shape[1]:
