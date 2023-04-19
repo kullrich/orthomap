@@ -906,7 +906,10 @@ def get_pstrata(adata,
         pstrata_norm_by_sumx_df = pstrata_norm_by_sumx_df.cumsum(0)
         pstrata_norm_by_pmatrix_sum_df = pstrata_norm_by_pmatrix_sum_df.cumsum(0)
     if group_by_obs is not None:
-        obs_group_nan = pd.DataFrame(adata.obs[group_by_obs].fillna(obs_fillna))
+        if adata.obs[group_by_obs].dtype.name == 'category':
+            obs_group_nan = pd.DataFrame(adata.obs[group_by_obs].cat.add_categories(obs_fillna).fillna(obs_fillna))
+        else:
+            obs_group_nan = pd.DataFrame(adata.obs[group_by_obs].fillna(obs_fillna))
         if obs_type == 'mean':
             pstrata_norm_by_sumx_df =\
                 pstrata_norm_by_sumx_df.transpose().groupby(obs_group_nan[group_by_obs]).mean().transpose()
@@ -1102,10 +1105,18 @@ def get_ematrix(adata,
                                log1p=log1p,
                                target_sum=target_sum)
     if group_by_var is not None:
-        var_grouped = pd.DataFrame(adata.var[group_by_var].fillna(var_fillna)).groupby(group_by_var)
+        if adata.var[group_by_var].dtype.name == 'category':
+            var_grouped = pd.DataFrame(adata.var[group_by_var].cat.add_categories(var_fillna).fillna(
+                var_fillna)).groupby(group_by_var)
+        else:
+            var_grouped = pd.DataFrame(adata.var[group_by_var].fillna(var_fillna)).groupby(group_by_var)
         var_groups = var_grouped.groups.keys()
     if group_by_obs is not None:
-        obs_grouped = pd.DataFrame(adata.obs[group_by_obs].fillna(obs_fillna)).groupby(group_by_obs)
+        if adata.obs[group_by_obs].dtype.name == 'category':
+            obs_grouped = pd.DataFrame(adata.obs[group_by_obs].cat.add_categories(obs_fillna).fillna(
+                obs_fillna)).groupby(group_by_obs)
+        else:
+            obs_grouped = pd.DataFrame(adata.obs[group_by_obs].fillna(obs_fillna)).groupby(group_by_obs)
         obs_groups = obs_grouped.groups.keys()
     if group_by_var is not None and group_by_obs is not None:
         ematrix_df = pd.DataFrame(np.zeros((len(var_groups), len(obs_groups)), dtype=np.float64),
@@ -1437,7 +1448,10 @@ def get_rematrix(adata,
                           inplace=True)
     rematrix_df.columns = adata.obs_names
     if group_by_obs is not None:
-        obs_group_nan = pd.DataFrame(adata.obs[group_by_obs].fillna(obs_fillna))
+        if adata.obs[group_by_obs].dtype.name == 'category':
+            obs_group_nan = pd.DataFrame(adata.obs[group_by_obs].cat.add_categories(obs_fillna).fillna(obs_fillna))
+        else:
+            obs_group_nan = pd.DataFrame(adata.obs[group_by_obs].fillna(obs_fillna))
         if obs_type == 'mean':
             rematrix_df = \
                 rematrix_df.transpose().groupby(obs_group_nan[group_by_obs]).mean().transpose()
@@ -1684,7 +1698,10 @@ def mergeby_from_counts(adata,
     var_assignment = pd.DataFrame(list(adata.var.index), columns=['orig.var'])
     obs_assignment = pd.DataFrame(list(adata.obs.index), columns=['orig.obs'])
     if group_by_obs is not None:
-        obs_group_df = pd.DataFrame(adata.obs[group_by_obs]).fillna(obs_fillna)
+        if adata.obs[group_by_obs].dtype.name == 'category':
+            obs_group_df = pd.DataFrame(adata.obs[group_by_obs].cat.add_categories(obs_fillna).fillna(obs_fillna))
+        else:
+            obs_group_df = pd.DataFrame(adata.obs[group_by_obs]).fillna(obs_fillna)
         if obs_group_df.shape[0] != adata_counts.shape[0]:
             print('obs_group length and number of cells of adata_counts differ')
             return
@@ -1692,7 +1709,10 @@ def mergeby_from_counts(adata,
         obs_groups = obs_grouped.groups.keys()
         obs_assignment[group_by_obs] = np.array(obs_group_df[group_by_obs])
     if group_by_var is not None:
-        var_group_df = pd.DataFrame(adata.var[group_by_var]).fillna(var_fillna)
+        if adata.obs[group_by_var].dtype.name == 'category':
+            var_group_df = pd.DataFrame(adata.obs[group_by_var].cat.add_categories(var_fillna).fillna(var_fillna))
+        else:
+            var_group_df = pd.DataFrame(adata.var[group_by_var]).fillna(var_fillna)
         if var_group_df.shape[0] != adata_counts.shape[1]:
             print('var_group length and number of genes of adata_counts differ')
             return
