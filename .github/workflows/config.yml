@@ -32,7 +32,6 @@ jobs:
         python -m pip install mock
         python -m pip install nbsphinx
         python -m pip install myst-nb
-        python -m pip install ipykernel
         cd docs; make clean; make html; cd ..;
     - name: Run tests
       run: |
