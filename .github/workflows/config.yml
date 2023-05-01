@@ -29,6 +29,7 @@ jobs:
         python -m pip install sphinx
         python -m pip install sphinx_rtd_theme
         python -m pip install mock
+        python -m pip install nbsphinx
         cd docs; make clean; make html; cd ..;
     - name: Run tests
       run: |
