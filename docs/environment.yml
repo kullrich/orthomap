@@ -25,3 +25,4 @@ dependencies:
       - louvain>=0.8.0
       - umap-learn>=0.5.3
       - nbsphinx
+      - myst_nb
