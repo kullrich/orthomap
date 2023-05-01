@@ -26,6 +26,7 @@ jobs:
         pip install .
     - name: Check that documentation builds
       run: |
+        sudo apt-get install pandoc
         python -m pip install sphinx
         python -m pip install sphinx_rtd_theme
         python -m pip install mock
