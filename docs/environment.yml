@@ -26,3 +26,4 @@ dependencies:
       - umap-learn>=0.5.3
       - nbsphinx
       - myst-nb
+      - ipykernel
