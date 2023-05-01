@@ -22,4 +22,5 @@ python:
       path: .
       extra_requirements:
         - doc
+        - nbsphinx
   system_packages: true
