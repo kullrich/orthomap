@@ -1,0 +1,27 @@
+name: orthomap_env
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.8
+  - setuptools>=67.5.1
+  - numpy<1.24
+  - numba
+  - scipy
+  - pandas>=1.5.1
+  - ete3
+  - anndata
+  - scanpy>=1.9.3
+  - seaborn
+  - statannot
+  - alive-progress
+  - biopython
+  - python-wget>=3.2
+  - pytest
+  - pip
+  - pip:
+      - harmonypy>=0.0.9
+      - louvain>=0.8.0
+      - umap-learn>=0.5.3
+      - nbsphinx

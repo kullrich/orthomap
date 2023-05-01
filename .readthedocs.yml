@@ -14,7 +14,7 @@ sphinx:
   configuration: docs/conf.py
 
 conda:
-  environment: environment.yml
+  environment: docs/environment.yml
 
 python:
   install:
@@ -22,5 +22,4 @@ python:
       path: .
       extra_requirements:
         - doc
-        - nbsphinx
   system_packages: true
