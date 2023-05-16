@@ -75,6 +75,9 @@ def define_parser():
     '''
     orthomcl2orthomap_example = '''orthomcl2orthomap example:
 
+    # quickly find 'Arabidopsis thaliana' short name
+    # grep 'Arabidopsis thaliana' genomeSummary_OrthoMCL-6.16.txt
+
     # extract orthomap:
     $ orthomcl2orthomap -tla atha \\
       -sl genomeSummary_OrthoMCL-6.16.txt \\

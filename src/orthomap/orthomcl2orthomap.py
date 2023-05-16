@@ -28,8 +28,11 @@ def define_parser():
     """
     orthomcl2orthomap_example = '''example:
 
-    #
-    $ orthomcl2orthomap -qt 10090 -og
+    # quickly find 'Arabidopsis thaliana' short name
+    # grep 'Arabidopsis thaliana' genomeSummary_OrthoMCL-6.16.txt
+    
+    # extract orthomap:
+    $ orthomcl2orthomap -tla atha -sl genomeSummary_OrthoMCL-6.16.txt -og groups_OrthoMCL-6.16.txt -out atha.orthomap
     '''
     parser = argparse.ArgumentParser(
         prog='orthomcl2orthomap',
@@ -109,7 +112,6 @@ def _parse_orthomcl_groups(og, tla):
                     ogs_gf_id += [og_line_group]
                     ogs_species += [species]
                     ogs_gene_id += [gene]
-                print(og_line_group)
     ogs = pd.DataFrame([ogs_gf_id, ogs_species, ogs_gene_id]).transpose()
     ogs.columns = ['gf_id', 'species', 'gene_id']
     return ogs
