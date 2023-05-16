@@ -13,7 +13,7 @@ License: GPL-3
 import os
 import sys
 import argparse
-from orthomap import cds2aa, gtf2t2g, ncbitax, of2orthomap, plaza2orthomap, qlin
+from orthomap import cds2aa, gtf2t2g, ncbitax, of2orthomap, orthomcl2orthomap, plaza2orthomap, qlin
 
 
 def define_parser():
@@ -72,6 +72,14 @@ def define_parser():
       -oc ensembl_105_orthofinder_Orthogroups.GeneCount.tsv.zip \\
       -og ensembl_105_orthofinder_Orthogroups.tsv.zip
     '''
+    orthomcl2orthomap_example = '''orthomcl2orthomap example:
+
+    # extract orthomap:
+    $ orthomcl2orthomap -tla atha \\
+      -sl genomeSummary_OrthoMCL-6.16.txt \\
+      -og groups_OrthoMCL-6.16.txt \\
+      -out atha.orthomap
+    '''
     plaza2orthomap_example = '''plaza2orthomap example:
     
     # using Orthologous gene family 
@@ -112,6 +120,11 @@ def define_parser():
                                                     '<of2orthomap -h>',
                                                epilog=of2orthomap_example,
                                                formatter_class=argparse.RawDescriptionHelpFormatter)
+    orthomcl2orthomap_parser = subparsers.add_parser(name='orthomcl2orthomap',
+                                               help='extract orthomap from orthomcl output for query species '
+                                                    '<orthomcl2orthomap -h>',
+                                               epilog=orthomcl2orthomap_example,
+                                               formatter_class=argparse.RawDescriptionHelpFormatter)
     plaza2orthomap_parser = subparsers.add_parser(name='plaza2orthomap',
                                                   help='extract orthomap from PLAZA gene family data for query species '
                                                        '<of2orthomap -h>',
@@ -125,6 +138,7 @@ def define_parser():
     gtf2t2g.add_argparse_args(parser=gtf2t2g_parser)
     ncbitax.add_argparse_args(parser=ncbitax_parser)
     of2orthomap.add_argparse_args(parser=of2orthomap_parser)
+    orthomcl2orthomap.add_argparse_args(parser=orthomcl2orthomap_parser)
     plaza2orthomap.add_argparse_args(parser=plaza2orthomap_parser)
     qlin.add_argparse_args(parser=qlin_parser)
     return parser
@@ -208,6 +222,27 @@ def main():
                                  quiet=False,
                                  continuity=True,
                                  overwrite=args.overwrite)
+    if args.subcommand == 'orthomcl2orthomap':
+        print(args)
+        if not args.tla:
+            parser.print_help()
+            print('\nError <-tla>: Please specify query species orthomcl short name (THREE_LETTER_ABBREV)')
+            sys.exit()
+        if not args.sl:
+            parser.print_help()
+            print('\nError <-sl>: Please specify orthomcl species information file <genomeSummary_OrthoMCL-6.16.txt>')
+            sys.exit()
+        if not args.og:
+            parser.print_help()
+            print('\nError <-og>: Please specify orthomcl groups file <groups_OrthoMCL-6.16.txt>')
+            sys.exit()
+        orthomcl2orthomap.get_plaza_orthomap(tla=args.tla,
+                                             sl=args.sl,
+                                             og=args.og,
+                                             out=args.out,
+                                             quiet=False,
+                                             continuity=True,
+                                             overwrite=args.overwrite)
     if args.subcommand == 'plaza2orthomap':
         print(args)
         if not args.qt:
