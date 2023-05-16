@@ -13,6 +13,7 @@ License: GPL-3
 import os
 import sys
 import argparse
+from Bio import SeqIO
 from orthomap import cds2aa, gtf2t2g, ncbitax, of2orthomap, orthomcl2orthomap, plaza2orthomap, qlin
 
 
@@ -158,8 +159,30 @@ def main():
             sys.stderr.write(str(args))
         else:
             print(args)
-        cds2aa.cds2aa_fasta(args,
-                            parser)
+        if args.i is None and sys.stdin.isatty():
+            parser.print_help()
+            sys.exit('\nPlease provide STDIN or input file')
+        if args.i is None and not sys.stdin.isatty():
+            record_iter = SeqIO.parse(sys.stdin,
+                                      "fasta")
+        else:
+            record_iter = SeqIO.parse(args.i,
+                                      "fasta")
+        if args.r:
+            record_gene_len_dict = cds2aa.get_gene_len_dict(record_iter,
+                                                            args.r)
+            record_iter = iter([x[1] for x in record_gene_len_dict.values()])
+        cds2aa_iter = cds2aa.cds2aa_record(record_iter,
+                                           cds2aa.transtable[args.t])
+        if args.o is None:
+            SeqIO.write(cds2aa_iter,
+                        sys.stdout,
+                        "fasta")
+        else:
+            count = SeqIO.write(cds2aa_iter,
+                                args.o,
+                                "fasta")
+            print("translated %i sequences" % count)
     if args.subcommand == 'gtf2t2g':
         print(args)
         if not args.i:
@@ -236,13 +259,13 @@ def main():
             parser.print_help()
             print('\nError <-og>: Please specify orthomcl groups file <groups_OrthoMCL-6.16.txt>')
             sys.exit()
-        orthomcl2orthomap.get_plaza_orthomap(tla=args.tla,
-                                             sl=args.sl,
-                                             og=args.og,
-                                             out=args.out,
-                                             quiet=False,
-                                             continuity=True,
-                                             overwrite=args.overwrite)
+        orthomcl2orthomap.get_orthomcl_orthomap(tla=args.tla,
+                                                sl=args.sl,
+                                                og=args.og,
+                                                out=args.out,
+                                                quiet=False,
+                                                continuity=True,
+                                                overwrite=args.overwrite)
     if args.subcommand == 'plaza2orthomap':
         print(args)
         if not args.qt:
