@@ -1,7 +1,10 @@
 .. _orthofinder:
 
+step 0
+======
+
 How to run OrthoFinder
-======================
+----------------------
 
 In order to extract an orthomap from OrthoFinder results, one needs to run `OrthoFinder <https:https://github.com/davidemms/OrthoFinder>`_.
 
@@ -43,3 +46,4 @@ To change the `'config.json' <https://raw.githubusercontent.com/davidemms/OrthoF
       "db_cmd": "diamond makedb --ignore-warnings --in INPUT -d OUTPUT",
       "search_cmd": "diamond blastp --ignore-warnings -k0 -d DATABASE -q INPUT -o OUTPUT --ultra-sensitive -p 1 --quiet -e 0.001 --compress 1"
       },
+
