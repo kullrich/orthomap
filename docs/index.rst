@@ -46,7 +46,7 @@ Table of Contents
    references/index
 
 .. toctree::
-    :maxdepth: -1
+    :maxdepth: 1
     :caption: Tutorials
 
     tutorials/index
