@@ -12,6 +12,20 @@ What the tutorial covers
 pre-calculated orthomaps
 ------------------------
 
+In addition to extract gene age classes from `OrthoFinder <https:https://github.com/davidemms/OrthoFinder>`_ results,
+`orthomap` has the functionality to parse and extract gene age classes from pre-calculated orthologous group databases,
+like `eggNOG <http://eggnog6.embl.de/#/app/home>`_ or
+`plaza <https://bioinformatics.psb.ugent.be/plaza/>`_.
+
+If your query species is part of one of these databases, it might be sufficient and to use the gene age classes directly
+from them and not start the time consuming step
+
+.. warning::
+   Since gene age class assignment for any query species relies on taxonomic sampling to cover at best all possible
+   species tree nodes from the root (origin of life) up to the query species, the pre-calculated orthologous group databases
+   might lack species information for certain tree nodes. Orthologous group detection algorithm do not account for missing species
+   and as such will influence the taxonomic completeness score.
+
 - :doc:`eggnog2orthomap`: This tutorial introduces how to run your own OrthoFinder analysis.
 - :doc:`plaza2orthomap`: This tutorial introduces how to run your own OrthoFinder analysis.
 
