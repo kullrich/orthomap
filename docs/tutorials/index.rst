@@ -10,7 +10,7 @@ Getting started
 ---------------
 
 If you are running `orthomap` for the first time, we recommend to either follow the individual `orthomap` steps
-or getting started with the :doc:`nematode case study <nematode_example>`_ which covers all essential steps.
+or getting started with the :doc:`nematode case study <nematode_example>` which covers all essential steps.
 
 What the tutorials cover - Table of Contents
 --------------------------------------------
