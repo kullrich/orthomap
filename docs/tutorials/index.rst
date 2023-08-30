@@ -6,8 +6,66 @@ Tutorials
 This section contains a variety of tutorials that should help get you started
 with the `orthomap` package.
 
+Getting started
+---------------
+
+If you are running `orthomap` for the first time, we recommend to either follow the individual `orthomap` steps
+or getting started with the :doc:`nematode_example` which covers all essential steps.
+
 What the tutorial covers
 ------------------------
+
+Table of Contents
+-----------------
+
+.. toctree::
+   :caption: pre-calculated orthomaps
+   :maxdepth: 1
+
+.. toctree::
+   :caption: orthomap - steps
+   :maxdepth: 1
+
+   orthofinder
+   query_lineage
+   get_orthomap
+   geneset_overlap
+   add_tei
+
+.. toctree::
+   :caption: orthomap - downstream analysis
+   :maxdepth: 1
+
+   plotting
+   relative_expression
+   pstrata
+
+.. toctree::
+   :caption: case studies
+   :maxdepth: 1
+
+   nematode_example
+   zebrafish_example
+   frog_example
+   mouse_example
+   hydra_example
+
+.. toctree::
+   :caption: command line
+   :maxdepth: 1
+
+   commandline.cds2aa
+   commandline.gtf2t2g
+   commandline.ncbitax
+   commandline.of2orthomap
+   commandline.plaza2orthomap
+   commandline.qlin
+
+.. toctree::
+   :caption: myTAI - function correspondance
+   :maxdepth: 1
+
+   mytai
 
 pre-calculated orthomaps
 ------------------------
@@ -69,6 +127,10 @@ command line
 ------------
 
 - :doc:`commandline`: This tutorial covers which orthomap functions can be run via the command line.
+
+myTAI - function correspondance
+-------------------------------
+
 - :doc:`mytai`: This tutorial covers which orthomap functions correspond to myTAI functions.
 
 .. note::
@@ -98,39 +160,3 @@ Code and data availability
 - You can download the demo input data using `orthomap` data loading function in the notebooks.
   `see here <https://orthomap.readthedocs.io/en/latest/modules/orthomap.html#modules-for-dataset-downloads>`_)
 
-Getting started
----------------
-
-If you are running `orthomap` for the first time, we recommend getting started with the :doc:`nematode_example` and
-then, proceed to :doc:`zebrafish_example`.
-
-Table of Contents
------------------
-
-.. toctree::
-   :caption: orthomap - steps
-   :maxdepth: 1
-
-   orthofinder
-   query_lineage
-   get_orthomap
-   geneset_overlap
-   add_tei
-
-.. toctree::
-   :caption: Command line
-   :maxdepth: 1
-
-   commandline.cds2aa
-   commandline.gtf2t2g
-   commandline.ncbitax
-   commandline.of2orthomap
-   commandline.plaza2orthomap
-   commandline.qlin
-
-
-.. toctree::
-   :caption: myTAI - function correspondance
-   :maxdepth: 1
-
-   mytai
