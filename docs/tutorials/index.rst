@@ -17,8 +17,9 @@ In addition to extract gene age classes from `OrthoFinder <https:https://github.
 like `eggNOG <http://eggnog6.embl.de/#/app/home>`_ or
 `plaza <https://bioinformatics.psb.ugent.be/plaza/>`_.
 
-If your query species is part of one of these databases, it might be sufficient and to use the gene age classes directly
-from them and not start the time consuming step
+If your query species is part of one of these databases, it might be sufficient to use the gene age classes directly
+from them and not start the time consuming step of orthologous group detection with `OrthoFinder <https:https://github.com/davidemms/OrthoFinder>`_
+or any other related tool (see benchmark of tools at `Quest for Orthologs <https://orthology.benchmarkservice.org/proxy/>`_).
 
 .. note::
    Since gene age class assignment for any query species relies on taxonomic sampling to cover at best all possible
