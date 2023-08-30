@@ -17,18 +17,18 @@ orthomap - steps
 This section contains the main steps of `orthomap` to extract gene age information for a query species up to linking
 the extracted gene age classes and expression data of single-cell data sets.
 
-- :doc:`orthofinder`: This tutorial introduces how to run your own OrthoFinder analysis (step 0).
-- :doc:`query_lineage`: This tutorial introduces how to get taxonomic information (step 1).
-- :doc:`get_orthomap`: This tutorial introduces how to extract an orthomap (gene age class) from OrthoFinder results (step 2).
-- :doc:`geneset_overlap`: This tutorial introduces how to match gene or transcript IDs between an orthomap and scRNA data (step 3).
-- :doc:`add_tei`: This tutorial introduces how to add a transcriptome evolutionary index (short: TEI) to scRNA data (step 4).
+- :doc:`orthofinder`: This tutorial introduces how to run your own OrthoFinder analysis.
+- :doc:`query_lineage`: This tutorial introduces how to get taxonomic information.
+- :doc:`get_orthomap`: This tutorial introduces how to extract an orthomap (gene age class) from OrthoFinder results.
+- :doc:`geneset_overlap`: This tutorial introduces how to match gene or transcript IDs between an orthomap and scRNA data.
+- :doc:`add_tei`: This tutorial introduces how to add a transcriptome evolutionary index (short: TEI) to scRNA data.
 
 orthomap - downstream analysis (step 5)
 ---------------------------------------
 
-- :doc:`pstrata`: This tutorial introduces partial TEI and its contribution to the global TEI per cell or cell type (step 5).
-- :doc:`plotting`: This tutorial introduces some basic concepts of plotting results (step 5).
-- :doc:`relative_expression`: This tutorial introduces relative expression per gene age class and its contribution to the global TEI per cell or cell type (step 5).
+- :doc:`plotting`: This tutorial introduces some basic concepts of plotting results.
+- :doc:`relative_expression`: This tutorial introduces relative expression per gene age class and its contribution to the global TEI per cell or cell type.
+- :doc:`pstrata`: This tutorial introduces partial TEI and its contribution to the global TEI per cell or cell type.
 
 case studies
 ------------
