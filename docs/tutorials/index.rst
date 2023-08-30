@@ -9,6 +9,12 @@ with the `orthomap` package.
 What the tutorial covers
 ------------------------
 
+pre-calculated orthomaps
+------------------------
+
+- :doc:`eggnog2orthomap`: This tutorial introduces how to run your own OrthoFinder analysis.
+- :doc:`plaza2orthomap`: This tutorial introduces how to run your own OrthoFinder analysis.
+
 orthomap - steps
 ----------------
 
@@ -39,7 +45,8 @@ case studies
 - :doc:`mouse_example`: This notebook covers a re-analysis of mouse (Mus musculus) scRNA data.
 - :doc:`hydra_example`: This notebook covers a re-analysis of hydra (Hydra vulgaris) scRNA data.
 
-command
+command line
+------------
 
 - :doc:`commandline`: This tutorial covers which orthomap functions can be run via the command line.
 - :doc:`mytai`: This tutorial covers which orthomap functions correspond to myTAI functions.
