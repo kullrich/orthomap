@@ -20,7 +20,7 @@ like `eggNOG <http://eggnog6.embl.de/#/app/home>`_ or
 If your query species is part of one of these databases, it might be sufficient and to use the gene age classes directly
 from them and not start the time consuming step
 
-.. warning::
+.. note::
    Since gene age class assignment for any query species relies on taxonomic sampling to cover at best all possible
    species tree nodes from the root (origin of life) up to the query species, the pre-calculated orthologous group databases
    might lack species information for certain tree nodes. Orthologous group detection algorithm do not account for missing species
