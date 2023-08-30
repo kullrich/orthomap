@@ -27,6 +27,11 @@ or any other related tool (see benchmark of tools at `Quest for Orthologs <https
    might lack species information for certain tree nodes. Orthologous group detection algorithm do not account for missing species
    and as such will influence the taxonomic completeness score.
 
+.. note::
+   To link gene age classes and expression data one should use the same genome annotation version for both,
+   the orthologous group detection and the gene expression counting. To use the same genome annotation has the benefit
+   not to miss any gene in one or the other and decreases the source of error during gene ID mapping.
+
 - :doc:`eggnog2orthomap`: This tutorial introduces how to run your own OrthoFinder analysis.
 - :doc:`plaza2orthomap`: This tutorial introduces how to run your own OrthoFinder analysis.
 
