@@ -13,7 +13,7 @@ This information is needed alongside with the taxonomic classifications for all 
    The NCBI taxonomy database needs to be downloaded using the package `ete3`.
    A parsed version of it will be stored at your home directory: `~/.etetoolkit/taxa.sqlite`.
 
-`orthomap` provides a command line function to download or upgrade the NCBI taxonomy database (see :ref:`commandline.ncbi`).
+`orthomap` provides a command line function to download or upgrade the NCBI taxonomy database (see :ref:`commandline.ncbitax`).
 
 How to get taxonomic information about your query species
 ---------------------------------------------------------
