@@ -1,7 +1,7 @@
 .. _ncbitax_cmd:
 
-Command line ncbitax
-====================
+command line - ncbitax
+======================
 
 ::
 

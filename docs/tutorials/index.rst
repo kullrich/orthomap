@@ -80,10 +80,10 @@ case studies
 - :doc:`mouse_example`: Notebook - *Mus musculus* scRNA data example.
 - :doc:`hydra_example`: Notebook - *Hydra vulgaris* scRNA data example.
 
-command line
-------------
+command line functions
+----------------------
 
-- :doc:`commandline`: This tutorial covers which orthomap functions can be run via the command line.
+- :doc:`commandline`: This section highlight all `orthomap` functions that can be run via the command line.
 
 myTAI - function correspondance
 -------------------------------

@@ -25,6 +25,8 @@ OrthoFinder can take a folder as input which should contain all input fasta file
 
 The species peptide file can be pre-processed e.g. to just contain the longest isoform per gene.
 
+To extract the longest isoform `orthomap`
+
   ::
 
       wget https://ftp.ensembl.org/pub/release-105/fasta/danio_rerio/cds/Danio_rerio.GRCz11.cds.all.fa.gz

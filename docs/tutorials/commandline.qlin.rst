@@ -1,7 +1,7 @@
 .. _qlin_cmd:
 
-Command line qlin
-=================
+command line - qlin
+===================
 
 ::
 

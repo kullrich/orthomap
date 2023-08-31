@@ -1,5 +1,9 @@
+.. _commandline:
+
+command line functions
+======================
+
 .. toctree::
-   :caption: Command line
    :maxdepth: 1
 
    commandline.cds2aa
