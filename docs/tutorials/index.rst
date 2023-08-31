@@ -116,6 +116,5 @@ Code and data availability
 
 - We provide links for the notebook in each section.
 
-- You can download the demo input data using `orthomap` data loading function in the notebooks.
-  `see here <https://orthomap.readthedocs.io/en/latest/modules/orthomap.html#modules-for-dataset-downloads>`_)
+- You can download the demo input data using `orthomap` data loading function in the notebooks (see :doc:`here <orthomap.datasets>`).
 
