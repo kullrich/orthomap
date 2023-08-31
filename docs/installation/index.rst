@@ -10,14 +10,15 @@ Please follow the guide below to install orthomap and its dependent software.
 Docker image
 ------------
 
-- Pre-built docker image is available through `Docker Hub <https://hub.docker.com/repository/docker/kkuweb/orthomap_ubuntu>`_ .
-
+Pre-built docker image is available through `Docker Hub <https://hub.docker.com/repository/docker/kkuweb/orthomap_ubuntu>`_ .
 ::
 
     docker pull kkuweb/orthomap_ubuntu:latest
 
 - This docker image was built based on Ubuntu 22.04.
+
 - Python dependent packages and orthomap are installed in an anaconda environment, `orthomap_env`. This environment will be activated automatically when you log in.
+
 - See additional information
 
 .. toctree::
@@ -49,7 +50,7 @@ Install orthomap
 Python Requirements
 ^^^^^^^^^^^^^^^^^^^
 
-- orthomap was developed using python 3.8. We do not support python 2.7x or python <=3.7.
+- orthomap was developed using Python `3.8`. We do not support Python `2.7x` or Python `<=3.7`.
 
 orthomap installation using conda and pip
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -59,7 +60,7 @@ orthomap installation using conda and pip
 
   The environment is created with `conda create` in which orthomap is installed.
 
-  If you do not have a working installation of Python 3.8 (or later), consider
+  If you do not have a working installation of Python `3.8` (or later), consider
   installing `Anaconda <https://docs.anaconda.com/anaconda/install/>`_ or `Miniconda <https://docs.conda.io/en/latest/miniconda.html>`_. Then run:
 
   ::
