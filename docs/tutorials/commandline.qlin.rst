@@ -1,6 +1,6 @@
 .. _qlin_cmd:
 
-command line - qlin
+Command line - qlin
 ===================
 
 ::

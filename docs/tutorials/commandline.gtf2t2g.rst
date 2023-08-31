@@ -1,6 +1,6 @@
 .. _gtf2t2g_cmd:
 
-command line - gtf2t2g
+Command line - gtf2t2g
 ======================
 
 ::

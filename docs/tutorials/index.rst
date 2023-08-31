@@ -22,7 +22,7 @@ or getting started with the :doc:`nematode case study <nematode_example>` which 
 
 .. _tutorial-pre-calculated-orthomaps:
 
-pre-calculated orthomaps
+Pre-calculated orthomaps
 ------------------------
 
 In addition to extract gene age classes from `OrthoFinder <https:https://github.com/davidemms/OrthoFinder>`_ results,
@@ -50,7 +50,7 @@ or any other related tool (see benchmark of tools at `Quest for Orthologs <https
 
 .. _tutorial-orthomap-steps:
 
-orthomap - steps
+orthomap - Steps
 ----------------
 
 This section contains the main steps of `orthomap` to extract gene age information for a query species up to linking
@@ -62,7 +62,7 @@ the extracted gene age classes and expression data of single-cell data sets.
 - :doc:`geneset_overlap`: This tutorial introduces how to match gene or transcript IDs between an orthomap and scRNA data.
 - :doc:`add_tei`: This tutorial introduces how to add a transcriptome evolutionary index (short: TEI) to scRNA data.
 
-orthomap - downstream analysis
+orthomap - Downstream analysis
 ------------------------------
 
 This section contains different downstream analysis options (step 5).
@@ -71,7 +71,7 @@ This section contains different downstream analysis options (step 5).
 - :doc:`relative_expression`: This tutorial introduces relative expression per gene age class and its contribution to the global TEI per cell or cell type.
 - :doc:`pstrata`: This tutorial introduces partial TEI and its contribution to the global TEI per cell or cell type.
 
-case studies
+Case studies
 ------------
 
 - :doc:`nematode_example`: Notebook - *Caenorhabditis elegans* scRNA data example.
@@ -80,12 +80,12 @@ case studies
 - :doc:`mouse_example`: Notebook - *Mus musculus* scRNA data example.
 - :doc:`hydra_example`: Notebook - *Hydra vulgaris* scRNA data example.
 
-command line functions
+Command line functions
 ----------------------
 
 - :doc:`commandline`: This section highlight all `orthomap` functions that can be run via the command line.
 
-myTAI - function correspondance
+myTAI - Function correspondance
 -------------------------------
 
 - :doc:`mytai`: This tutorial covers which orthomap functions correspond to myTAI functions.

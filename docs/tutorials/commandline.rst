@@ -1,6 +1,6 @@
 .. _commandline:
 
-command line functions
+Command line functions
 ======================
 
 .. toctree::

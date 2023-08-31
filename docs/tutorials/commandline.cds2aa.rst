@@ -1,6 +1,6 @@
 .. _cds2aa_cmd:
 
-command line - cds2aa
+Command line - cds2aa
 =====================
 
 ::

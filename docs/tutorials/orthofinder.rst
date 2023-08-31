@@ -3,9 +3,6 @@
 step 0 - run OrthoFinder
 ========================
 
-How to run OrthoFinder
-----------------------
-
 In order to extract an orthomap from OrthoFinder results, one needs to run `OrthoFinder <https:https://github.com/davidemms/OrthoFinder>`_.
 
 Install OrthoFinder
