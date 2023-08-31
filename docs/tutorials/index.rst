@@ -80,6 +80,11 @@ Case studies
 - :doc:`mouse_example`: Notebook - *Mus musculus* scRNA data example.
 - :doc:`hydra_example`: Notebook - *Hydra vulgaris* scRNA data example.
 
+.. note::
+   A demo dataset is available for each of the tutorial notebooks above.
+   These datasets allow you to begin exploring `orthomap` even if you do not have any data at any step in the analysis
+   pipeline.
+
 Command line functions
 ----------------------
 
@@ -89,11 +94,6 @@ myTAI - Function correspondance
 -------------------------------
 
 - :doc:`mytai`: This tutorial covers which orthomap functions correspond to myTAI functions.
-
-.. note::
-   A demo dataset is available for each of the tutorial notebooks above.
-   These datasets allow you to begin exploring `orthomap` even if you do not have any data at any step in the analysis
-   pipeline.
 
 Prerequisites
 -------------
