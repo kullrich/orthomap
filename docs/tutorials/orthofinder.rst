@@ -1,7 +1,7 @@
 .. _orthofinder:
 
-step 0
-======
+step 0 - run OrthoFinder
+========================
 
 How to run OrthoFinder
 ----------------------
