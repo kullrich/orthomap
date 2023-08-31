@@ -35,6 +35,7 @@ into account for the gene age class assignment need to be listed in that file.
 
 .. note::
    The <OrthoFinder name> is not the common species name but the sequence (FASTA file) name used to start OrthoFinder.
+   You can see the sequence names used by OrthoFinder in the header of either the <Orthogroups.GeneCount.tsv> or <Orthogroups.tsv> file.
 
 Install OrthoFinder
 -------------------
