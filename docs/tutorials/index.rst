@@ -65,7 +65,7 @@ the extracted gene age classes and expression data of single-cell data sets.
 orthomap - Downstream analysis
 ------------------------------
 
-This section contains different downstream analysis options (step 5).
+This section contains different downstream analysis options (Step 5).
 
 - :doc:`plotting`: This tutorial introduces some basic concepts of plotting results.
 - :doc:`relative_expression`: This tutorial introduces relative expression per gene age class and its contribution to the global TEI per cell or cell type.

@@ -1,7 +1,6 @@
 .. _geneset_overlap:
 
-
-step 3 - map gene/transcript IDs
+Step 3 - map gene/transcript IDs
 ================================
 
 To be able to link gene ages assignments from an orthomap and gene or transcript

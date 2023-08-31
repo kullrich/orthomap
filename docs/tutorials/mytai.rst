@@ -1,7 +1,7 @@
 .. _mytai_function:
 
-Correspondance of myTAI and orthomap function
-=============================================
+Correspondance of myTAI and orthomap functions
+==============================================
 
 `myTAI::TAI()` in R
 

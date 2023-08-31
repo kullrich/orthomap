@@ -1,6 +1,6 @@
 .. _orthofinder:
 
-step 0 - run OrthoFinder
+Step 0 - run OrthoFinder
 ========================
 
 In order to extract an orthomap from OrthoFinder results, one needs to run `OrthoFinder <https:https://github.com/davidemms/OrthoFinder>`_.
