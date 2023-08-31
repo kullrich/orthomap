@@ -13,7 +13,8 @@ Getting started
 
 If you are running `orthomap` for the first time, we recommend to either follow the individual
 :ref:`orthomap steps <tutorial-orthomap-steps>`
-or getting started with the :doc:`nematode case study <nematode_example>` which covers all essential steps.
+or getting started with either the :doc:`zebrafish case study <zebrafish_example>` (using OrthoFinder results)
+or the :doc:`nematode case study <nematode_example>` (using pre-calculated orthomaps), which both cover all essential steps.
 
 .. image:: img/orthomap_steps.png
    :width: 800px
