@@ -19,7 +19,7 @@ What is orthomap?
 
 - extract orthologous maps from `OrthoFinder <https://github.com/davidemms/OrthoFinder>`_ results.
 
-- extract orthologous maps from `eggnog_6.0 <http://eggnog6.embl.de/download/eggnog_6.0/>`_ results.
+- extract orthologous maps from `eggnog_6.0 <http://eggnog6.embl.de/>`_ results.
 
 - extract orthologous maps from `PLAZA <https://bioinformatics.psb.ugent.be/plaza/>`_ results.
 
@@ -46,7 +46,7 @@ Table of Contents
    references/index
 
 .. toctree::
-    :maxdepth: -1
+    :maxdepth: 1
     :caption: Tutorials
 
     tutorials/index

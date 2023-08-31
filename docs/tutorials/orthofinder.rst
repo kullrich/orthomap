@@ -1,7 +1,7 @@
 .. _orthofinder:
 
-How to run OrthoFinder
-======================
+step 0 - run OrthoFinder
+========================
 
 In order to extract an orthomap from OrthoFinder results, one needs to run `OrthoFinder <https:https://github.com/davidemms/OrthoFinder>`_.
 
@@ -21,6 +21,8 @@ Run OrthoFinder
 OrthoFinder can take a folder as input which should contain all input fasta files, one file per species.
 
 The species peptide file can be pre-processed e.g. to just contain the longest isoform per gene.
+
+To extract the longest isoform `orthomap`
 
   ::
 
@@ -43,3 +45,4 @@ To change the `'config.json' <https://raw.githubusercontent.com/davidemms/OrthoF
       "db_cmd": "diamond makedb --ignore-warnings --in INPUT -d OUTPUT",
       "search_cmd": "diamond blastp --ignore-warnings -k0 -d DATABASE -q INPUT -o OUTPUT --ultra-sensitive -p 1 --quiet -e 0.001 --compress 1"
       },
+

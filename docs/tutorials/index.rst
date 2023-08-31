@@ -6,22 +6,88 @@ Tutorials
 This section contains a variety of tutorials that should help get you started
 with the `orthomap` package.
 
-What the tutorial covers
+.. _tutorial-getting-started:
+
+Getting started
+---------------
+
+If you are running `orthomap` for the first time, we recommend to either follow the individual
+:ref:`orthomap steps <tutorial-orthomap-steps>`
+or getting started with the :doc:`nematode case study <nematode_example>` which covers all essential steps.
+
+.. image:: img/orthomap_steps.png
+   :width: 800px
+   :align: center
+   :alt: orthomap steps
+
+.. _tutorial-pre-calculated-orthomaps:
+
+Pre-calculated orthomaps
 ------------------------
 
-- :doc:`orthofinder`: This tutorial introduces how to run your own OrthoFinder analysis (step 0).
-- :doc:`get_orthomap`: This tutorial introduces how to get taxonomic information and how to extract an orthomap (gene age class) from OrthoFinder results (step 1 and step 2).
-- :doc:`geneset_overlap`: This tutorial introduces how to match gene or transcript IDs between an orthomap and scRNA data.(step 3)
-- :doc:`add_tei`: This tutorial introduces how to add a transcriptome evolutionary index (short: TEI) to scRNA data (step 4).
-- :doc:`pstrata`: This tutorial introduces partial TEI and its contribution to the global TEI per cell or cell type (step 5).
-- :doc:`relative_expression`: This tutorial introduces relative expression per gene age class and its contribution to the global TEI per cell or cell type (step 5).
-- :doc:`plotting`: This tutorial introduces some basic concepts of plotting results (step 5).
-- :doc:`nematode_example`: This notebook covers a re-analysis of nematode (Caenorhabditis elegans) scRNA data.
-- :doc:`zebrafish_example`: This notebook covers a re-analysis of zebrafish (Danio rerio) scRNA data.
-- :doc:`frog_example`: This notebook covers a re-analysis of frog (Xenopus tropicalis) scRNA data.
-- :doc:`mouse_example`: This notebook covers a re-analysis of mouse (Mus musculus) scRNA data.
-- :doc:`hydra_example`: This notebook covers a re-analysis of hydra (Hydra vulgaris) scRNA data.
-- :doc:`commandline`: This tutorial covers which orthomap functions can be run via the command line.
+In addition to extract gene age classes from `OrthoFinder <https:https://github.com/davidemms/OrthoFinder>`_ results,
+`orthomap` has the functionality to parse and extract gene age classes from pre-calculated orthologous group databases,
+like `eggNOG <http://eggnog6.embl.de/#/app/home>`_ or
+`plaza <https://bioinformatics.psb.ugent.be/plaza/>`_.
+
+If your query species is part of one of these databases, it might be sufficient to use the gene age classes directly
+from them and not start the time consuming step of orthologous group detection with `OrthoFinder <https:https://github.com/davidemms/OrthoFinder>`_
+or any other related tool (see benchmark of tools at `Quest for Orthologs <https://orthology.benchmarkservice.org/proxy/>`_).
+
+.. note::
+   Since gene age class assignment for any query species relies on taxonomic sampling to cover at best all possible
+   species tree nodes from the root (origin of life) up to the query species, the pre-calculated orthologous group databases
+   might lack species information for certain tree nodes. Orthologous group detection algorithm do not account for missing species
+   and as such will influence the taxonomic completeness score.
+
+.. note::
+   To link gene age classes and expression data one should use the same genome annotation version for both,
+   the orthologous group detection and the gene expression counting. To use the same genome annotation has the benefit
+   not to miss any gene in one or the other and decreases the source of error during gene ID mapping.
+
+- :doc:`eggnog2orthomap`: This tutorial introduces how to run your own OrthoFinder analysis.
+- :doc:`plaza2orthomap`: This tutorial introduces how to run your own OrthoFinder analysis.
+
+.. _tutorial-orthomap-steps:
+
+orthomap - Steps
+----------------
+
+This section contains the main steps of `orthomap` to extract gene age information for a query species up to linking
+the extracted gene age classes and expression data of single-cell data sets.
+
+- :doc:`orthofinder`: This tutorial introduces how to run your own OrthoFinder analysis.
+- :doc:`query_lineage`: This tutorial introduces how to get taxonomic information.
+- :doc:`get_orthomap`: This tutorial introduces how to extract an orthomap (gene age class) from OrthoFinder results.
+- :doc:`geneset_overlap`: This tutorial introduces how to match gene or transcript IDs between an orthomap and scRNA data.
+- :doc:`add_tei`: This tutorial introduces how to add a transcriptome evolutionary index (short: TEI) to scRNA data.
+
+orthomap - Downstream analysis
+------------------------------
+
+This section contains different downstream analysis options (step 5).
+
+- :doc:`plotting`: This tutorial introduces some basic concepts of plotting results.
+- :doc:`relative_expression`: This tutorial introduces relative expression per gene age class and its contribution to the global TEI per cell or cell type.
+- :doc:`pstrata`: This tutorial introduces partial TEI and its contribution to the global TEI per cell or cell type.
+
+Case studies
+------------
+
+- :doc:`nematode_example`: Notebook - *Caenorhabditis elegans* scRNA data example.
+- :doc:`zebrafish_example`: Notebook - *Danio rerio* scRNA data example.
+- :doc:`frog_example`: Notebook - *Xenopus tropicalis* scRNA data example.
+- :doc:`mouse_example`: Notebook - *Mus musculus* scRNA data example.
+- :doc:`hydra_example`: Notebook - *Hydra vulgaris* scRNA data example.
+
+Command line functions
+----------------------
+
+- :doc:`commandline`: This section highlight all `orthomap` functions that can be run via the command line.
+
+myTAI - Function correspondance
+-------------------------------
+
 - :doc:`mytai`: This tutorial covers which orthomap functions correspond to myTAI functions.
 
 .. note::
@@ -51,35 +117,3 @@ Code and data availability
 - You can download the demo input data using `orthomap` data loading function in the notebooks.
   `see here <https://orthomap.readthedocs.io/en/latest/modules/orthomap.html#modules-for-dataset-downloads>`_)
 
-Getting started
----------------
-
-If you are running `orthomap` for the first time, we recommend getting started with the :doc:`nematode_example` and
-then, proceed to :doc:`zebrafish_example`.
-
-Table of Contents
------------------
-
-.. toctree::
-   :caption: OrthoFinder
-   :maxdepth: 1
-
-   orthofinder
-
-.. toctree::
-   :caption: Command line
-   :maxdepth: 1
-
-   commandline.cds2aa
-   commandline.gtf2t2g
-   commandline.ncbitax
-   commandline.of2orthomap
-   commandline.plaza2orthomap
-   commandline.qlin
-
-
-.. toctree::
-   :caption: myTAI - function correspondance
-   :maxdepth: 1
-
-   mytai
