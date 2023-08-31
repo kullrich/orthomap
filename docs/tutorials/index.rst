@@ -9,7 +9,7 @@ with the `orthomap` package.
 Getting started
 ---------------
 
-If you are running `orthomap` for the first time, we recommend to either follow the individual :ref:`orthomap-steps`
+If you are running `orthomap` for the first time, we recommend to either follow the individual :ref:`orthomap steps`
 or getting started with the :doc:`nematode case study <nematode_example>` which covers all essential steps.
 
 .. image:: img/orthomap_steps.png
