@@ -1,8 +1,8 @@
-orthomap command line tools
-===========================
+orthomap - Command line functions
+=================================
 
-orthomap
---------
+Command line function - orthomap
+--------------------------------
 
 ::
 
@@ -19,8 +19,8 @@ orthomap
         of2orthomap         extract orthomap from OrthoFinder output for query species<orthomap -h>
         qlin                get query lineage based on ncbi taxonomy <qlin -h>
 
-orthomap cds2aa
-^^^^^^^^^^^^^^^
+Command line function - cds2aa
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
@@ -48,8 +48,8 @@ orthomap cds2aa
         # translate and retain longest isoform from CDS fasta file:
         $ cds2aa -i Danio_rerio.GRCz11.cds.all.fa -r ENSEMBL -o Danio_rerio.GRCz11.aa.all.longest.fa
 
-orthomap gtf2t2g
-^^^^^^^^^^^^^^^^
+Command line function - gtf2t2g
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
@@ -80,8 +80,8 @@ orthomap gtf2t2g
         # create t2g from GTF:
         $ gtf2t2g -i Mus_musculus.GRCm39.108.chr.gtf.gz -o Mus_musculus.GRCm39.108.chr.gtf.t2g.tsv -g -b -p -v -s
 
-orthomap ncbitax
-^^^^^^^^^^^^^^^^
+Command line function - ncbitax
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
@@ -98,8 +98,8 @@ orthomap ncbitax
         #update ncbi taxonomy database:
         ncbitax -u
 
-orthomap of2orthomap
-^^^^^^^^^^^^^^^^^^^^
+Command line function - of2orthomap
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
@@ -130,8 +130,8 @@ orthomap of2orthomap
           -oc ensembl_105_orthofinder_Orthogroups.GeneCount.tsv.zip \
           -og ensembl_105_orthofinder_Orthogroups.tsv.zip
 
-orthomap qlin
-^^^^^^^^^^^^^
+Command line function - qlin
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 

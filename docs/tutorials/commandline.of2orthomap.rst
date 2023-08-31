@@ -1,7 +1,7 @@
 .. _of2orthomap_cmd:
 
-Command line - of2orthomap
-==========================
+Command line function - of2orthomap
+===================================
 
 ::
 
