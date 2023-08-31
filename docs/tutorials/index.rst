@@ -9,65 +9,13 @@ with the `orthomap` package.
 Getting started
 ---------------
 
-If you are running `orthomap` for the first time, we recommend to either follow the individual `orthomap` steps
+If you are running `orthomap` for the first time, we recommend to either follow the individual :ref:`orthomap-steps`
 or getting started with the :doc:`nematode case study <nematode_example>` which covers all essential steps.
 
 .. image:: img/orthomap_steps.png
    :width: 800px
    :align: center
    :alt: orthomap steps
-
-What the tutorials cover - Table of Contents
---------------------------------------------
-
-.. toctree::
-   :caption: pre-calculated orthomaps
-   :maxdepth: 1
-
-.. toctree::
-   :caption: orthomap - steps
-   :maxdepth: 1
-
-   orthofinder
-   query_lineage
-   get_orthomap
-   geneset_overlap
-   add_tei
-
-.. toctree::
-   :caption: orthomap - downstream analysis
-   :maxdepth: 1
-
-   plotting
-   relative_expression
-   pstrata
-
-.. toctree::
-   :caption: case studies
-   :maxdepth: 1
-
-   nematode_example
-   zebrafish_example
-   frog_example
-   mouse_example
-   hydra_example
-
-.. toctree::
-   :caption: command line
-   :maxdepth: 1
-
-   commandline.cds2aa
-   commandline.gtf2t2g
-   commandline.ncbitax
-   commandline.of2orthomap
-   commandline.plaza2orthomap
-   commandline.qlin
-
-.. toctree::
-   :caption: myTAI - function correspondance
-   :maxdepth: 1
-
-   mytai
 
 pre-calculated orthomaps
 ------------------------
