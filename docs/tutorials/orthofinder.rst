@@ -3,7 +3,35 @@
 Step 0 - run OrthoFinder
 ========================
 
-In order to extract an orthomap from OrthoFinder results, one needs to run `OrthoFinder <https:https://github.com/davidemms/OrthoFinder>`_.
+In order to extract an orthomap from `OrthoFinder <https:https://github.com/davidemms/OrthoFinder>`_ results, one needs to run `OrthoFinder <https:https://github.com/davidemms/OrthoFinder>`_.
+
+Mandatory OrthoFinder results files
+-----------------------------------
+
+To be able to extract gene age classes from `OrthoFinder <https:https://github.com/davidemms/OrthoFinder>`_ results one needs the following two files:
+
+- <Orthogroups.GeneCount.tsv>
+- <Orthogroups.tsv>
+
+.. note::
+   It is not necessary to run the full analysis of OrthoFinder. Since only the <Orthogroups.GeneCount.tsv> and <Orthogroups.tsv>
+   files are needed, one can start OrthoFinder with the `-og` option and skip further analysis steps.
+
+Mandatory species information
+-----------------------------
+
+To be able to extract gene age classes for a given query species the sequence names used for the `OrthoFinder <https:https://github.com/davidemms/OrthoFinder>`_
+analysis needs to be listed in a tab delimited file (called species list) with the following two columns:
+
+- <OrthoFinder name>
+- <species taxID>
+
+One line of the species list file should look like this:
+
+<OrthoFinder name><tab><species taxID>
+
+In total all species from the `OrthoFinder <https:https://github.com/davidemms/OrthoFinder>`_ run that should be taken
+into account for the gene age class assignment need to be listed in that file.
 
 Install OrthoFinder
 -------------------

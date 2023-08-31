@@ -58,7 +58,7 @@ the extracted gene age classes and expression data of single-cell data sets.
 
 - :doc:`orthofinder`: This tutorial introduces how to run your own OrthoFinder analysis.
 - :doc:`query_lineage`: This tutorial introduces how to get taxonomic information.
-- :doc:`get_orthomap`: This tutorial introduces how to extract an orthomap (gene age class) from OrthoFinder results.
+- :doc:`get_orthomap`: This tutorial introduces how to extract an orthomap (gene age class) from OrthoFinder results or how to import pre-calculated orthomaps.
 - :doc:`geneset_overlap`: This tutorial introduces how to match gene or transcript IDs between an orthomap and scRNA data.
 - :doc:`add_tei`: This tutorial introduces how to add a transcriptome evolutionary index (short: TEI) to scRNA data.
 
