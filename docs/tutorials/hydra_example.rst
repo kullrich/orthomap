@@ -1,4 +1,4 @@
-.. _zebrafish_example:
+.. _hydra_example:
 
 hydra - case study
 ==================

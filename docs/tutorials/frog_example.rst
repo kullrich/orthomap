@@ -1,7 +1,7 @@
-.. _zebrafish_example:
+.. _frog_example:
 
-frog
-====
+frog - case study
+=================
 
 Xenopus tropicalis single-cell data analysis example
 ----------------------------------------------------
