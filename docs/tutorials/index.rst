@@ -6,16 +6,21 @@ Tutorials
 This section contains a variety of tutorials that should help get you started
 with the `orthomap` package.
 
+.. _tutorial-getting-started:
+
 Getting started
 ---------------
 
-If you are running `orthomap` for the first time, we recommend to either follow the individual :ref:`orthomap steps`
+If you are running `orthomap` for the first time, we recommend to either follow the individual
+:ref:`orthomap steps <tutorial-orthomap-steps>`
 or getting started with the :doc:`nematode case study <nematode_example>` which covers all essential steps.
 
 .. image:: img/orthomap_steps.png
    :width: 800px
    :align: center
    :alt: orthomap steps
+
+.. _tutorial-pre-calculated-orthomaps:
 
 pre-calculated orthomaps
 ------------------------
@@ -43,10 +48,10 @@ or any other related tool (see benchmark of tools at `Quest for Orthologs <https
 - :doc:`eggnog2orthomap`: This tutorial introduces how to run your own OrthoFinder analysis.
 - :doc:`plaza2orthomap`: This tutorial introduces how to run your own OrthoFinder analysis.
 
+.. _tutorial-orthomap-steps:
+
 orthomap - steps
 ----------------
-
-- overview picture goes here
 
 This section contains the main steps of `orthomap` to extract gene age information for a query species up to linking
 the extracted gene age classes and expression data of single-cell data sets.
@@ -57,8 +62,10 @@ the extracted gene age classes and expression data of single-cell data sets.
 - :doc:`geneset_overlap`: This tutorial introduces how to match gene or transcript IDs between an orthomap and scRNA data.
 - :doc:`add_tei`: This tutorial introduces how to add a transcriptome evolutionary index (short: TEI) to scRNA data.
 
-orthomap - downstream analysis (step 5)
----------------------------------------
+orthomap - downstream analysis
+------------------------------
+
+This section contains different downstream analysis options (step 5).
 
 - :doc:`plotting`: This tutorial introduces some basic concepts of plotting results.
 - :doc:`relative_expression`: This tutorial introduces relative expression per gene age class and its contribution to the global TEI per cell or cell type.
