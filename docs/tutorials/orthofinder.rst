@@ -10,8 +10,8 @@ Mandatory OrthoFinder results files
 
 To be able to extract gene age classes from `OrthoFinder <https:https://github.com/davidemms/OrthoFinder>`_ results one needs the following two files:
 
-- <Orthogroups.GeneCount.tsv>
-- <Orthogroups.tsv>
+- <Orthogroups.GeneCount.tsv> or <Orthogroups.GeneCount.tsv.zip>
+- <Orthogroups.tsv> or <Orthogroups.tsv.zip>
 
 .. note::
    It is not necessary to run the full analysis of OrthoFinder. Since only the <Orthogroups.GeneCount.tsv> and <Orthogroups.tsv>
@@ -32,6 +32,9 @@ One line of the species list file should look like this:
 
 In total all species from the `OrthoFinder <https:https://github.com/davidemms/OrthoFinder>`_ run that should be taken
 into account for the gene age class assignment need to be listed in that file.
+
+.. note::
+   The <OrthoFinder name> is not the common species name but the sequence (FASTA file) name used to start OrthoFinder.
 
 Install OrthoFinder
 -------------------
