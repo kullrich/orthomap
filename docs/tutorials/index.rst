@@ -67,11 +67,11 @@ orthomap - downstream analysis (step 5)
 case studies
 ------------
 
-- :doc:`nematode_example`: This notebook covers a re-analysis of nematode (Caenorhabditis elegans) scRNA data.
-- :doc:`zebrafish_example`: This notebook covers a re-analysis of zebrafish (Danio rerio) scRNA data.
-- :doc:`frog_example`: This notebook covers a re-analysis of frog (Xenopus tropicalis) scRNA data.
-- :doc:`mouse_example`: This notebook covers a re-analysis of mouse (Mus musculus) scRNA data.
-- :doc:`hydra_example`: This notebook covers a re-analysis of hydra (Hydra vulgaris) scRNA data.
+- :doc:`nematode_example`: Notebook - *Caenorhabditis elegans* scRNA data example.
+- :doc:`zebrafish_example`: Notebook - *Danio rerio* scRNA data example.
+- :doc:`frog_example`: Notebook - *Xenopus tropicalis* scRNA data example.
+- :doc:`mouse_example`: Notebook - *Mus musculus* scRNA data example.
+- :doc:`hydra_example`: Notebook - *Hydra vulgaris* scRNA data example.
 
 command line
 ------------

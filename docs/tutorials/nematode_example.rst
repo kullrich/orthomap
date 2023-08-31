@@ -1,7 +1,7 @@
 .. _nematode_example:
 
-nematode
-========
+nematode - case study
+=====================
 
 Caenorhabditis elegans single-cell data analysis example
 --------------------------------------------------------
