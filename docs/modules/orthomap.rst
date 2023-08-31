@@ -1,3 +1,5 @@
+.. _orthomap_mod:
+
 orthomap - Command line functions
 =================================
 

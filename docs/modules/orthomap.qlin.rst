@@ -1,3 +1,5 @@
+.. _orthomap_qlin_mod:
+
 orthomap.qlin module
 ====================
 
