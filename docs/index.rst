@@ -29,6 +29,11 @@ What is orthomap?
 
 - show number of expressed genes per gene age class.
 
+.. image:: tutorials/img/orthomap_steps.png
+   :width: 800px
+   :align: center
+   :alt: orthomap steps
+
 Source code is available at `orthomap GitHub repository <https://github.com/kullrich/orthomap>`_
 and at `PyPi <https://pypi.org/project/orthomap/>`_.
 
