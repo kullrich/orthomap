@@ -1,4 +1,4 @@
-.. _zebrafish-example:
+.. _zebrafish_example:
 
 zebrafish - case study
 ======================

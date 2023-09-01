@@ -1,4 +1,4 @@
-.. _orthomap-orthomap2tei-module:
+.. _module_orthomap2tei:
 
 orthomap.orthomap2tei module
 ============================
