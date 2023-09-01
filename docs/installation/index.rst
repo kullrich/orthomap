@@ -7,6 +7,8 @@ Please follow the guide below to install orthomap and its dependent software.
 
 .. _require:
 
+.. _docker_image:
+
 Docker image
 ------------
 
@@ -26,6 +28,8 @@ Pre-built docker image is available through `Docker Hub <https://hub.docker.com/
 
    docker_additional_information
 
+.. _singularity_image:
+
 Singularity image
 -----------------
 
@@ -43,6 +47,8 @@ Singularity image
    :maxdepth: 1
 
    singularity_additional_information
+
+.. _install_orthomap:
 
 Install orthomap
 ----------------

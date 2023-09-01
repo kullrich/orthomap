@@ -107,9 +107,9 @@ Prerequisites
   **pandas**, **matplotlib** and **seaborn**.
 - `orthomap` is a python package but part of it can be run on the command line. For the installation of `orthomap`,
   we recommend using `Anaconda <https://anaconda.org>`_
-  (`see here <https://orthomap.readthedocs.io/en/latest/installation/index.html>`_).
+  (:ref:`see here <install_orthomap>`).
   If you are not familiar with Anaconda or python environment management,
-  please use `our pre-built docker image <https://orthomap.readthedocs.io/en/latest/installation/index.html#docker-image>`_.
+  please use :ref:`our pre-built docker image <docker_image>`.
 
 Code and data availability
 --------------------------
