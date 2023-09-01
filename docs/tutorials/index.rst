@@ -114,7 +114,7 @@ Prerequisites
 Code and data availability
 --------------------------
 
-- We provide links for the notebook in each section.
+- We provide links for the notebook in each tutorial section.
 
-- You can download the demo input data using the :ref:`module_datasets` module in the notebooks.
+- You can download the demo input data in the notebooks using the :ref:`module_datasets`.
 
