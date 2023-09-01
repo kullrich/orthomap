@@ -1,4 +1,4 @@
-.. _hydra-example:
+.. _hydra_example:
 
 hydra - case study
 ==================

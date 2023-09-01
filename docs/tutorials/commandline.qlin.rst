@@ -1,4 +1,4 @@
-.. _commandline-qlin:
+.. _cmd_qlin:
 
 Command line function - qlin
 ============================

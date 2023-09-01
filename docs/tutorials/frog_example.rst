@@ -1,4 +1,4 @@
-.. _frog-example:
+.. _frog_example:
 
 frog - case study
 =================

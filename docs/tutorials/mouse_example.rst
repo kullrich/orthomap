@@ -1,4 +1,4 @@
-.. _mouse-example:
+.. _mouse_example:
 
 mouse - case study
 ==================

@@ -1,4 +1,4 @@
-.. _commandline-cds2aa:
+.. _cmd_cds2aa:
 
 Command line function - cds2aa
 ==============================

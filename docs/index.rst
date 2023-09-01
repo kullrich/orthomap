@@ -1,4 +1,4 @@
-.. _doc-root:
+.. _doc_root:
 
 Welcome to orthomap's documentation!
 ====================================

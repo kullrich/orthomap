@@ -1,4 +1,4 @@
-.. _commandline-add-tei:
+.. _add_tei:
 
 Step 4 - TEI calculation
 ========================

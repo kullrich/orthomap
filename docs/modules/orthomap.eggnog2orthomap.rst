@@ -1,4 +1,4 @@
-.. _orthomap-eggnog2orthomap-module:
+.. _module_eggnog2orthomap:
 
 orthomap.eggnog2orthomap module
 ===============================

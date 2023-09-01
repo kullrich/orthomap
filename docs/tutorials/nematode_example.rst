@@ -1,4 +1,4 @@
-.. _nematode-example:
+.. _nematode_example:
 
 nematode - case study
 =====================
