@@ -1,4 +1,4 @@
-.. _orthomap_of2orthomap_mod:
+.. _orthomap-of2orthomap-module:
 
 orthomap.of2orthomap module
 ===========================

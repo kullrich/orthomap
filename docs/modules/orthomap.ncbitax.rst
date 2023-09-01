@@ -1,4 +1,4 @@
-.. _orthomap_ncbitax_mod:
+.. _orthomap-ncbitax-module:
 
 orthomap.ncbitax module
 =======================

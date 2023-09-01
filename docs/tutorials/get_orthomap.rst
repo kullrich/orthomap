@@ -1,4 +1,4 @@
-.. _get_orthomap:
+.. _get-orthomap:
 
 Step 2 - gene age class assignment
 ==================================

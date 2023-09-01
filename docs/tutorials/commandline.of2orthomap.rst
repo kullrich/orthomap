@@ -1,4 +1,4 @@
-.. _of2orthomap_cmd:
+.. _commandline-of2orthomap:
 
 Command line function - of2orthomap
 ===================================

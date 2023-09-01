@@ -1,4 +1,4 @@
-.. _ncbitax_cmd:
+.. _commandline-ncbitax:
 
 Command line function - ncbitax
 ===============================

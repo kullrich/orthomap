@@ -1,4 +1,4 @@
-.. _plaza2orthomap_cmd:
+.. _commandline-plaza2orthomap:
 
 Command line function - plaza2orthomap
 ======================================

@@ -1,4 +1,4 @@
-.. _mytai_function:
+.. _mytai:
 
 Correspondance of myTAI and orthomap functions
 ==============================================

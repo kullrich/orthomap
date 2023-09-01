@@ -1,4 +1,4 @@
-.. _gtf2t2g_cmd:
+.. _commandline-gtf2t2g:
 
 Command line function - gtf2t2g
 ===============================

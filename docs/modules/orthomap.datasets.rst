@@ -1,4 +1,4 @@
-.. _orthomap_datasets_mod:
+.. _orthomap-datasets-module:
 
 orthomap.datasets module
 ========================

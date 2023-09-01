@@ -1,3 +1,5 @@
+.. _doc-root:
+
 Welcome to orthomap's documentation!
 ====================================
 |GitHub Workflow Status| |PyPI| |PyPI - Python Version| |PyPI - Wheel| |Licence| |ReadTheDocs|

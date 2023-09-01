@@ -1,4 +1,4 @@
-.. _geneset_overlap:
+.. _geneset-overlap:
 
 Step 3 - map gene/transcript IDs
 ================================

@@ -1,4 +1,4 @@
-.. _tutorial:
+.. _tutorials:
 
 Tutorials
 =========
@@ -116,5 +116,5 @@ Code and data availability
 
 - We provide links for the notebook in each section.
 
-- You can download the demo input data using the `orthomap.datasets` module in the notebooks (`see here <https://orthomap.readthedocs.io/en/latest/modules/orthomap.datasets.html>`_).
+- You can download the demo input data using the `orthomap.datasets <../modules/orthomap.datasets>` module in the notebooks.
 

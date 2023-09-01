@@ -1,4 +1,4 @@
-.. _orthomap_gtf2t2g_mod:
+.. _orthomap-gtf2t2g-module:
 
 orthomap.gtf2t2g module
 =======================

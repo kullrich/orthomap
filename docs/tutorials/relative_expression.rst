@@ -1,4 +1,4 @@
-.. _relative_expression:
+.. _relative-expression:
 
 relative expression
 ===================

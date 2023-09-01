@@ -1,4 +1,4 @@
-.. _query_lineage:
+.. _query-lineage:
 
 Step 1 - get taxonomic information
 ==================================

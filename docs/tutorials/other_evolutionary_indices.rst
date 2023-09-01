@@ -1,4 +1,4 @@
-.. _other_evolutionary_indices:
+.. _other-evolutionary-indices:
 
 other evolutionary indices
 ==========================
