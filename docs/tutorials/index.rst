@@ -58,11 +58,11 @@ This section contains the main steps of `orthomap` to extract gene age informati
 the extracted gene age classes and expression data of single-cell data sets.
 
 - :doc:`orthofinder`: This tutorial introduces how to run your own OrthoFinder analysis.
-- :doc:`query_lineage`: This tutorial introduces how to get taxonomic information.
-- :doc:`get_orthomap`: This tutorial introduces how to extract an orthomap (gene age class) from OrthoFinder results or how to import pre-calculated orthomaps.
-- :doc:`geneset_overlap`: This tutorial introduces how to match gene or transcript IDs between an orthomap and scRNA data.
-- :doc:`add_tei`: This tutorial introduces how to add a transcriptome evolutionary index (short: TEI) to scRNA data.
-- :doc:`other_evolutionary_indices`: This tutorial introduces how to use other evolutionary indices like nucleotide diversity to calculate TEI.
+- :doc:`query-lineage`: This tutorial introduces how to get taxonomic information.
+- :doc:`get-orthomap`: This tutorial introduces how to extract an orthomap (gene age class) from OrthoFinder results or how to import pre-calculated orthomaps.
+- :doc:`geneset-overlap`: This tutorial introduces how to match gene or transcript IDs between an orthomap and scRNA data.
+- :doc:`add-tei`: This tutorial introduces how to add a transcriptome evolutionary index (short: TEI) to scRNA data.
+- :doc:`other-evolutionary-indices`: This tutorial introduces how to use other evolutionary indices like nucleotide diversity to calculate TEI.
 
 orthomap - Downstream analysis
 ------------------------------
@@ -70,17 +70,17 @@ orthomap - Downstream analysis
 This section contains different downstream analysis options (Step 5).
 
 - :doc:`plotting`: This tutorial introduces some basic concepts of plotting results.
-- :doc:`relative_expression`: This tutorial introduces relative expression per gene age class and its contribution to the global TEI per cell or cell type.
+- :doc:`relative-expression`: This tutorial introduces relative expression per gene age class and its contribution to the global TEI per cell or cell type.
 - :doc:`pstrata`: This tutorial introduces partial TEI and its contribution to the global TEI per cell or cell type.
 
 Case studies
 ------------
 
-- :doc:`nematode_example`: Notebook - *Caenorhabditis elegans* scRNA data example.
-- :doc:`zebrafish_example`: Notebook - *Danio rerio* scRNA data example.
-- :doc:`frog_example`: Notebook - *Xenopus tropicalis* scRNA data example.
-- :doc:`mouse_example`: Notebook - *Mus musculus* scRNA data example.
-- :doc:`hydra_example`: Notebook - *Hydra vulgaris* scRNA data example.
+- :doc:`nematod-_example`: Notebook - *Caenorhabditis elegans* scRNA data example.
+- :doc:`zebrafish-example`: Notebook - *Danio rerio* scRNA data example.
+- :doc:`frog-example`: Notebook - *Xenopus tropicalis* scRNA data example.
+- :doc:`mouse-example`: Notebook - *Mus musculus* scRNA data example.
+- :doc:`hydra-example`: Notebook - *Hydra vulgaris* scRNA data example.
 
 .. note::
    A demo dataset is available for each of the tutorial notebooks above.
