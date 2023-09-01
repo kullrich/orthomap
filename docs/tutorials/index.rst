@@ -116,5 +116,5 @@ Code and data availability
 
 - We provide links for the notebook in each section.
 
-- You can download the demo input data using the :doc:`<../modules/module_datasets>` module in the notebooks.
+- You can download the demo input data using the :ref:`module_datasets` module in the notebooks.
 
