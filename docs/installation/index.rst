@@ -7,6 +7,11 @@ Please follow the guide below to install orthomap and its dependent software.
 
 .. _require:
 
+If a containerised option is available to you (docker or singularity) it will help you to either
+isolate it from the host environment or deals with the situation of broken conde dependencies (with only limited control
+on our side to resolve these issues). We of course try to support conda and other issues,
+but if you want to avoid conda issues, the suggestion is to use either docker or singularity.
+
 .. _docker_image:
 
 Docker image
