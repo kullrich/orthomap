@@ -66,15 +66,44 @@ To extract the longest isoform `orthomap`
    **OrthoFinder by default use diamond as the sequence search engine.** To increase sequence search sensitivity, at least use the '-S diamond_ultra_sens' option.
    Even better change the OrthoFinder 'config.josn' and add the option '-k0' for diamond to not only report the best 25, but all sequence search hits.
 
-To change the `'config.json' <https://raw.githubusercontent.com/davidemms/OrthoFinder/master/scripts_of/config.json>`_ and the 'diamond_ultra_sens' option from OrthoFinder, please change the 'cofig.josn' as follows:
+To change the `'config.json' <https://raw.githubusercontent.com/davidemms/OrthoFinder/master/scripts_of/config.json>`_ and the 'diamond_ultra_sens' option from OrthoFinder, please change the 'cofig.json' as follows:
+
+.. note::
+   If you have used a conda environment to install `OrthoFinder <https:https://github.com/davidemms/OrthoFinder>`_,
+   the 'config.json' of `OrthoFinder <https:https://github.com/davidemms/OrthoFinder>`_
+   can be found in in the location '~./conda/envs/ENVNAME/bin/scripts_of/config.json'.
 
    ::
 
-      wget
 
       "diamond_ultra_sens":{
       "program_type": "search",
       "db_cmd": "diamond makedb --ignore-warnings --in INPUT -d OUTPUT",
       "search_cmd": "diamond blastp --ignore-warnings -k0 -d DATABASE -q INPUT -o OUTPUT --ultra-sensitive -p 1 --quiet -e 0.001 --compress 1"
+      },
+
+
+Use LAST with OrthoFinder
+-------------------------
+
+To use e.g.: `last <https://gitlab.com/mcfrith/last>`_ as the sequence search engine, please install it and make the executables available to your PATH.
+
+The source code can be either accessed here:
+
+- `last source code <https://gitlab.com/mcfrith/last/-/tags>`_
+
+or you might want to install with bioconda:
+
+- `bioconda last <https://anaconda.org/bioconda/last>`_
+
+To use `last <https://gitlab.com/mcfrith/last>`_ as a new sequence serach engine,
+please change the 'config.json' as follows:
+
+   ::
+
+      "last":{
+      "program_type": "search",
+      "db_cmd": "lastdb -p -cR01 OUTPUT INPUT",
+      "search_cmd": "lastal -f BlastTab+ -D 1e6 DATABASE INPUT | sed -n '/^#/!p' > OUTPUT"
       },
 
