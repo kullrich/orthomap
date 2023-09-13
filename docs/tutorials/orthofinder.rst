@@ -66,15 +66,14 @@ To extract the longest isoform `orthomap`
    **OrthoFinder by default use diamond as the sequence search engine.** To increase sequence search sensitivity, at least use the '-S diamond_ultra_sens' option.
    Even better change the OrthoFinder 'config.josn' and add the option '-k0' for diamond to not only report the best 25, but all sequence search hits.
 
-To change the `'config.json' <https://raw.githubusercontent.com/davidemms/OrthoFinder/master/scripts_of/config.json>`_ and the 'diamond_ultra_sens' option from OrthoFinder, please change the 'cofig.json' as follows:
-
 .. note::
    If you have used a conda environment to install `OrthoFinder <https:https://github.com/davidemms/OrthoFinder>`_,
    the 'config.json' of `OrthoFinder <https:https://github.com/davidemms/OrthoFinder>`_
    can be found in in the location '~./conda/envs/ENVNAME/bin/scripts_of/config.json'.
 
-   ::
+To change the `'config.json' <https://raw.githubusercontent.com/davidemms/OrthoFinder/master/scripts_of/config.json>`_ and the 'diamond_ultra_sens' option from OrthoFinder, please change the 'cofig.json' as follows:
 
+   ::
 
       "diamond_ultra_sens":{
       "program_type": "search",
