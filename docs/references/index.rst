@@ -56,7 +56,13 @@ Julca, I., Ferrari, C., Flores-Tornero, M., Proost, S., Lindner, A.-C., Hackenbe
 Michaelidis, C., Gomes Pereira, S., Misra, C.S., Kawashima, T., Borg, M., Berger, F., Goldberg, J., Johnson, M.,
 Honys, D., Twell, D., Sprunck, S., Dresselhaus, T., Becker, J.D., Mutwil, M. (2021).
 **Comparative transcriptomic analysis reveals conserved programmes underpinning organogenesis and reproduction in
-land plants.** *Nature Plants*, *7(8)**. [https://doi.org/10.1038/s41477-021-00958-2](https://doi.org/10.1038/s41477-021-00958-2)
+land plants.** *Nature Plants*, **7(8)**. [https://doi.org/10.1038/s41477-021-00958-2](https://doi.org/10.1038/s41477-021-00958-2)
+
+Kiełbasa S.M., Wan R., Sato K., Horton P., Frith M.C. (2011). **Adaptive seeds tame genomic sequence comparison.**
+*Genome Research*, *21(3)**. [https://doi.org/10.1101/gr.113985.110](https://doi.org/10.1101/gr.113985.110)
+
+Liu, J. and Robinson-Rechavi, M. (2018). **Developmental Constraints on Genome Evolution in Four Bilaterian Model Species**
+*Genome Biology and Evolution*, **10(9)**. [https://doi.org/10.1093/gbe/evy177](https://doi.org/10.1093/gbe/evy177)
 
 Liu, J., Frochaux, M. , Gardeux, V., Deplancke, B. and Robinson-Rechavi, M. (2020). **Inter-embryo gene expression
 variability recapitulates the hourglass pattern of evo-devo.** *BMC biology*, **18(1)**. [https://doi.org/10.1186/s12915-020-00842-z](https://doi.org/10.1186/s12915-020-00842-z)
