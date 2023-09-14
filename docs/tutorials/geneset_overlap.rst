@@ -12,3 +12,10 @@ file.
 
 How to match gene or transcript IDs between an orthomap and scRNA data
 ----------------------------------------------------------------------
+
+Please download the notebooks from `here <https://raw.githubusercontent.com/kullrich/orthomap/main/docs/notebooks/geneset_overlap.ipynb>`_
+or please click below to view the content.
+
+.. toctree::
+
+   ../notebooks/geneset_overlap
