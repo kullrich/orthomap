@@ -64,6 +64,8 @@ the extracted gene age classes and expression data of single-cell data sets.
 - :doc:`add_tei`: This tutorial introduces how to add a transcriptome evolutionary index (short: TEI) to scRNA data.
 - :doc:`evolutionary_indices`: This tutorial introduces how to use other evolutionary indices like nucleotide diversity to calculate TEI.
 
+.. _tutorial-orthomap-downstream-analysis:
+
 orthomap - Downstream analysis
 ------------------------------
 
