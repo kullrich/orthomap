@@ -280,8 +280,8 @@ def _get_psd(adata,
              gene_age,
              keep='min',
              layer=None,
-             normalize_total=False,
-             log1p=False,
+             normalize_total=True,
+             log1p=True,
              target_sum=1e6):
     """
     A helper function to pre-process AnnData.
@@ -489,8 +489,8 @@ def get_tei(adata,
             obs_name='tei',
             boot=False,
             bt=10,
-            normalize_total=False,
-            log1p=False,
+            normalize_total=True,
+            log1p=True,
             target_sum=1e6):
     """
     This function computes the phylogenetically based transcriptome evolutionary
@@ -658,8 +658,8 @@ def get_pmatrix(adata,
                 layer_name='pmatrix',
                 add_var=True,
                 add_obs=True,
-                normalize_total=False,
-                log1p=False,
+                normalize_total=True,
+                log1p=True,
                 target_sum=1e6):
     """
     This function computes the partial transcriptome evolutionary index (TEI) values for each single gene.
@@ -768,8 +768,8 @@ def get_pstrata(adata,
                 obs_fillna='__NaN',
                 obs_type='mean',
                 standard_scale=None,
-                normalize_total=False,
-                log1p=False,
+                normalize_total=True,
+                log1p=True,
                 target_sum=1e6):
     """
     This function computes the partial transcriptome evolutionary index (TEI) values combined for each stratum.
@@ -990,8 +990,8 @@ def get_ematrix(adata,
                 obs_type='mean',
                 obs_fillna='__NaN',
                 standard_scale=None,
-                normalize_total=False,
-                log1p=False,
+                normalize_total=True,
+                log1p=True,
                 target_sum=1e6):
     """
     This function computes expression profiles for all genes or group of genes 'group_by_var' (default: None).
@@ -1248,8 +1248,8 @@ def get_rematrix(adata,
                  obs_fillna='__NaN',
                  obs_type='mean',
                  standard_scale=None,
-                 normalize_total=False,
-                 log1p=False,
+                 normalize_total=True,
+                 log1p=True,
                  target_sum=1e6):
     """
     This function computes relative expression profiles.

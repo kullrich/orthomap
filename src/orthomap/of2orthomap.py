@@ -118,7 +118,7 @@ def get_orthomap(seqname,
     -------
     >>> from orthomap import datasets, of2orthomap, qlin
     >>> datasets.ensembl105(datapath='.')
-    >>> query_orthomap = of2orthomap.get_orthomap(
+    >>> query_orthomap, orthofinder_species_list, of_species_abundance = of2orthomap.get_orthomap(
     >>>     seqname='Danio_rerio.GRCz11.cds.longest',
     >>>     qt='7955',
     >>>     sl='ensembl_105_orthofinder_species_list.tsv',
