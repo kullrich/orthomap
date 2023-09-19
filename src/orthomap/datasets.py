@@ -58,6 +58,49 @@ def ensembl105(datapath='.'):
             og_filename,
             sl_filename]
 
+def ensembl110_last(datapath='.'):
+    """
+    OrthoFinder results (-S last) for all translated coding sequences (CDS)
+    from Ensembl release-110 (keeping only longest isoforms)
+    and Xtropicalisv9.0.Named.primaryTrs.pep.fa from www.xenbase.org.
+
+    All files can be obtained from here:
+    https://doi.org/10.5281/zenodo.7242263
+
+    :param datapath: Path to safe dataset.
+    :return: Path to Orthogroups.GeneCount file, OrthoGroups file and species list file.
+
+    :type datapath: str
+    :rtype: list of str
+
+    Example
+    -------
+    >>> from orthomap import datasets
+    >>> datasets.ensembl110_last(datapath='.')
+    """
+    if not os.path.exists(datapath):
+        print('datapath does not exist, is created now')
+        os.makedirs(name=datapath)
+    oc_filename = os.path.join(datapath,
+                               'ensembl_110_orthofinder_last_Orthogroups.GeneCount.tsv.zip')
+    og_filename = os.path.join(datapath,
+                               'ensembl_110_orthofinder_last_Orthogroups.tsv.zip')
+    sl_filename = os.path.join(datapath,
+                               'ensembl_110_orthofinder_last_species_list.tsv')
+    oc_url = 'https://zenodo.org/record/8360098/files/ensembl_110_orthofinder_last_Orthogroups.GeneCount.tsv.zip'
+    og_url = 'https://zenodo.org/record/8360098/files/ensembl_110_orthofinder_last_Orthogroups.tsv.zip'
+    sl_url = 'https://zenodo.org/record/8360098/files/ensembl_110_orthofinder_last_species_list.tsv'
+
+    wget.download(url=oc_url,
+                  out=datapath)
+    wget.download(url=og_url,
+                  out=datapath)
+    wget.download(url=sl_url,
+                  out=datapath)
+    return [oc_filename,
+            og_filename,
+            sl_filename]
+
 
 def ws288(datapath='.'):
     """
