@@ -17,8 +17,8 @@ import scanpy as sc
 
 def ensembl105(datapath='.'):
     """
-    OrthoFinder results for all translated coding sequences (CDS) from Ensembl release-105
-    (keeping only longest isoforms)
+    OrthoFinder results (-S diamond_ultra_sens) for all translated coding sequences (CDS)
+    from Ensembl release-105 (keeping only longest isoforms)
     and Xtropicalisv9.0.Named.primaryTrs.pep.fa from www.xenbase.org.
 
     All files can be obtained from here:
@@ -47,6 +47,51 @@ def ensembl105(datapath='.'):
     oc_url = 'https://zenodo.org/record/7796253/files/ensembl_105_orthofinder_Orthogroups.GeneCount.tsv.zip'
     og_url = 'https://zenodo.org/record/7796253/files/ensembl_105_orthofinder_Orthogroups.tsv.zip'
     sl_url = 'https://zenodo.org/record/7796253/files/ensembl_105_orthofinder_species_list.tsv'
+
+    wget.download(url=oc_url,
+                  out=datapath)
+    wget.download(url=og_url,
+                  out=datapath)
+    wget.download(url=sl_url,
+                  out=datapath)
+    return [oc_filename,
+            og_filename,
+            sl_filename]
+
+
+def ws288(datapath='.'):
+    """
+    OrthoFinder results (-S last) for all translated coding sequences (CDS)
+    from WormBase release-WS288, WormBase ParaSite release-WBPS18 (keeping only longest isoforms)
+    and dd_Smed_v6.pcf.contigs.fasta (transdecoder and miniprothint peptides)
+    from https://planmine.mpibpc.mpg.de.
+
+    All files can be obtained from here:
+    https://doi.org/10.5281/zenodo.7242263
+
+    :param datapath: Path to safe dataset.
+    :return: Path to Orthogroups.GeneCount file, OrthoGroups file and species list file.
+
+    :type datapath: str
+    :rtype: list of str
+
+    Example
+    -------
+    >>> from orthomap import datasets
+    >>> datasets.ws288(datapath='.')
+    """
+    if not os.path.exists(datapath):
+        print('datapath does not exist, is created now')
+        os.makedirs(name=datapath)
+    oc_filename = os.path.join(datapath,
+                               'WS288_WBPS18_orthofinder_last_Orthogroups.GeneCount.tsv.zip')
+    og_filename = os.path.join(datapath,
+                               'WS288_WBPS18_orthofinder_last_Orthogroups.tsv.zip')
+    sl_filename = os.path.join(datapath,
+                               'WS288_WBPS18_orthofinder_last_species_list.tsv')
+    oc_url = 'https://zenodo.org/record/8359128/files/WS288_WBPS18_orthofinder_last_Orthogroups.GeneCount.tsv.zip'
+    og_url = 'https://zenodo.org/record/8359128/files/WS288_WBPS18_orthofinder_last_Orthogroups.tsv.zip'
+    sl_url = 'https://zenodo.org/record/8359128/files/WS288_WBPS18_orthofinder_last_species_list.tsv'
 
     wget.download(url=oc_url,
                   out=datapath)
