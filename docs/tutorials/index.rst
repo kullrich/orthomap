@@ -46,8 +46,68 @@ or any other related tool (see benchmark of tools at `Quest for Orthologs <https
    the orthologous group detection and the gene expression counting. To use the same genome annotation has the benefit
    not to miss any gene in one or the other and decreases the source of error during gene ID mapping.
 
-- :doc:`eggnog2orthomap`: This tutorial introduces how to run your own OrthoFinder analysis.
-- :doc:`plaza2orthomap`: This tutorial introduces how to run your own OrthoFinder analysis.
+.. _tutorial-pre-calculated-orthomaps-eggnog:
+
+eggNOG database version 6.0 orthomaps
+-------------------------------------
+
+- includes 1322 species
+
+Extracted orthomaps for all Eukaryota from `eggNOG database version 6.0 <http://eggnog6.embl.de/#/app/home>`_ can be downloaded here:
+
+`eggnog6_eukaryota_orthomaps.tsv.zip <https://zenodo.org/record/8360098/files/eggnog6_eukaryota_orthomaps.tsv.zip>`_
+
+To get an orthomap for e.g. the species *Caenorhabditis elegans* (taxID: 6239):
+
+   ::
+
+       from orthomap import qlin, gtf2t2g, of2orthomap, orthomap2tei, datasets
+       import pandas as pd
+       eggnog6_eukaryota_orthomaps = pd.read_csv('eggnog6_eukaryota_orthomaps.tsv.zip', delimiter='\t')
+       query_lineage = qlin.get_qlin(q='Caenorhabditis elegans')
+       query_orthomap = eggnog6_eukaryota_orthomaps[eggnog6_eukaryota_orthomaps['taxID']==query_lineage[1]]
+       query_orthomap
+
+
+.. _tutorial-pre-calculated-orthomaps-plaza:
+
+plaza database version 5.0 orthomaps
+------------------------------------
+
+The plaza database offers two different sets of gene family clusters,
+either homologous (HOMFAM) or orthologous gene families (ORTHOFAM).
+
+plaza dicots database version 5.0
+=================================
+
+- includes 98 species
+
+Extracted orthomaps for all dicots (HOMFAM and ORTHOFAM) from `plaza dicots database version 5.0 <https://bioinformatics.psb.ugent.be/plaza/versions/plaza_v5_dicots/>`_ can be downloaded here:
+
+`plaza_v5_dicots_HOMFAM_orthomaps.tsv.zip <https://zenodo.org/record/8360098/files/plaza_v5_dicots_HOMFAM_orthomaps.tsv.zip>`_
+`plaza_v5_dicots_ORTHOFAM_orthomaps.tsv.zip <https://zenodo.org/record/8360098/files/plaza_v5_dicots_ORTHOFAM_orthomaps.tsv.zip>`_
+
+plaza monocots database version 5.0
+===================================
+
+- includes 52 species
+
+Extracted orthomaps for all monocots (HOMFAM and ORTHOFAM) from `plaza monocots database version 5.0 <https://bioinformatics.psb.ugent.be/plaza/versions/plaza_v5_monocots/>`_ can be downloaded here:
+
+`plaza_v5_monocots_HOMFAM_orthomaps.tsv.zip <https://zenodo.org/record/8360098/files/plaza_v5_monocots_HOMFAM_orthomaps.tsv.zip>`_
+`plaza_v5_monocots_ORTHOFAM_orthomaps.tsv.zip <https://zenodo.org/record/8360098/files/plaza_v5_monocots_ORTHOFAM_orthomaps.tsv.zip>`_
+
+To get an orthomap for e.g. the species *Arabidopsis thaliana* (taxID: 3702):
+
+   ::
+
+       from orthomap import qlin, gtf2t2g, of2orthomap, orthomap2tei, datasets
+       import pandas as pd
+       plaza_v5_dicots_HOMFAM_orthomaps = pd.read_csv('plaza_v5_dicots_HOMFAM_orthomaps.tsv.zip', delimiter='\t')
+       query_lineage = qlin.get_qlin(q='Arabidopsis thaliana')
+       query_orthomap = plaza_v5_dicots_HOMFAM_orthomaps[plaza_v5_dicots_HOMFAM_orthomaps['taxID']==query_lineage[1]]
+       query_orthomap
+
 
 .. _tutorial-orthomap-steps:
 
