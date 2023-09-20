@@ -78,23 +78,25 @@ The plaza database offers two different sets of gene family clusters,
 either homologous (HOMFAM) or orthologous gene families (ORTHOFAM).
 
 plaza dicots database version 5.0
-=================================
+---------------------------------
 
 - includes 98 species
 
 Extracted orthomaps for all dicots (HOMFAM and ORTHOFAM) from `plaza dicots database version 5.0 <https://bioinformatics.psb.ugent.be/plaza/versions/plaza_v5_dicots/>`_ can be downloaded here:
 
 `plaza_v5_dicots_HOMFAM_orthomaps.tsv.zip <https://zenodo.org/record/8360098/files/plaza_v5_dicots_HOMFAM_orthomaps.tsv.zip>`_
+
 `plaza_v5_dicots_ORTHOFAM_orthomaps.tsv.zip <https://zenodo.org/record/8360098/files/plaza_v5_dicots_ORTHOFAM_orthomaps.tsv.zip>`_
 
 plaza monocots database version 5.0
-===================================
+-----------------------------------
 
 - includes 52 species
 
 Extracted orthomaps for all monocots (HOMFAM and ORTHOFAM) from `plaza monocots database version 5.0 <https://bioinformatics.psb.ugent.be/plaza/versions/plaza_v5_monocots/>`_ can be downloaded here:
 
 `plaza_v5_monocots_HOMFAM_orthomaps.tsv.zip <https://zenodo.org/record/8360098/files/plaza_v5_monocots_HOMFAM_orthomaps.tsv.zip>`_
+
 `plaza_v5_monocots_ORTHOFAM_orthomaps.tsv.zip <https://zenodo.org/record/8360098/files/plaza_v5_monocots_ORTHOFAM_orthomaps.tsv.zip>`_
 
 To get an orthomap for e.g. the species *Arabidopsis thaliana* (taxID: 3702):
