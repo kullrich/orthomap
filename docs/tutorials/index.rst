@@ -9,7 +9,7 @@ with the `orthomap` package.
 .. _tutorial-getting-started:
 
 Getting started
----------------
+===============
 
 If you are running `orthomap` for the first time, we recommend to either follow the individual
 :ref:`orthomap steps <tutorial-orthomap-steps>`
@@ -24,7 +24,7 @@ or the :doc:`nematode case study <nematode_example>` (using pre-calculated ortho
 .. _tutorial-pre-calculated-orthomaps:
 
 Pre-calculated orthomaps
-------------------------
+========================
 
 In addition to extract gene age classes from `OrthoFinder <https:https://github.com/davidemms/OrthoFinder>`_ results,
 `orthomap` has the functionality to parse and extract gene age classes from pre-calculated orthologous group databases,
@@ -114,7 +114,7 @@ To get an orthomap for e.g. the species *Arabidopsis thaliana* (taxID: 3702):
 .. _tutorial-orthomap-steps:
 
 orthomap - Steps
-----------------
+================
 
 This section contains the main steps of `orthomap` to extract gene age information for a query species up to linking
 the extracted gene age classes and expression data of single-cell data sets.
@@ -129,7 +129,7 @@ the extracted gene age classes and expression data of single-cell data sets.
 .. _tutorial-orthomap-downstream-analysis:
 
 orthomap - Downstream analysis
-------------------------------
+==============================
 
 This section contains different downstream analysis options (Step 5).
 
@@ -138,7 +138,7 @@ This section contains different downstream analysis options (Step 5).
 - :doc:`pstrata`: This tutorial introduces partial TEI and its contribution to the global TEI per cell or cell type.
 
 Case studies
-------------
+============
 
 - :doc:`nematode_example`: Notebook - *Caenorhabditis elegans* scRNA data example.
 - :doc:`zebrafish_example`: Notebook - *Danio rerio* scRNA data example.
@@ -152,17 +152,17 @@ Case studies
    pipeline.
 
 Command line functions
-----------------------
+======================
 
 - :doc:`commandline`: This section highlight all `orthomap` functions that can be run via the command line.
 
 myTAI - Function correspondance
--------------------------------
+===============================
 
 - :doc:`mytai`: This tutorial covers which orthomap functions correspond to myTAI functions.
 
 Prerequisites
--------------
+=============
 
 - This tutorial assumes that you have basic **Python programming experience**.
   In particular, we assume you are familiar with using a notebook from the following python data science libraries:
@@ -176,7 +176,7 @@ Prerequisites
   please use :ref:`our pre-built docker image <docker_image>`.
 
 Code and data availability
---------------------------
+==========================
 
 - We provide links for the notebook in each tutorial section.
 
