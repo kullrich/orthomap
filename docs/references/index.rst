@@ -93,6 +93,10 @@ Pijuan-Sala, B., Griffiths, J.A., Guibentif, C., Hiscock, T.W., Jawaid, W., Cale
 Ibarra-Soria, X., Tyser, R.C., Ho, D.L.L. and Reik, W. (2019). **A single-cell molecular map of mouse gastrulation and
 early organogenesis.** *Nature*, **566(7745)**. `https://doi.org/10.1038/s41586-019-0933-9 <https://doi.org/10.1038/s41586-019-0933-9>`_
 
+Plass, M., Solana, J., Wolf, F.A., Ayoub, S., Misios, A., Glažar, P., Obermayer, B., Theis, F.J., Kocks, C.
+and Rajewsky, N. (2018). **Cell type atlas and lineage tree of a whole complex animal by single-cell transcriptomics.**
+*Science*, **360(6391)**. `https://doi.org/10.1126/science.aaq1723 <https://doi.org/10.1126/science.aaq1723>`_
+
 Qiu, C., Cao, J., Martin, B.K., Li, T., Welsh, I.C., Srivatsan, S., Huang, X., Calderon,
 D., Noble, W.S., Disteche, C.M. and Murray, S.A. (2022). 
 **Systematic reconstruction of cellular trajectories across mouse embryogenesis.** 
