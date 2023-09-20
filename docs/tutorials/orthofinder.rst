@@ -138,7 +138,7 @@ which can be helpful in this situation.
 
 Here, a short proposal is given how to deal with that situation.
 In the original publication of `Plass, Solana et al, 2018 <https://doi.org/10.1126/science.aaq1723>`_
-and the planaria species *Schmidtea mediterranea* `GSE103633<https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE103633>`_
+and the planaria species *Schmidtea mediterranea* `GSE103633 <https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE103633>`_
 a transcriptome was used. However, the exists an annotated genome for the same species
 (`Schmidtea mediterranea PRJNA12585 peptides <https://ftp.ebi.ac.uk/pub/databases/wormbase/parasite/releases/WBPS18/species/schmidtea_mediterranea/PRJNA12585/schmidtea_mediterranea.PRJNA12585.WBPS18.protein.fa.gz>`_), but the scRNA data uses
 the transcriptome contig IDs as gene IDs.
@@ -147,9 +147,9 @@ the transcriptome contig IDs as gene IDs.
 
 - call ORFs/CDS from the given transcriptome
 
-ORF/CDS extraction can be done with e.g. `TransDecoder<https://github.com/TransDecoder/TransDecoder>`_ or
-using `miniprot<https://github.com/lh3/miniprot>`_ with the "newer" annotated peptides followed by `miniprothint<https://github.com/tomasbruna/miniprothint>`_ or
-using `GALBA<https://github.com/Gaius-Augustus/GALBA>`_
+ORF/CDS extraction can be done with e.g. `TransDecoder <https://github.com/TransDecoder/TransDecoder>`_ or
+using `miniprot <https://github.com/lh3/miniprot>`_ with the "newer" annotated peptides followed by `miniprothint <https://github.com/tomasbruna/miniprothint>`_ or
+using `GALBA <https://github.com/Gaius-Augustus/GALBA>`_
 
    ::
 
@@ -160,14 +160,14 @@ using `GALBA<https://github.com/Gaius-Augustus/GALBA>`_
 
 - extract and convert CDS into peptides from the given transcriptome
 
-extraction and direct conversion into peptides can be done with e.g. `gffread<https://github.com/gpertea/gffread>`_
+extraction and direct conversion into peptides can be done with e.g. `gffread <https://github.com/gpertea/gffread>`_
 
 Here, first the original contig IDs are added to the gene IDs so that later a mapping against the scRNA data is possible.
 
    ::
 
        awk -F '\t' -vOFS='\t' '{if($3=="mRNA"){gsub("ID=","ID="$1"::",$9)}; if($3!="mRNA"){gsub("Parent=", "Parent="$1"::", $9)}; print $0}' miniprot_parsed.gff > miniprot_parsed_IDs.gff
-           gffread -x dd_Smed_v6_miniprot_parsed.x.fasta -y dd_Smed_v6_miniprot_parsed.pep.fasta -g dd_Smed_v6.pcf.contigs.fasta miniprot_parsed_IDs.gff
+       gffread -x dd_Smed_v6_miniprot_parsed.x.fasta -y dd_Smed_v6_miniprot_parsed.pep.fasta -g dd_Smed_v6.pcf.contigs.fasta miniprot_parsed_IDs.gff
 
 Now one can use the extracted peptides with `OrthoFinder <https:https://github.com/davidemms/OrthoFinder>`_ to add them to an existing `OrthoFinder <https:https://github.com/davidemms/OrthoFinder>`_ run.
 
