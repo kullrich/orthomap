@@ -313,7 +313,7 @@ def sun21_orthomap(datapath='.'):
     return sun21_orthomap_filename
 
 
-def zebrafish_orthomap(datapath='.'):
+def zebrafish_ensembl105_orthomap(datapath='.'):
     """
     Pre-calculated and gene ID matched orthomap for Danio rerio extracted from OrthoFinder results:
 
@@ -336,7 +336,7 @@ def zebrafish_orthomap(datapath='.'):
     Example
     -------
     >>> from orthomap import datasets
-    >>> datasets.zebrafish_orthomap(datapath='.')
+    >>> datasets.zebrafish_ensembl105_orthomap(datapath='.')
     """
     if not os.path.exists(datapath):
         print('datapath does not exist, is created now')
@@ -344,6 +344,42 @@ def zebrafish_orthomap(datapath='.'):
     zebrafish_orthomap_filename = os.path.join(datapath,
                                                'zebrafish_ensembl_105_orthomap.tsv')
     zebrafish_orthomap_url = 'https://zenodo.org/record/8345243/files/zebrafish_ensembl_105_orthomap.tsv'
+    wget.download(url=zebrafish_orthomap_url,
+                  out=datapath)
+    return zebrafish_orthomap_filename
+
+
+def zebrafish_ensembl110_orthomap(datapath='.'):
+    """
+    Pre-calculated and gene ID matched orthomap for Danio rerio extracted from OrthoFinder results:
+
+    OrthoFinder results for all translated coding sequences (CDS) from Ensembl release-110
+    (keeping only longest isoforms)
+    and Xtropicalisv9.0.Named.primaryTrs.pep.fa from www.xenbase.org.
+
+    All files can be obtained from here:
+    https://doi.org/10.5281/zenodo.7242263
+
+    Gene ID matching was done using the following GTF file for species Danio rerio from ensembl release-110:
+    https://ftp.ensembl.org/pub/release-110/gtf/danio_rerio/
+
+    :param datapath: Path to safe dataset.
+    :return: Path to Orthomap file.
+
+    :type datapath: str
+    :rtype: str
+
+    Example
+    -------
+    >>> from orthomap import datasets
+    >>> datasets.zebrafish_ensembl110_orthomap(datapath='.')
+    """
+    if not os.path.exists(datapath):
+        print('datapath does not exist, is created now')
+        os.makedirs(name=datapath)
+    zebrafish_orthomap_filename = os.path.join(datapath,
+                                               'zebrafish_ensembl_110_orthomap.tsv')
+    zebrafish_orthomap_url = 'https://zenodo.org/record/8366130/files/zebrafish_ensembl_110_orthomap.tsv'
     wget.download(url=zebrafish_orthomap_url,
                   out=datapath)
     return zebrafish_orthomap_filename
