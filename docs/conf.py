@@ -23,7 +23,6 @@ from orthomap import *
 extensions = [
         "sphinx.ext.autodoc",
         "sphinx.ext.napoleon",
-        "sphinx.ext.imgmath",
         "sphinx.ext.mathjax",
         "nbsphinx",
 ]

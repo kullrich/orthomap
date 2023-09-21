@@ -3,7 +3,8 @@
 Step 4 - TEI calculation
 ========================
 
-The phylogenetically based transcriptome evolutionary index (TEI) is similar to `Domazet-Loso & Tautz, 2010<https://doi.org/10.1038/nature09632>`_.
+The phylogenetically based transcriptome evolutionary index (TEI) is similar to
+`Domazet-Loso & Tautz, 2010 <https://doi.org/10.1038/nature09632>`_.
 
 The TEI measure represents the weighted arithmetic mean
 (expression levels as weights for the phylostratum value)
