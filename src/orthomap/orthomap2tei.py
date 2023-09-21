@@ -75,6 +75,33 @@ def geneset_overlap(geneset1,
     return df
 
 
+def get_geneset_overlap(geneset1,
+                        geneset2):
+    """
+    This function returns the overlap of two lists. To check e.g. <GeneID> from an orthomap and <adata.var_names>
+    from an AnnData object.
+
+    :param geneset1: List of gene or transcript names set 1.
+    :param geneset2: List of gene or transcript names set 2.
+    :return: Overlap.
+
+    :type geneset1: list
+    :type geneset2: list
+    :rtype: list
+
+    Example
+    -------
+    >>> from orthomap import orthomap2tei
+    >>> geneset1 = ['g1.1', 'g1.2', 'g2.1', 'g3.1', 'g3.2']
+    >>> geneset2 = ['g1.1', 'g2.1', 'g3.1']
+    >>> orthomap2tei.get_geneset_overlap(geneset1, geneset2)
+    """
+    g1 = set(geneset1)
+    g2 = set(geneset2)
+    g1_g2 = list(g1.intersection(g2))
+    return g1_g2
+
+
 def replace_by(x_orig,
                xmatch,
                xreplace):
