@@ -10,9 +10,9 @@ The TEI measure represents the weighted arithmetic mean
 over all evolutionary age categories denoted as *phylostra*.
 
 .. math::
-    deqn{TEI_s = sum (e_is * ps_i) / sum e_is}
+    eqn{TEI_s = sum (e_is * ps_i) / sum e_is}
 
-where :math:`TEI_s}` denotes the TEI value in developmental stage
+where :math:`eqn{TEI_s}` denotes the TEI value in developmental stage
 :math:`eqn{s, e_is}` denotes the gene expression level of gene :math:`eqn{i}`
 in stage :math:`eqn{s}`, and :math:`eqn{ps_i}` denotes the corresponding phylostratum
 of gene :math:`eqn{i, i = 1,…,N}` and :math:`eqn{N = total number of genes}`.
