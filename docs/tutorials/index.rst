@@ -141,11 +141,11 @@ Case studies
 ============
 
 - :doc:`paul15_example`: Notebook - *Mus musculus* hematopoiesis scRNA data example.
-- :doc:`nematode_example`: Notebook - *Caenorhabditis elegans* scRNA data example.
-- :doc:`zebrafish_example`: Notebook - *Danio rerio* scRNA data example.
-- :doc:`frog_example`: Notebook - *Xenopus tropicalis* scRNA data example.
-- :doc:`mouse_example`: Notebook - *Mus musculus* scRNA data example.
-- :doc:`hydra_example`: Notebook - *Hydra vulgaris* scRNA data example.
+- :doc:`nematode_example`: Notebook - *Caenorhabditis elegans* embryogenesis scRNA data example.
+- :doc:`zebrafish_example`: Notebook - *Danio rerio* embryogenesis scRNA data example.
+- :doc:`frog_example`: Notebook - *Xenopus tropicalis* embryogenesis scRNA data example.
+- :doc:`mouse_example`: Notebook - *Mus musculus* embryogenesis scRNA data example.
+- :doc:`hydra_example`: Notebook - *Hydra vulgaris* cell atlas scRNA data example.
 
 .. note::
    A demo dataset is available for each of the tutorial notebooks above.
