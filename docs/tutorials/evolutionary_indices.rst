@@ -12,7 +12,7 @@ measurement to be able to assign each gene with a value which is used to weigh i
 These values can be discrete or continuous values. Continuous values can be binned first and
 used as gene groups to weigh expression.
 
-Other evolutionary indicies can be e.g.:
+Other evolutionary indices can be e.g.:
 
 - Tajima'sD
 - Nucleotide diversity (within species)
