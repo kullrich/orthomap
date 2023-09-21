@@ -11,6 +11,7 @@ The TEI measure represents the weighted arithmetic mean
 over all evolutionary age categories denoted as *phylostra*.
 
 .. math::
+
     eqn{TEI_s = sum (e_is * ps_i) / sum e_is}
 
 where :math:`eqn{TEI_s}` denotes the TEI value in developmental stage
