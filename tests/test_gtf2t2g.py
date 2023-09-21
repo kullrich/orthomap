@@ -6,7 +6,7 @@ import pandas as pd
 from orthomap import datasets, gtf2t2g
 
 
-file = datasets.mouse_gtf(datapath='/tmp')
+file = datasets.mouse_ensembl105_gtf(datapath='/tmp')
 expected_columns = [
     'gene_id',
     'gene_id_version',
