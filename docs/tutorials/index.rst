@@ -140,6 +140,7 @@ This section contains different downstream analysis options (Step 5).
 Case studies
 ============
 
+- :doc:`paul15_example`: Notebook - *Mus musculus* hematopoiesis scRNA data example.
 - :doc:`nematode_example`: Notebook - *Caenorhabditis elegans* scRNA data example.
 - :doc:`zebrafish_example`: Notebook - *Danio rerio* scRNA data example.
 - :doc:`frog_example`: Notebook - *Xenopus tropicalis* scRNA data example.
