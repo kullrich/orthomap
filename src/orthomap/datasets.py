@@ -147,7 +147,7 @@ def ws288(datapath='.'):
             sl_filename]
 
 
-def zebrafish_gtf(datapath='.'):
+def zebrafish_ensembl105_gtf(datapath='.'):
     """
     Download GTF for species Danio rerio from ensembl release-105
     https://ftp.ensembl.org/pub/release-105/gtf/danio_rerio/
@@ -161,7 +161,7 @@ def zebrafish_gtf(datapath='.'):
     Example
     -------
     >>> from orthomap import datasets
-    >>> datasets.zebrafish_gtf(datapath='.')
+    >>> datasets.zebrafish_ensembl105_gtf(datapath='.')
     """
     if not os.path.exists(datapath):
         print('datapath does not exist, is created now')
@@ -174,7 +174,34 @@ def zebrafish_gtf(datapath='.'):
     return zebrafish_gtf_filename
 
 
-def mouse_gtf(datapath='.'):
+def zebrafish_ensembl110_gtf(datapath='.'):
+    """
+    Download GTF for species Danio rerio from ensembl release-110
+    https://ftp.ensembl.org/pub/release-110/gtf/danio_rerio/
+
+    :param datapath: Path to safe dataset.
+    :return: Path to GTF file.
+
+    :type datapath: str
+    :rtype: str
+
+    Example
+    -------
+    >>> from orthomap import datasets
+    >>> datasets.zebrafish_ensembl110_gtf(datapath='.')
+    """
+    if not os.path.exists(datapath):
+        print('datapath does not exist, is created now')
+        os.makedirs(name=datapath)
+    zebrafish_gtf_filename = os.path.join(datapath,
+                                          'Danio_rerio.GRCz11.110.gtf.gz')
+    zebrafish_gtf_url = 'https://ftp.ensembl.org/pub/release-110/gtf/danio_rerio/Danio_rerio.GRCz11.110.gtf.gz'
+    wget.download(url=zebrafish_gtf_url,
+                  out=datapath)
+    return zebrafish_gtf_filename
+
+
+def mouse_ensembl105_gtf(datapath='.'):
     """
     Download GTF for species Mus musculus from ensembl release-105
     https://ftp.ensembl.org/pub/release-105/gtf/mus_musculus/
@@ -188,7 +215,7 @@ def mouse_gtf(datapath='.'):
     Example
     -------
     >>> from orthomap import datasets
-    >>> datasets.mouse_gtf(datapath='.')
+    >>> datasets.mouse_ensembl105_gtf(datapath='.')
     """
     if not os.path.exists(datapath):
         print('datapath does not exist, is created now')
@@ -199,6 +226,60 @@ def mouse_gtf(datapath='.'):
     wget.download(url=mouse_gtf_url,
                   out=datapath)
     return mouse_gtf_filename
+
+
+def mouse_ensembl110_gtf(datapath='.'):
+    """
+    Download GTF for species Mus musculus from ensembl release-110
+    https://ftp.ensembl.org/pub/release-110/gtf/mus_musculus/
+
+    :param datapath: Path to safe dataset.
+    :return: Path to GTF file.
+
+    :type datapath: str
+    :rtype: str
+
+    Example
+    -------
+    >>> from orthomap import datasets
+    >>> datasets.mouse_ensembl110_gtf(datapath='.')
+    """
+    if not os.path.exists(datapath):
+        print('datapath does not exist, is created now')
+        os.makedirs(name=datapath)
+    mouse_gtf_filename = os.path.join(datapath,
+                                      'Mus_musculus.GRCm39.110.gtf.gz')
+    mouse_gtf_url = 'https://ftp.ensembl.org/pub/release-110/gtf/mus_musculus/Mus_musculus.GRCm39.110.gtf.gz'
+    wget.download(url=mouse_gtf_url,
+                  out=datapath)
+    return mouse_gtf_filename
+
+
+def mouse_synonyms(datapath='.'):
+    """
+    Mus musculus gene synonyms from here:
+    https://github.com/mustafapir/geneName
+
+    :param datapath: Path to safe dataset.
+    :return: Path to Synonyms file.
+
+    :type datapath: str
+    :rtype: str
+
+    Example
+    -------
+    >>> from orthomap import datasets
+    >>> datasets.mouse_synonyms(datapath='.')
+    """
+    if not os.path.exists(datapath):
+        print('datapath does not exist, is created now')
+        os.makedirs(name=datapath)
+    mouse_synonyms_filename = os.path.join(datapath,
+                                           'mouse_synonyms.tsv')
+    mouse_synonyms_url = 'https://zenodo.org/record/8366021/files/mouse_synonyms.tsv'
+    wget.download(url=mouse_synonyms_url,
+                  out=datapath)
+    return mouse_synonyms_filename
 
 
 def sun21_orthomap(datapath='.'):
