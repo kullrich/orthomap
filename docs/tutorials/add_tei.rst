@@ -12,12 +12,12 @@ over all evolutionary age categories denoted as *phylostra*.
 
 .. math::
 
-    TEI_s = sum (e_is * ps_i) / sum e_is
+    TEI_s = \sum (e_{is} * ps_i) / \sum e_{is}
 
 where :math:`TEI_s` denotes the TEI value in developmental stage
-:math:`s, e_is` denotes the gene expression level of gene :math:`i`
-in stage :math:`s`, and :math:`eqn{ps_i}` denotes the corresponding phylostratum
-of gene :math:`i, i = 1,…,N` and :math:`N = total number of genes`.
+:math:`s, e_{is}` denotes the gene expression level of gene :math:`i`
+in stage :math:`s`, and :math:`ps_i` denotes the corresponding phylostratum
+of gene :math:`i, i = 1,...,N` and :math:`N = text{total number of genes}`.
 
 .. note::
    Please have a look at `Liu & Robinson-Rechavi, 2018 <https://doi.org/10.1093/gbe/evy177>`_ to get more insides how expression transformation can influence TEI calculation.
