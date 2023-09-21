@@ -104,7 +104,8 @@ def get_geneset_overlap(geneset1,
 
 def replace_by(x_orig,
                xmatch,
-               xreplace):
+               xreplace,
+               keep=False):
     """
     This function assumes that <x_orig> and <xmatch> match and will return <xreplace> sorted by <x_orig>.
     It is mandatory that <xmatch> and <xreplace> have the same length and reflect pairs:
@@ -113,11 +114,13 @@ def replace_by(x_orig,
     :param x_orig: List of original values to be used for sorting.
     :param xmatch: List of matches to the original values. Each xmatch position pairs with xreplace position.
     :param xreplace: List of replace values. Each xreplace position pairs with xmatch position.
+    :param keep: Keep x_orig value instead of NaN if no match is found.
     :return: Replacement ordered by the original values.
 
     :type x_orig: list
     :type xmatch: list
     :type xreplace: list
+    :type keep: bool
     :rtype: list
 
     Example
@@ -134,7 +137,10 @@ def replace_by(x_orig,
     replace_dict = {}
     for i, j in enumerate(xmatch):
         replace_dict[j] = xreplace[i]
-    x_new = [replace_dict[x] if x in replace_dict else np.nan for x in x_orig]
+    if keep:
+        x_new = [replace_dict[x] if x in replace_dict else x for x in x_orig]
+    else:
+        x_new = [replace_dict[x] if x in replace_dict else np.nan for x in x_orig]
     return x_new
 
 
@@ -242,8 +248,8 @@ def _split_gene_id_by_gene_age(gene_id,
 
 def _get_counts(adata,
                 layer=None,
-                normalize_total=False,
-                log1p=False,
+                normalize_total=True,
+                log1p=True,
                 target_sum=1e6):
     """
     A helper function to pre-process AnnData counts.
