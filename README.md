@@ -1,4 +1,4 @@
-# orthomap
+# orthomap >>> oggmap [https://github.com/kullrich/oggmap](https://github.com/kullrich/oggmap)
 
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/kullrich/orthomap/build_check.yml?branch=main)](https://github.com/kullrich/orthomap/actions/workflows/build_check.yml)
 [![PyPI](https://img.shields.io/pypi/v/orthomap?color=blue)](https://pypi.org/project/orthomap/)
@@ -6,6 +6,12 @@
 [![PyPI - Wheel](https://img.shields.io/pypi/wheel/orthomap)](https://pypi.org/project/orthomap/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![docs-badge](https://readthedocs.org/projects/orthomap/badge/?version=latest)](https://orthomap.readthedocs.io/en/latest/?badge=latest)
+
+The orthomap repository is archived, since orthomap was renamed into oggmap.
+
+orthomap has been renamed into oggmap and lives here now, :
+
+[https://github.com/kullrich/oggmap](https://github.com/kullrich/oggmap)
 
 ## orthologous maps - evolutionary age index
 
