@@ -9,7 +9,7 @@
 
 The orthomap repository is archived, since orthomap was renamed into oggmap.
 
-orthomap has been renamed into oggmap and lives here now, :
+orthomap has been renamed into oggmap and lives here now:
 
 [https://github.com/kullrich/oggmap](https://github.com/kullrich/oggmap)
 
