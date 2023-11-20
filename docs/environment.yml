@@ -27,3 +27,4 @@ dependencies:
       - nbsphinx
       - myst-nb
       - ipykernel
+      - sphinx-rtd-theme
